@@ -8,7 +8,7 @@ Currently, the focus of the repo is on generating data-dictionaries (see Variabl
 To use the functionality for variable level metadata, please review the notebook demonstrations below:
 
 1. Generating a heal data dictionary from a variety of input files [click here](notebooks/demos/inputs-to-heal-data-dictionary.ipynb)
-2. Creating and iterating over a csv data dictionary to create a valid data dictionary file [click here](notebooks/demos/demo-csvtemplate-validation.ipynb)
+2. [in development] Creating and iterating over a csv data dictionary to create a valid data dictionary file [click here](notebooks/demos/demo-csvtemplate-validation.ipynb)
 
 The following file inputs are currently available:
 
