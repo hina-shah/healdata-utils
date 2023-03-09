@@ -1,5 +1,5 @@
 # HEAL Data Utilities
-The HEAL data utilities package provides data packaging tools for the HEAL data ecosystem to facilitate data discovery,sharing, and harmonization.
+The HEAL data utilities package provides data packaging tools for the HEAL data ecosystem to facilitate data discovery,sharing, and harmonization with a focus on the HEAL platform data consultancy (DSC).
 
 Currently, the focus of the repo is on generating data-dictionaries (see Variable level metadata section below). However, in the future, this will be expanded for all heal specific data packaging functions (e.g., study and file level metadata and data). 
 
