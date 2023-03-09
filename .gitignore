@@ -1,0 +1,10 @@
+/venv
+*.egg-info*
+*__pycache__*
+
+.ipynb_checkpoints
+
+.env
+.gen3
+
+NOTES.txt
