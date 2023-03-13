@@ -18,7 +18,7 @@ def read_pyreadstat(file_path,**kwargs):
     elif ext=='.sas7bdat':
         read = pyreadstat.read_sas7bdat
     elif ext=='.dta':
-        read = pyreadstat.read_sav
+        read = pyreadstat.read_dta
     elif ext=='.por':
         read = pyreadstat.read_por
 
