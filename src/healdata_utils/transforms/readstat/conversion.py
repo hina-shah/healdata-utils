@@ -73,7 +73,7 @@ def convert_readstat(file_path,
                 to_int_if_base10(key):to_int_if_base10(val)
                 for key,val in value_labels.items()
             }
-            
+
             #NOTE: enums are assumed if labels represent entire set of values
             # this avoids value labels that are, for example, partials such as top/bottom encodings
             enums = set(value_labels.keys())
@@ -81,11 +81,18 @@ def convert_readstat(file_path,
             if not values.difference(enums):
                 constraints_enums = {'constraints':{'enum':[to_int_if_base10(v) for v in enums]}}
                 field.update(constraints_enums)
-        
+
+        #NOTE/TODO: for SPSS no functionality for incorporating missing ranges
+        missing_values = meta.missing_user_values.get(fieldname)
+        if missing_values:
+            field['missingValues'] = {
+                to_int_if_base10(key):to_int_if_base10(val)
+                for key,val in missing_values.items()
+            }
+
         variable_label = meta.column_names_to_labels.get(fieldname)
         if variable_label:
             field['description'] = variable_label
-
 
     data_dictionary = data_dictionary_props.copy()
     data_dictionary['data_dictionary'] = fields 
