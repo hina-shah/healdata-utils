@@ -4,6 +4,7 @@ from pathlib import Path
 from healdata_utils.utils import to_int_if_base10
 from ..jsontemplate.conversion import convert_templatejson
 
+from datetime import datetime
 def read_pyreadstat(file_path,**kwargs):
     ''' 
     reads in a "metadata rich file"
@@ -99,7 +100,10 @@ def convert_readstat(file_path,
         for items in missing_ranges:
             values = list(set(items.values()))
             if len(values)==1:
-                missing_values.append(values[0])
+                if isinstance(values[0],datetime):
+                    missing_values.append(str(values[0]))
+                else:
+                    missing_values.append(values[0])
             else:
                 raise Exception("Currently, only discrete values are supported")
 
