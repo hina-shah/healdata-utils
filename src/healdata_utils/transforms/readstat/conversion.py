@@ -35,8 +35,8 @@ def convert_readstat(file_path,
 
     > Currently, this function uses both data and metadata to generate 
     a HEAL specified data dictionary. That is, types are inferred from the 
-    data (so at least test or synthetic data needed) in addition to the metadata 
-    (ie variable labels and value labels). 
+    data (so at least test or synthetic data needed) while everything else is taken 
+    from the metadata (eg missing values, variable labels, variable value labels etc)
 
     Parameters
     ----------
@@ -56,9 +56,32 @@ def convert_readstat(file_path,
             - 'templatejson': the HEAL-specified JSON object.
             - 'templatecsv': the HEAL-specified tabular template.
 
+    Notes
+    -----
+    ## Missing values (from pyreadstat docs)
+
+    SPSS only supports 3 discrete missing in addition to ranges.
+    For POC, only using discrete. TODO: use range(lo,hi+1) to do ranges; JCOIN Core Measures, for example, will need this
+    
+    From module documentation on missing values:
+
+    - SPSS
+        missing_ranges: a dict with keys being variable names. 
+        Values are a list of dicts. 
+        Each dict contains two keys, 'lo' and 'hi' being the lower boundary and higher boundary for the missing range. 
+        Even if the value in both lo and hi are the same, the two elements will always be present. 
+        This appears for SPSS (sav) files when using the option user_missing=True: user defined missing values appear not as nan but as their true value and this dictionary stores the information about which values are to be considered missing.
+    
+    - Stata/SAS
+        missing_user_values: a dict with keys being variable names. 
+        Values are a list of character values (A to Z and _ for SAS, a to z for SATA) 
+        representing user defined missing values in SAS and STATA. 
+        This appears when using user_missing=True in read_sas7bdat or read_dta 
+        if user defined missing values are present.
+
     """
     
-    df,meta = read_pyreadstat(file_path)
+    df,meta = read_pyreadstat(file_path,user_missing=True)
     df = df.convert_dtypes() #TODO: use visions package for inference (from pandas profile project)
     fields = pd.io.json.build_table_schema(df,index=False)['fields'] #converts to frictionless Table Schema
 
@@ -68,27 +91,32 @@ def convert_readstat(file_path,
         fieldname = field['name']
 
         value_labels = meta.variable_value_labels.get(fieldname)
-        if value_labels:
-            field['encodings'] = {
-                to_int_if_base10(key):to_int_if_base10(val)
-                for key,val in value_labels.items()
-            }
+        missing_values = meta.missing_user_values.get(fieldname,[])
+        missing_ranges = meta.missing_ranges.get(fieldname,[])
 
+        #see NOTE in docstring (on missing values): 
+        # below maps SPSS missing values
+        for items in missing_ranges:
+            values = list(set(items.values()))
+            if len(values)==1:
+                missing_values.append(values[0])
+            else:
+                raise Exception("Currently, only discrete values are supported")
+
+        if value_labels:
+            field['encodings'] = value_labels
             #NOTE: enums are assumed if labels represent entire set of values
             # this avoids value labels that are, for example, partials such as top/bottom encodings
-            enums = set(value_labels.keys())
+            enums = set(value_labels.keys()).difference(set(missing_values))
             values = set(df[fieldname].dropna()) 
             if not values.difference(enums):
                 constraints_enums = {'constraints':{'enum':[to_int_if_base10(v) for v in enums]}}
                 field.update(constraints_enums)
 
         #NOTE/TODO: for SPSS no functionality for incorporating missing ranges
-        missing_values = meta.missing_user_values.get(fieldname)
+        
         if missing_values:
-            field['missingValues'] = {
-                to_int_if_base10(key):to_int_if_base10(val)
-                for key,val in missing_values.items()
-            }
+            field['missingValues'] = missing_values
 
         variable_label = meta.column_names_to_labels.get(fieldname)
         if variable_label:
