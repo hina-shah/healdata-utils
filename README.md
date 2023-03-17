@@ -7,8 +7,8 @@ Currently, the focus of the repo is on generating data-dictionaries (see Variabl
 
 To use the functionality for variable level metadata, please review the notebook demonstrations below:
 
-1. Generating a heal data dictionary from a variety of input files [click here](notebooks/demos/inputs-to-heal-data-dictionary.ipynb) 
-    [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
+1. Generating a heal data dictionary from a variety of input files - [click here for static notebook ](notebooks/demos/inputs-to-heal-data-dictionary.ipynb) 
+- click binder badge for interactive --> [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
 2. [in development] Creating and iterating over a csv data dictionary to create a valid data dictionary file [click here](notebooks/demos/demo-csvtemplate-validation.ipynb)
 
 The following file inputs are currently available:
