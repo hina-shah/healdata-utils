@@ -103,7 +103,6 @@ def validate_csv(data_or_path,schema=healfrictionless):
     """
     schema = Schema(schema)
     if isinstance(data_or_path,(str,Path)):
-        source = Resource(path=data_or_path,schema=schema)
         data_tbl = (
             pd.read_csv(data_or_path,dtypes="string")
             .fillna("")
@@ -119,9 +118,11 @@ def validate_csv(data_or_path,schema=healfrictionless):
                 for name in schema.field_names} 
                 for field in data_or_path
             ]
-            source = Resource(data=data_tbl,schema=schema)
-                
+   
     print("Validating csv data dictionary...")
+    source = Resource(data=data_tbl,schema=schema)
+    source.format = "inline"
+    source.scheme = "buffer"
     report = source.validate()
     if report['valid']:
         print("Csv is VALID")
