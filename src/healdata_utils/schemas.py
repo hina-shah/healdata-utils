@@ -104,6 +104,11 @@ def validate_csv(data_or_path,schema=healfrictionless):
     schema = Schema(schema)
     if isinstance(data_or_path,(str,Path)):
         source = Resource(path=data_or_path,schema=schema)
+        data_tbl = (
+            pd.read_csv(data_or_path,dtypes="string")
+            .fillna("")
+            .to_dict(orient="records")
+        )
     elif isinstance(data_or_path, list):
         if all(isinstance(item, dict) for item in data_or_path):
             #NOTE: need to add missing field-wise values. 
@@ -115,8 +120,6 @@ def validate_csv(data_or_path,schema=healfrictionless):
                 for field in data_or_path
             ]
             source = Resource(data=data_tbl,schema=schema)
-    else:
-        source = Resource(data_or_path)
                 
     print("Validating csv data dictionary...")
     report = source.validate()
@@ -125,4 +128,4 @@ def validate_csv(data_or_path,schema=healfrictionless):
     else:
         print("Csv is invalid. Check the report")
     
-    return source.to_petl().dicts(),report
+    return data_tbl,report
