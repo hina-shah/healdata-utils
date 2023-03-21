@@ -22,6 +22,7 @@ def read(file_path):
     """ 
     sourcedf = (
         pd.read_csv(file_path,dtype="string") #no casting
+        .fillna("")
         .rename(columns=headers.mapping)
         .applymap(utils.strip_html)
     )
