@@ -4,7 +4,7 @@ in csv format to a heal-complieant json data dictionary
 
 """ 
 
-from frictionless import Resource
+import pandas as pd
 from . import headers,schema
 from .mappings import typemappings 
 from healdata_utils import utils
@@ -20,9 +20,8 @@ def read(file_path):
     Reads in a path to a redcap csv file
     and outputs and dictionary with cleaned up header (field) names
     """ 
-    sourcedf = (Resource(file_path)
-        .to_petl()
-        .todf()
+    sourcedf = (
+        pd.read_csv(file_path,dtype="string") #no casting
         .rename(columns=headers.mapping)
         .applymap(utils.strip_html)
     )
