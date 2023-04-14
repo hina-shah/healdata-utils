@@ -1,29 +1,10 @@
-import pyreadstat
-import pandas as pd 
-from pathlib import Path
+import pandas as pd
 from healdata_utils.utils import to_int_if_base10
+from healdata_utils.io import read_pyreadstat
 from ..jsontemplate.conversion import convert_templatejson
 
 from datetime import datetime
-def read_pyreadstat(file_path,**kwargs):
-    ''' 
-    reads in a "metadata rich file"
-    (dta, sav,b7bdat). Note, xport format not supported
-    as it doesnt supply value labels.
 
-    '''
-    file_path = Path(file_path)
-    ext = file_path.suffix 
-    if ext=='.sav':
-        read = pyreadstat.read_sav
-    elif ext=='.sas7bdat':
-        read = pyreadstat.read_sas7bdat
-    elif ext=='.dta':
-        read = pyreadstat.read_dta
-    elif ext=='.por':
-        read = pyreadstat.read_por
-
-    return read(file_path,**kwargs)
 
 def convert_readstat(file_path,
     data_dictionary_props={}):

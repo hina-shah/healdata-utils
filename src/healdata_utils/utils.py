@@ -108,3 +108,6 @@ def find_docstring_desc(fxn):
     exp = "^(.*)Parameters\\n"
     docstring = fxn.__doc__.strip()
     return re.search(exp,docstring,re.DOTALL).group(1)
+
+
+

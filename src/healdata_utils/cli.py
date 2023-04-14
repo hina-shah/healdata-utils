@@ -2,8 +2,6 @@
 
 command line interface for generating HEAL data dictionary/vlmd json files
 
-#TODO: make scheam a CLI option?
-#TODO: port to_json and to_csv fxns outputside of CLI? to an io.py folder?
 ''' 
 
 
@@ -104,9 +102,13 @@ def convert_to_vlmd(
 
     # write to file
     if outputdir!=None:
-        if Path(outputdir).is_dir():
+        if outputdir.is_dir():
             jsontemplate_path = outputdir/"heal-jsontemplate-data-dictionary.json"
             csvtemplate_path = outputdir/"heal-csvtemplate-data-dictionary.csv"
+        if outputdir.parent.is_dir():
+            jsontemplate_path = outputdir.with_suffix(".json")
+            csvtemplate_path = outputdir.with_suffix(".csv")
+            outputdir = outputdir.parent
         else:
             raise Exception("outputdir must be an existing directory where files can be saved")
         
