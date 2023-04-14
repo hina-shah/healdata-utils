@@ -4,6 +4,7 @@ functions to read and write files in a "smart" way
 import pyreadstat
 import pandas as pd 
 from pathlib import Path
+import charset_normalizer
 # read pyreadstat files
 
 def read_pyreadstat(file_path,**kwargs):
@@ -30,27 +31,38 @@ def read_pyreadstat(file_path,**kwargs):
 
 def detect_file_encoding(file_path):
     """ 
-    detects file encoding - necessary to correctly
-    read in a file
-
-    #TODO: find fxn that detects encoding - chardet?
-    #TODO: assert that it is in list of values taken in by 
-    #pandas
+    detects file encoding using charset_normalizer package
     """ 
-    with open(file_path) as f:
-        file_encoding = f.encoding
-    
-    return file_encoding.lower()
+    with open(file_path,'rb') as f:
+        data = f.read()
+        encoding_for_input = charset_normalizer.detect(data)
+
+    is_confident = encoding_for_input["confidence"]==1
+    if not is_confident:
+        print("Be careful, the detected file encoding for:")
+        print(f"{file_path}")
+        print(r"has less than 100% confidence")
+    #chardet_normalizer.detect returns confidence,encoding (as a string), and language (eg English)
+    return encoding_for_input["encoding"]
 
 
-
-def read_table():
+def read_table(file_path):
     """ 
-    reads in a file with an io function based on 
-    extension. Does not do any casting
+    reads in a tabular file (ie spreadsheet) after detecting
+    encoding and file extension without any type casting.
 
-    #TODO: put this in all tabular inputs (eg csv )
+    currently supports csv and tsv
     """ 
-    pass 
+    ext = Path(file_path).suffix
+    if ext==".csv":
+        sep = ","
+    elif ext==".tsv":
+        sep = "\t"
+
+    encoding = detect_file_encoding(file_path)
+    file_encoding = pd.read_csv(
+        file_path,sep=sep,encoding=encoding,dtype="string")
+
+    return file_encoding
 
 
