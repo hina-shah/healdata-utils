@@ -127,6 +127,7 @@ def convert_to_vlmd(
         items = [list(item) if type(item)==deque else item for item in report_json.values()]
         keys = list(report_json.keys())
         jsonerrors = dict(zip(keys,items))
+        del jsonerrors["_type_checker"] #Not json serializable and internal object anyways
         if not jsonerrors['valid']:
             print("JSON data dictionary not valid, see heal-json-errors.json")
  
