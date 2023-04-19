@@ -25,7 +25,7 @@ The healdata-utils variable level metadata (vlmd) tool inputs a variety of diffe
 
 The vlmd tool can be used via python or the command line.
 
-### Python
+### Using from python
 
 From your current working directory in python, run:
 
@@ -59,7 +59,7 @@ input_descriptions
 
 The `input_descriptions` object contains the choice for `inputtype` as the key and the description as the value.
 
-### Command line
+### Using from the command line
 
 From your current working directory run:
 (note the "\" at the end of each line signals a line continuation for ease in understanding the long one line command.) Again the `--title` and `--description` options are optional.
