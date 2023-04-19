@@ -46,22 +46,24 @@ def detect_file_encoding(file_path):
     return encoding_for_input["encoding"]
 
 
-def read_table(file_path):
+def read_table(file_path,castdtype = "string"):
     """ 
     reads in a tabular file (ie spreadsheet) after detecting
     encoding and file extension without any type casting.
 
     currently supports csv and tsv
+
+    defaults to not casting values (ie all columns are string dtypes).
     """ 
     ext = Path(file_path).suffix
     if ext==".csv":
         sep = ","
     elif ext==".tsv":
         sep = "\t"
-
+        
     encoding = detect_file_encoding(file_path)
     file_encoding = pd.read_csv(
-        file_path,sep=sep,encoding=encoding,dtype="string")
+        file_path,sep=sep,encoding=encoding,dtype=castdtype)
 
     return file_encoding
 

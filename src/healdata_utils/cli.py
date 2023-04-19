@@ -10,6 +10,7 @@ from healdata_utils.transforms.csvtemplate.conversion import convert_templatecsv
 from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
 from healdata_utils.transforms.readstat.conversion import convert_readstat
 from healdata_utils.transforms.redcapcsv.conversion import convert_redcapcsv
+from healdata_utils.transforms.csvdata.conversion import convert_datacsv
 import json
 from pathlib import Path
 from healdata_utils.schemas import validate_json,validate_csv
@@ -20,12 +21,15 @@ from collections import deque
 from healdata_utils.utils import find_docstring_desc
 
 choice_fxn = {
-    'csv': convert_templatecsv,
+    'data.csv':convert_datacsv,
+    'template.csv':convert_templatecsv,
+    'csv': convert_templatecsv, #maintained for backwards compatibility
     'sav': convert_readstat,
     'dta':convert_readstat,
     'por':convert_readstat,
     'sas7bdat':convert_readstat,
-    'json':convert_templatejson,
+    'template.json':convert_templatejson,
+    'json':convert_templatejson, #maintain for bwds compat
     "redcap.csv":convert_redcapcsv
 
 }
@@ -52,14 +56,14 @@ def convert_to_vlmd(
     filepath : str
         Path to input file. See documentation on individual input types for more details.
     outputdir : str
-        Path to a directory where output will go. If a directory is specified, will use the input name for output name replaced with JSON suffix.
+        output file path or directory to where output will go. 
+        1. Outputdir is a directory, will give standard names,
+        2. If path to the to-be-written file is specified, will use this as new outputted filename
     data_dictionary_props : dict, optional
         The other data-dictionary level properties. By default, will give the data_dictionary `title` property as the file name stem.
     inputtype : str, optional
         The input type. If none specified, will default to using the file extension.
         See the currently registered input types in the input_types list.
-    save_path : str, optional
-        Path to output directory. Default is to not save.
 
     Returns
     -------
@@ -102,6 +106,7 @@ def convert_to_vlmd(
 
     # write to file
     if outputdir!=None:
+        
         if outputdir.is_dir():
             jsontemplate_path = outputdir/"heal-jsontemplate-data-dictionary.json"
             csvtemplate_path = outputdir/"heal-csvtemplate-data-dictionary.csv"
