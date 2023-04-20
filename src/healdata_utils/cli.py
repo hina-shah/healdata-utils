@@ -110,7 +110,7 @@ def convert_to_vlmd(
         if outputdir.is_dir():
             jsontemplate_path = outputdir/"heal-jsontemplate-data-dictionary.json"
             csvtemplate_path = outputdir/"heal-csvtemplate-data-dictionary.csv"
-        if outputdir.parent.is_dir():
+        elif outputdir.parent.is_dir():
             jsontemplate_path = outputdir.with_suffix(".json")
             csvtemplate_path = outputdir.with_suffix(".csv")
             outputdir = outputdir.parent
