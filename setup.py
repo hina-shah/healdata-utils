@@ -21,9 +21,9 @@ setup(
         'petl',
         'jsonschema==4.17.3',
         'requests',
-        'pyyaml',
+        'pyyaml==1.7.12',
         'frictionless==4.40.8',
-        'pyreadstat',
+        'pyreadstat==1.2.0',
         #'dataforge[redcap] @ git+https://gitlab.com/mbkranz/data-forge.git@0afa429d6b7d1f1ec04ff8c4ee127291b3b058d4',
         #NOTE: temporarily taking out dataforge[redcap] as the xml transformations are WIP and to reduce external dependencies for POC
         'dataforge@ git+https://gitlab.com/mbkranz/data-forge.git@0afa429d6b7d1f1ec04ff8c4ee127291b3b058d4',
