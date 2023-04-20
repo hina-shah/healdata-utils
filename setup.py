@@ -19,7 +19,7 @@ setup(
     packages=find_namespace_packages(where='src'),
     install_requires=[
         'petl',
-        'jsonschema',
+        'jsonschema==4.17.3',
         'requests',
         'pyyaml',
         'frictionless==4.40.8',
