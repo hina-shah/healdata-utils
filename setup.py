@@ -2,7 +2,7 @@ from setuptools import setup, find_namespace_packages
 
 setup(
     name='healdata_utils',
-    version='0.0.1',
+    version='0.0.2',
     author='Michael Kranz',
     author_email='kranz-michael@norc.org',
     description='Data packaging tools for the HEAL data ecosystem',
