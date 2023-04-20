@@ -6,6 +6,17 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
+
+# STEPS
+# Register for PyPi
+# Get PyPi API key
+# On github repo:
+#NOTE :https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
+## Settings --> Environment --> New Environment --> <name of env> 
+# In environment:
+## Deployment branches --> add "main" --> Deployment secrets name=PYPI_API_TOKEN; value=<copied token from Pypi account> 
+# On github homepage (release):
+## Tag a commit --> create a release from this tag --> publish release
 name: Upload Python Package
 
 on:

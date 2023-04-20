@@ -1,5 +1,8 @@
 from setuptools import setup, find_namespace_packages
 
+def generate_long_description():
+    return Path("README.md").read_text()
+    
 setup(
     name='healdata_utils',
     version='0.0.2',
@@ -27,5 +30,7 @@ setup(
         [console_scripts]
         vlmd=healdata_utils.cli:main
     ''',
+    long_description=generate_long_description(),
+    long_description_content_type="text/markdown",
 
 )
