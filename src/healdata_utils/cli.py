@@ -103,7 +103,7 @@ def convert_to_vlmd(
     fields_json,report_json = validate_json(
         data_dictionary_package['templatejson']
     )
-
+    templatejson = {**data_dictionary_props,'data_dictionary':fields_json}
     # write to file
     if outputdir!=None:
         outputdir = Path(outputdir)
@@ -118,7 +118,6 @@ def convert_to_vlmd(
             raise Exception("outputdir must be an existing directory where files can be saved")
         
         # print data dictionaries
-        templatejson = {**data_dictionary_props,'data_dictionary':fields_json}
         jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
 
         etl.fromdicts(fields_csv).tocsv(csvtemplate_path)
