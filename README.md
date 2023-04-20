@@ -62,7 +62,7 @@ The `input_descriptions` object contains the choice for `inputtype` as the key a
 ### Using from the command line
 
 From your current working directory run:
-(note the "\" at the end of each line signals a line continuation for ease in understanding the long one line command.) Again the `--title` and `--description` options are optional.
+(note the `\` at the end of each line signals a line continuation for ease in understanding the long one line command.) Again the `--title` and `--description` options are optional.
 For descriptions on the different flags/options, run `vlmd --help`
 
 ```bash
@@ -78,14 +78,14 @@ vlmd --filepath "data/example_pyreadstat_output.sav" \
 Both the python and command line routes will result in a JSON and CSV version of the HEAL  data dictionary in the output folder along with 
 the validation reports in the `errors` folder. See below:
 
-`input/input/my-redcap-data-dictionary-export.csv` : your input file
-`output/errors/heal-csv-errors-summary.txt`: validation summary for your CSV data dictionary. Modeled after the fricitonless validation report summary.
+- `input/input/my-redcap-data-dictionary-export.csv` : your input file
+- `output/errors/heal-csv-errors-summary.txt`: validation summary for your CSV data dictionary. Modeled after the fricitonless validation report summary.
 
-`output/errors/heal-csv-errors.json`: 
-`output/errors/heal-json-errors.json`:  outputted jsonschema validation report.
+- `output/errors/heal-csv-errors.json`: 
+- `output/errors/heal-json-errors.json`:  outputted jsonschema validation report.
 
-`output/heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
-`output/heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
+- `output/heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
+- `output/heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
 
 > Note, only the JSON version will have the user-specified `title` and `description`
 
