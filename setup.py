@@ -18,10 +18,10 @@ setup(
     package_dir={'': 'src'},
     packages=find_namespace_packages(where='src'),
     install_requires=[
-        'petl',
+        'petl==1.7.12',
         'jsonschema==4.17.3',
-        'requests',
-        'pyyaml',
+        'requests==2.28.2',
+        'PyYaml==6.0',
         'frictionless==4.40.8',
         'pyreadstat==1.2.0',
         #'dataforge[redcap] @ git+https://gitlab.com/mbkranz/data-forge.git@0afa429d6b7d1f1ec04ff8c4ee127291b3b058d4',
