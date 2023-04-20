@@ -85,7 +85,7 @@ def convert_to_vlmd(
     """
 
     filepath = Path(filepath)
-    outputdir = Path(outputdir)
+    
     #infer input type
     if not inputtype:
         inputtype = ''.join(filepath.suffixes)[1:].lower()
@@ -106,7 +106,7 @@ def convert_to_vlmd(
 
     # write to file
     if outputdir!=None:
-        
+        outputdir = Path(outputdir)
         if outputdir.is_dir():
             jsontemplate_path = outputdir/"heal-jsontemplate-data-dictionary.json"
             csvtemplate_path = outputdir/"heal-csvtemplate-data-dictionary.csv"
