@@ -7,7 +7,7 @@ def generate_long_description():
 
 setup(
     name='healdata_utils',
-    version='0.0.2',
+    version='0.0.3',
     author='Michael Kranz',
     author_email='kranz-michael@norc.org',
     long_description=generate_long_description(),
