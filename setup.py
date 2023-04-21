@@ -14,7 +14,7 @@ setup(
     long_description_content_type="text/markdown",    
     description='Data packaging tools for the HEAL data ecosystem',
     #TODO: change url to HEAL once migrated.
-    url='https://github.com/norc-heal/healdata-utils/src/healdata-utils',
+    url='https://github.com/norc-heal/healdata-utils',
     package_dir={'': 'src'},
     packages=find_namespace_packages(where='src'),
     install_requires=[
