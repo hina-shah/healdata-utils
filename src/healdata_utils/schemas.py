@@ -1,37 +1,21 @@
-from pathlib import Path
 import jsonschema
-from frictionless import Resource,Schema
-from frictionless import transform
 import requests
-import petl as etl
 # currently using fields.json and hardcoding 
 jsonschema_url = (
 "https://raw.githubusercontent.com/norc-heal/"
 "heal-metadata-schemas/mbkranz/variable-lvl-csvs/"
 "variable-level-metadata-schema/schemas/jsonschema/fields.json"
 )
-healjsonschema = requests.get(jsonschema_url).json()
-
-healfrictionless = Schema(
+csvschema_url = (
         "https://raw.githubusercontent.com/norc-heal/heal-metadata-schemas/"
         "mbkranz/variable-lvl-csvs/"
         "variable-level-metadata-schema/schemas/frictionless/csvtemplate/fields.json"
     )
 
-schema = {
-    'type':'object',
-    'required':[
-        'title',
-        'data_dictionary'
-    ],
-    'properties':{
-        'title':{'type':'string'},
-        'description':{'type':'string'},
-        'data_dictionary':{'type':'array','items':healjsonschema}
-    }
-}
+healjsonschema = requests.get(jsonschema_url).json()
+healcsv = requests.get(csvschema_url).json()
 
-def validate_json(data_dictionary,raise_valid_error=False,schema=schema):
+def validate_json(data_dictionary,raise_valid_error=False,schema=healjsonschema):
     """
     Validates the `data_dictionary` fields property against the specified JSON schema.
 
@@ -76,7 +60,7 @@ def validate_json(data_dictionary,raise_valid_error=False,schema=schema):
     return data_dictionary,report
 
 
-def validate_csv(data_or_path,schema=healfrictionless):
+def validate_csv(data_or_path,schema=healcsv):
     """
     Validates tabular data by ordering columns according to a schema
     with frictionless Table Schema standards profile and adds missing
@@ -101,32 +85,7 @@ def validate_csv(data_or_path,schema=healfrictionless):
     Currently, in contrast to the `validate_json` function, this validates only
     at the field level.
     """
-    schema = Schema(schema)
-    if isinstance(data_or_path,(str,Path)):
-        data_tbl = (
-            pd.read_csv(data_or_path,dtypes="string")
-            .fillna("")
-            .to_dict(orient="records")
-        )
-    elif isinstance(data_or_path, list):
-        if all(isinstance(item, dict) for item in data_or_path):
-            #NOTE: need to add missing field-wise values. 
-            # could also use potential dialect object. Might be worth looking
-            # into if switching to fricitonless v5
-            data_tbl = [
-                {name:field.get(name,"") 
-                for name in schema.field_names} 
-                for field in data_or_path
-            ]
-   
-    print("Validating csv data dictionary...")
-    source = Resource(data=data_tbl,schema=schema)
-    source.format = "inline"
-    source.scheme = "buffer"
-    report = source.validate()
-    if report['valid']:
-        print("Csv is VALID")
-    else:
-        print("Csv is invalid. Check the report")
-    
-    return data_tbl,report
+
+    #return data_tbl,report
+
+    pass 
