@@ -7,39 +7,47 @@ import json
 from healdata_utils.schemas import healjsonschema,healcsvschema
 from healdata_utils.io import read_table
 
-def _validate_property(record,schema):
+def __validate_property(instance,property_in_schema):
     try:
-        jsonschema.validate(record,schema=schema)
-        return (True,"")
+        jsonschema.validate(instance,schema=property_in_schema)
+        return "VALID"
     except jsonschema.exceptions.ValidationError as e:
-        return (False,e.message) 
+        return "ERROR"+e.message
         
-def validate_record(record,schema):
-    errors = {}
+def _validate_record(record,schema):
+    report = {}
     is_valid = True
-    for propname,prop in schema.get("properties",{}):
-        instance = record.get(propname,None)
-        if instance:
-            is_valid,error_message = _validate_property(instance,prop)
-        elif not instance and propname in schema.get("required",[]):
-            error_message = "required but missing"
-            is_valid = False
-        else:
-            is_valid = True
-            error_message = ""
+    for propname,prop in schema.get("properties",{}).items():
+        is_required = propname in schema.get("required",False)
+        instance = record.get(propname,{})
 
-        errors[propname] = error_message
+        if instance:
+            error_message = __validate_property(instance,prop)
+        elif not instance and is_required:
+            error_message: "ERROR:required"
+        elif not instance and not is_required:
+            error_message = "MISSING"
+
+        report[propname] = error_message
+
+        #if a property is missing or valid it is "valid"
+        if not error_message in ["VALID","MISSING"]:
+            is_valid = False
     
-    return is_valid,errors
+    return is_valid,report
 
 
 def validate_records(records,schema):
-    table_errors = []
+    table_report = []
     is_valid = True
     for record in records:
-        is_valid,record_errors = validate_record(record,schema)
-        table_errors.append(errors)
-    return is_valid,table_errors
+        is_valid,record_report = _validate_record(record,schema)
+        if not is_valid:
+            is_valid = False
+
+        table_report.append(record_report)
+
+    return {"valid":is_valid,"errors":table_report}
 
 def validate(jsonarray,schema,raise_valid_error=False,):
     """
@@ -71,12 +79,12 @@ def validate(jsonarray,schema,raise_valid_error=False,):
     This function uses the `jsonschema` package for validation.
 
     """
-    is_valid,errors = validate_records(data_dictionary,schema)
+    report = validate_records(jsonarray,schema)
 
-    if raise_valid_error and is_valid:
+    if raise_valid_error and report["valid"]:
         raise Exception("These records are not valid")
 
-    return {"valid":is_valid,"errors":errors}
+    return report
 
 
 def validate_vlmd_json(data_or_path,schema=healjsonschema):
