@@ -1,5 +1,11 @@
 import jsonschema
 import requests
+import os
+import pandas as pd
+import json
+
+from io import read_table
+
 # currently using fields.json and hardcoding 
 jsonschema_url = (
 "https://raw.githubusercontent.com/norc-heal/"
@@ -13,28 +19,62 @@ csvschema_url = (
     )
 
 healjsonschema = requests.get(jsonschema_url).json()
-healcsv = requests.get(csvschema_url).json()
+healcsvschema = requests.get(csvschema_url).json()
 
-def validate_json(data_dictionary,raise_valid_error=False,schema=healjsonschema):
+def _validate_property(record,schema):
+    try:
+        jsonschema.validate(record,schema=schema)
+        return (True,"")
+    except jsonschema.exceptions.ValidationError as e:
+        return (False,e.message) 
+        
+
+def validate_record(record,schema):
+    errors = {}
+    is_valid = True
+    for propname,prop in schema.get("properties",{}):
+        instance = record.get(propname,None)
+        if instance:
+            is_valid,error_message = _validate_property(instance,prop)
+        elif not instance and propname in schema.get("required",[]):
+            error_message = "required but missing"
+            is_valid = False
+        else:
+            is_valid = True
+            error_message = ""
+
+        errors[propname] = error_message
+    
+    return is_valid,errors
+
+
+def validate_records(records,schema):
+    table_errors = []
+    is_valid = True
+    for record in records:
+        is_valid,record_errors = validate_record(record,schema)
+        table_errors.append(errors)
+    return is_valid,table_errors
+
+def validate(jsonarray,schema,raise_valid_error=False,):
     """
-    Validates the `data_dictionary` fields property against the specified JSON schema.
+    Validates a json array of records against a specified JSON schema's properties.
+    This is done by by iterating over every property in every record and comparing to the property 
+    specified in the given schema.
 
     Parameters
     ----------
-    data_dictionary : list[dict]
+    jsonarray : list[dict]
         The list of fields to validate.
-    raise_valid_error : bool, optional
-        If `True`, raises an exception if the validation fails.
-        Default is `False`.
-    schema : dict, optional
+    schema : dict
         The JSON schema to be validated against.
-        Default is `schema`.
 
     Returns
     -------
-    tuple
-        A tuple containing the validated `data_dictionary` and the JSON schema
-        validation error report in the form of a dictionary.
+    dict[dict,dict]
+        an object indicating whether all records are valid and an array of object containing error messages 
+        (this array has the same dimensions as the json array of records x the properties in the schema)
+        (eg., `{"valid":False,"errors":[{"field1":"required but missing","field2":""}]}`)
 
     Raises
     ------
@@ -44,48 +84,66 @@ def validate_json(data_dictionary,raise_valid_error=False,schema=healjsonschema)
     Notes
     -----
     This function uses the `jsonschema` package for validation.
+
     """
-    try:
-        print(f'Validating heal-specified json fields.....')
-        jsonschema.validate(data_dictionary,schema=schema)
-        report = {"valid":True}
-        print(f"JSON array of data dictionary fields is VALID")
-    except jsonschema.exceptions.ValidationError as e:
-        report = e.__dict__
-        report['valid'] = False
-        if raise_valid_error:
-            raise Exception(f"Data dictionary not valid: {e.message}")
-            
-        
-    return data_dictionary,report
+    is_valid,errors = validate_records(data_dictionary,schema)
+
+    if raise_valid_error and is_valid:
+        raise Exception("These records are not valid")
+
+    return {"valid":is_valid,"errors":errors}
 
 
-def validate_csv(data_or_path,schema=healcsv):
+def validate_vlmd_json(data_or_path,schema=healjsonschema):
     """
-    Validates tabular data by ordering columns according to a schema
-    with frictionless Table Schema standards profile and adds missing
-    columns before validating.
+    Validates json data by iterating over every property in every record and comparing to the property 
+    specified in the given schema
 
     Parameters
     ----------
-    data_dict_or_path : str or Path or anything excepted by frictionless Resource data
-        data parameter (eg array of fields in the correct specification for csv)
-        Path to data with the data being a tabular HEAL-specified data dictionary
+    data_or_path : Path-like object indicating a path to a tabular data source (eg CSV or TSV) or a json array of records (see validate fxn)
     schema : dict, optional
         The schema to compare data_or_path to (default: HEAL frictionless template)
 
     Returns
     -------
-    List[dict]
-        Tabular data in the form of an array of dictionaries for each field (ie keyed) and the validation report
-    Report
-        frictionless report object
-    Notes
-    -----
-    Currently, in contrast to the `validate_json` function, this validates only
-    at the field level.
+    dict[bool,dict]
+        the returned `validate` function object 
+        (eg., `{"valid":False,"errors":[{"field1":"required but missing","field2":""}]}`)
     """
 
-    #return data_tbl,report
+    if isinstance(data_or_path, (str, os.PathLike)):
+        data = json.loads(Path(data_or_path).read_text())
+    else:
+        data = data_or_path
+    
+    report = validate(data,schema)
 
-    pass 
+    return report
+    
+def validate_vlmd_csv(data_or_path,schema=healcsvschema):
+    """
+    Validates a json array against the heal variable level metadata
+    schema catered for a CSV tabular data dictionary file.
+
+    Parameters
+    ----------
+    data_or_path : Path-like object indicating a path to a tabular data source (eg CSV or TSV) or a json array of records (see validate fxn)
+    schema : dict, optional
+        The schema to compare data_or_path to (default: HEAL frictionless template)
+
+    Returns
+    -------
+    dict[bool,dict]
+        the returned `validate` function object 
+        (eg., `{"valid":False,"errors":[{"field1":"required but missing","field2":""}]}`)
+    """
+
+    if isinstance(data_or_path, (str, os.PathLike)):
+        data = read_table(data_or_path)
+    else:
+        data = data_or_path
+    
+    report = validate(data,schema)
+
+    return report   
