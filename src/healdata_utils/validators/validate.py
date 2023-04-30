@@ -7,68 +7,66 @@ import json
 from healdata_utils.schemas import healjsonschema,healcsvschema
 from healdata_utils.io import read_table
 from healdata_utils.transforms.frictionless.conversion import convert_frictionless_to_jsonschema
+from .jsonschema import validate_against_jsonschema
 
-
-class TabularValidator:
-   
+class Validator:
+    """ 
+    input a tablular-like data object or pointer
+    to tabular-like data object with a given schema
+    and corresponding type of schema. 
+    validate against the said schema of a certain type.
+    if the validation schema type is different than the 
+    input schema type, will convert to that type (eg jsonschema to
+    frictionless.)
+    """ 
     @classmethod
     def from_csv_file(cls,path,schema,schema_type):
         data = read_table(path)
         return cls(data,schema,schema_type)
 
     @classmethod
-    def from_pandas(cls,df,schema,schema_type):
-        data = df.to_dict(orient="records")
+    def from_pandas(cls,data,schema,schema_type):
+        data = data.to_dict(orient="records")
         return cls(data,schema,schema_type)
     
     @classmethod 
-    def from_jsonarray(cls,jsonarray,schema,schema_type):
-        return cls(jsonarray,schema,schema_type)
+    def from_jsonarray(cls,data,schema,schema_type):
+        return cls(data,schema,schema_type)
 
     @classmethod
     def from_jsonfile(cls,path,schema,schema_type):
         data = json.loads(Path(path).read_text())
-        return cls(jsonarray,schema,schema_type)
+        return cls(data,schema,schema_type)
 
-    def __init__(self,jsonarray,schema,schema_type):
+    def __init__(self,data,schema,schema_type):
 
-        self.data = jsonarray
+        self.data = data #json array
         self.schema = schema
-        self.schematype = schema_type
-
-        return self
-
-    def against_frictionless(self):
-        raise NotImplementedError("Not implemented yet. Use against_jsonschema with inputtype='frictionless'")
-
-    def against_jsonschema(self):
-
-        if self.schema_type=="frictionless":
-            schema = convert_frictionless_to_jsonschema(schema)
-
-        return validate_against_jsonschema(self.data,schema)
-
-    def against_pandera(self):
-        raise NotImplementedError("Still need to implement conversions and validation fxns")
+        self.schema_type = schema_type
 
     def raise_invalid_error(self):
         if not self.report["valid"]:
             raise Exception("These records are not valid")
 
-
-    def validate(self,validation_schema_type):
-        if validation_schema_type=="jsonschema":
-            return self.against_jsonschema()
+    def validate(self,against_schema_type):
+        if against_schema_type == "jsonschema":
+            if self.schema_type == "frictionless":
+                schema = convert_frictionless_to_jsonschema(self.schema)
+            else:
+                schema = self.schema
+            report = validate_against_jsonschema(self.data,schema)
         else:
-            raise NotImplementedError(f"{validation_schema_type} not implemented")
+            ## add frictionless 
+            ## add pandera -- if needed
+            raise NotImplementedError("Still need to implement conversions and validation fxns")
 
-
+        return {"data":self.data,"schema":schema,"report":report}
 
 def validate_vlmd_json(
     data_or_path,
     schema=healjsonschema,
-    input_spec="jsonschema",
-    validation_spec="jsonschema"
+    input_schema_type="jsonschema",
+    validation_schema_type="jsonschema"
     ):
     """
     Validates json data by iterating over every property in every record and comparing to the property 
@@ -84,23 +82,57 @@ def validate_vlmd_json(
     -------
     dict[bool,dict]
         the returned `validate` function object 
-        (eg., `{"valid":False,"errors":[{"field1":"required but missing","field2":""}]}`)
     """
-
+    validator_params = {
+        "data":data_or_path,
+        "schema":schema,
+        "schema_type":"jsonschema"
+    }
     if isinstance(data_or_path, (str, os.PathLike)):
-        validator = TabularValidator.from_jsonfile(data_or_path,schema,"jsonschema")
+        validator = Validator.from_jsonfile(
+            path=data_or_path,
+            schema=schema,
+            schema_type="jsonschema"
+        )
     else:
-        validator = TabularValidator.from_jsonarray(data_or_path,schema,"jsonschema")
+        validator_params
+        validator = Validator.from_jsonarray(
+            data=data_or_path,
+            schema=schema,
+            schema_type="jsonschema"
+        )
     
-    report = validator.validate(validation_spec)
+    package = validator.validate(validation_schema_type)
+    report = package["report"]
+    # report_summary = []
+    errors_list = []
+    for error in report["errors"]:
+        errors_list.append({"json_path":error["json_path"],
+            "message":error["message"]})
+        # report_summary.append([error["json_path"],error["message"]])
 
-    return report
+
+    # report_summary_str += "Validation summary for {data_name}"
+    # report_summary_str += "\n\n"
+    # report_summary_str += "VALID" if report["valid"] else "INVALID"
+
+    # report_summary_str += "## Errors "
+    # report_summary_str += "\n\n"
+
+    # report_summary_str+=str(tabulate(
+    #     report_summary,
+    #     headers=["JsonPath", "Message"],
+    #     tablefmt="grid",
+    #     maxcolwidths=[5, 5, 90]
+    # ))
+
+    return {"valid":report["valid"],"errors":errors_list}
     
 def validate_vlmd_csv(
     data_or_path,
     schema=healcsvschema,
-    input_spec="frictionless",
-    validation_spec="jsonschema"
+    input_schema_type="frictionless",
+    validation_schema_type="jsonschema"
 ):
     """
     Validates a json array against the heal variable level metadata
@@ -118,23 +150,64 @@ def validate_vlmd_csv(
     data_or_path : Path-like object indicating a path to a tabular data source (eg CSV or TSV) or a json array of records (see validate fxn)
     schema : dict, optional
         The schema to compare data_or_path to (default: HEAL frictionless template)
-
+    input_schema_type: str, optional : the type of schema ["jsonschema","frictionless"]
+    validation_schema_type: str, optional : the type of schema to use for validation (will convert if input does not eq validation schema types)
     Returns
     -------
     dict[bool,dict]
         the returned `validate` function object 
-        (eg., `{"valid":False,"errors":[{"field1":"required but missing","field2":""}]}`)
+        (eg., `{"valid":False,"errors":[...]}`)
     """
+    #TODO: refactor into multiple functions/classes
 
     if isinstance(data_or_path, (str, os.PathLike)):
-        validator = TabularValidator.from_csv_file(data_or_path,input_spec)
+        validator = Validator.from_csv_file(path=data_or_path,schema=schema,schema_type=input_schema_type)
+
     else:
-        validator = TabularValidator.from_jsonarray(data_or_path,input_spec)
-    
-    report = validator.validate(data,schema)
+        validator = Validator.from_jsonarray(data=data_or_path,schema=schema,schema_type=input_schema_type)
 
-    return report
 
+    package = validator.validate(validation_schema_type)
+    report = package["report"]
+
+    if input_schema_type=="frictionless":
+        columns = [field["name"] for field in schema["fields"]]
+
+    error_list = []
+    # report_summary = []
+
+    for error in report["errors"]:
+        if error["validator"]=="required":
+            row = error["relative_path"][0]
+            column = error["validator_value"][-1]
+        else:
+            row,column = error["relative_path"]
+
+        error_list.append(
+            {"row":row,
+            "column":column,
+            "message":error["message"]}
+        )
+        # report_summary.append([row,column,error["message"]])
+
+
+    # report_summary_str += "Validation summary for {data_name}"
+    # report_summary_str += "\n\n"
+    # report_summary_str += "VALID" if report["valid"] else "INVALID"
+
+    # report_summary_str += "## Errors "
+    # report_summary_str += "\n\n"
+
+    # report_summary_str+=str(tabulate(
+    #     report_summary,
+    #     headers=["Row", "Column", "Message"],
+    #     tablefmt="grid",
+    #     maxcolwidths=[5, 5, 90]
+    # ))
+
+
+
+    return {"valid":report["valid"],"errors":error_list}
 
     
 

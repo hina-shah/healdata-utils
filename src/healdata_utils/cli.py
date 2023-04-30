@@ -11,9 +11,9 @@ from healdata_utils.transforms.jsontemplate.conversion import convert_templatejs
 from healdata_utils.transforms.readstat.conversion import convert_readstat
 from healdata_utils.transforms.redcapcsv.conversion import convert_redcapcsv
 from healdata_utils.transforms.csvdata.conversion import convert_datacsv
+from healdata_utils.validators.validate import validate_vlmd_json,validate_vlmd_csv
 import json
 from pathlib import Path
-from healdata_utils.schemas import validate_json,validate_csv
 import pandas as pd
 import petl as etl
 from collections import deque
@@ -97,13 +97,11 @@ def convert_to_vlmd(
     # get data dictionary package based on the input type
     data_dictionary_package = choice_fxn[inputtype](filepath,data_dictionary_props)
 
-    fields_csv,report_csv = validate_csv(
-        data_dictionary_package['templatecsv']['data_dictionary']
-    )
-    fields_json,report_json = validate_json(
-        data_dictionary_package['templatejson']
-    )
-    templatejson = {**data_dictionary_props,'data_dictionary':fields_json}
+    templatecsv = data_dictionary_package['templatecsv']['data_dictionary']
+    templatejson = {
+        **data_dictionary_props,
+        'data_dictionary':data_dictionary_package['templatejson']
+    }
     # write to file
     if outputdir!=None:
         outputdir = Path(outputdir)
@@ -120,17 +118,13 @@ def convert_to_vlmd(
         # print data dictionaries
         jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
 
-        etl.fromdicts(fields_csv).tocsv(csvtemplate_path)
+        etl.fromdicts(templatecsv).tocsv(csvtemplate_path)
 
         # print errors
-        items = [list(item) if type(item)==deque else item for item in report_json.values()]
-        keys = list(report_json.keys())
-        jsonerrors = dict(zip(keys,items))
+        report_csv = validate_vlmd_csv(csvtemplate)
+        report_json = validate_vlmd_json(templatejson)
 
-        if jsonerrors.get("_type_checker"):
-            del jsonerrors["_type_checker"] #Not json serializable and internal object anyways
-        
-        if not jsonerrors['valid']:
+        if not report_json['valid']:
             print("JSON data dictionary not valid, see heal-json-errors.json")
  
         if not report_csv['valid']:
@@ -142,15 +136,14 @@ def convert_to_vlmd(
         errordir = Path(outputdir).joinpath('errors')
         errordir.mkdir(exist_ok=True)
         errordir.joinpath('heal-json-errors.json').write_text(
-            json.dumps(jsonerrors,indent=4)
+            json.dumps(report_json,indent=4)
         )
-        report_csv.to_json(errordir/"heal-csv-errors.json")
-        errordir.joinpath("heal-csv-errors-summary.txt").write_text(
-            report_csv.to_summary()
+        errordir.joinpath('heal-csv-errors.json').write_text(
+            json.dumps(report_csv,indent=4)
         )
     
     return {
-        "csvtemplate":fields_csv,
+        "csvtemplate":templatecsv,
         "jsontemplate":templatejson,
         "errors":{
             "csvtemplate":report_csv,

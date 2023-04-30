@@ -82,4 +82,4 @@ def convert_frictionless_to_jsonschema(frictionless_schema):
         if schema.get(jsonprop):
             jsonschema_schema[jsonprop] = schema[jsonprop]
 
-    return jsonschema_schema
+    return {"type":"array","items":jsonschema_schema}
