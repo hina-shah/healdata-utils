@@ -93,10 +93,8 @@ def convert_readstat(file_path,
             #NOTE: enums are assumed if labels represent entire set of values
             # this avoids value labels that are, for example, partials such as top/bottom encodings
             enums = set(value_labels.keys()).difference(set(missing_values))
-            values = set(df[fieldname].dropna()) 
-            if not values.difference(enums):
-                constraints_enums = {'constraints':{'enum':[to_int_if_base10(v) for v in enums]}}
-                field.update(constraints_enums)
+            constraints_enums = {'constraints':{'enum':[str(v) for v in enums]}}
+            field.update(constraints_enums)
 
         #NOTE/TODO: for SPSS no functionality for incorporating missing ranges
         
