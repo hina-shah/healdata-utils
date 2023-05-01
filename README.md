@@ -82,9 +82,9 @@ the validation reports in the `errors` folder. See below:
 - `input/input/my-redcap-data-dictionary-export.csv` : your input file
 
 - `output/errors/heal-csv-errors.json`: outputted validation report for table in csv file against frictionless schema
- - see schema [here](https://github.com/norc-heal/heal-metadata-schemas/blob/main/variable-level-metadata-schema/schemas/frictionless/csvtemplate/fields.json)
+    - see schema [here](https://github.com/norc-heal/heal-metadata-schemas/blob/main/variable-level-metadata-schema/schemas/frictionless/csvtemplate/fields.json)
 - `output/errors/heal-json-errors.json`:  outputted jsonschema validation report.
- - see schema [here](https://github.com/norc-heal/heal-metadata-schemas/blob/main/variable-level-metadata-schema/schemas/jsonschema/data-dictionary.json)
+    - see schema [here](https://github.com/norc-heal/heal-metadata-schemas/blob/main/variable-level-metadata-schema/schemas/jsonschema/data-dictionary.json)
 
 - `output/heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
 - `output/heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
