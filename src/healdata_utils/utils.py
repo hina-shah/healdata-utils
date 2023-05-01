@@ -78,7 +78,8 @@ def convert_rec_to_json(field):
     '''
     field_json = {}
     for prop_path,prop in field.items():
-        if prop:
+        
+        if str(prop) and str(prop)!="<NA>" and str(prop)!="nan":
             # initiate the prop to be added with the entire
             # field 
             prop_json = field_json
