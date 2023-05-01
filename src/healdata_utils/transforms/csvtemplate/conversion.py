@@ -11,6 +11,7 @@ import petl as etl
 from pathlib import Path
 from frictionless import Resource,Package
 from healdata_utils.utils import convert_rec_to_json
+from healdata_utils.io import read_table
 from .mappings import fieldmap
 from os import PathLike
 
@@ -50,9 +51,9 @@ def convert_templatecsv(
     """
 
     if isinstance(csvtemplate,(str,PathLike)):
-        resourceinput = {'path':str(Path(csvtemplate))}
+        template_tbl = etl.fromdataframe(read_table(str(Path(csvtemplate))))
     else:
-        resourceinput = {'data':csvtemplate}
+        template_tbl = etl.fromdataframe(pd.DataFrame(csvtemplate))
 
     # apply convert functions for fields that exist in input
     convertfields = {
@@ -61,8 +62,7 @@ def convert_templatecsv(
         if propname in etl.fieldnames(template_tbl)
     }
     fields_csv = (
-        Resource(**resourceinput)
-        .to_petl()
+        template_tbl
         .convert(convertfields)
         .convertnumbers() #TODO: make the number conversions explicit
         .dicts()
