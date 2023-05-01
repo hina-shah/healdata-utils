@@ -97,11 +97,11 @@ def convert_to_vlmd(
     # get data dictionary package based on the input type
     data_dictionary_package = choice_fxn[inputtype](filepath,data_dictionary_props)
 
-    templatecsv = data_dictionary_package['templatecsv']['data_dictionary']
-    templatejson = {
-        **data_dictionary_props,
-        'data_dictionary':data_dictionary_package['templatejson']
-    }
+    templatecsv = data_dictionary_package['templatecsv']['data_dictionary'] #TODO: currently only validates tabular but no reason this needs to be case
+    templatejson = data_dictionary_package['templatejson']
+
+    report_csv = validate_vlmd_csv(templatecsv)
+    report_json = validate_vlmd_json(templatejson)
     # write to file
     if outputdir!=None:
         outputdir = Path(outputdir)
@@ -121,8 +121,6 @@ def convert_to_vlmd(
         etl.fromdicts(templatecsv).tocsv(csvtemplate_path)
 
         # print errors
-        report_csv = validate_vlmd_csv(csvtemplate)
-        report_json = validate_vlmd_json(templatejson)
 
         if not report_json['valid']:
             print("JSON data dictionary not valid, see heal-json-errors.json")

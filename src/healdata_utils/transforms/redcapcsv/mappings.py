@@ -55,7 +55,9 @@ def _parse_field_properties_from_encodings(
     return {
         "type":fieldtype,
         "encodings":{key.strip():val.strip() for key,val in fieldencodings.items()},
-        "constraints.enum":[val.strip() for val in fieldenums]
+        "constraints":{
+            "enum":[val.strip() for val in fieldenums]
+        }
     }
 
 def maptext(field):
@@ -112,12 +114,19 @@ def maptext(field):
     else:
         fieldtype = "string"
     
-    props = zip(
-        ["type","format","constraints.pattern"],
-        [fieldtype,fieldformat,fieldpattern]
-    )
-    return {name:prop for name,prop in props if prop}
+    props = dict(zip(
+        ["type","format","constraints"],
+        [fieldtype,fieldformat,{"pattern":fieldpattern}]
+    ))
 
+    # delete props without values (ie None)
+    for propname in ["type","format"]:
+        if props[propname]==None:
+            del props[propname]
+    if props["constraints"]["pattern"]==None:
+        del props["constraints"]
+
+    return props
 def mapnotes(field):
     """ NOTES	
     large text box for lots of text
@@ -194,7 +203,7 @@ def mapcheckbox(field):
             "title": checkboxname.title()+":"+choice,
             "name":checkboxname+"___"+re.sub("^\-","_",val).strip(), #NOTE: REDCAP changes negative sign to underscore
             "type":fieldtype,
-            "constraints.enum":fieldenums,
+            "constraints":{"enum":fieldenums},
             "encodings":fieldencodings
         }
         for val,choice in choices.items()
