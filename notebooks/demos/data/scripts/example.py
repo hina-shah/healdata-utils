@@ -22,12 +22,13 @@ headers = "id visit_dt sex_at_birth race hispanic_ethnicity SU4 age"
 rows = [
     [1,"06/05/1988",1,2,1,15,59],
     [2,"04/07/1989",2,2,0,4,48],
-    [3,"04/07/1990","a","b","a","a",33]
+    [3,"04/07/1990","a","b","a","a",33],
+    [3,"04/07/1990","b","a","b","b",33]
 ]
 
 df = pd.DataFrame(rows,columns=headers.split(" "))
-
 #NOTE: date format is inferred and carried over to output
+df = df.apply(pd.to_numeric, errors='ignore')
 df['visit_dt'] = pd.to_datetime(df['visit_dt'])
 
 # %%
@@ -69,10 +70,12 @@ encodings = {
         "b":"Prefer not to answer"
     },
     "age":{
-        "a":"Not reported"
+        "a":"Not reported",
+        "b":"Prefer not to answer"
     },
     "SU4":{
-        "a":"Not reported"
+        "a":"Not reported",
+        "b":"Prefer not to answer"
     }
 }
 
@@ -129,12 +132,13 @@ pyreadstat.write_sav(df_spss,
     )
 
 #%%
-dds = convert_readstat("../example_pyreadstat_output.dta")
+for ext in ["sav","dta"]:
+    dds = convert_readstat(f"../example_pyreadstat_output.{ext}")
 
-#%%
-ddjson = json.dumps(dds['templatejson'],indent=4)
-Path("../example_pyreadstat_output.json").write_text(ddjson)
+    #%%
+    ddjson = json.dumps(dds['templatejson'],indent=4)
+    Path(f"../example_{ext}_pyreadstat_output.json").write_text(ddjson)
 
-pd.DataFrame(dds['templatecsv']["data_dictionary"])\
-    .to_csv("../example_pyreadstat_output.csv",index=False)
+    pd.DataFrame(dds['templatecsv']["data_dictionary"])\
+        .to_csv(f"../example_{ext}_pyreadstat_output.csv",index=False)
 

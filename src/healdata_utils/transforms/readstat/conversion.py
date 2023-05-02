@@ -63,7 +63,8 @@ def convert_readstat(file_path,
 
     """
     
-    df,meta = read_pyreadstat(file_path,user_missing=True)
+    _,meta = read_pyreadstat(file_path,user_missing=True) # get user missing values (for stata/sas will make string so need sep call to infer types)
+    df,_ = read_pyreadstat(file_path) # dont fill user defined missing vals (to get correct types)
     df = df.convert_dtypes() #TODO: use visions package for inference (from pandas profile project)
     fields = pd.io.json.build_table_schema(df,index=False)['fields'] #converts to frictionless Table Schema
 
