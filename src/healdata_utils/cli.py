@@ -14,8 +14,8 @@ from healdata_utils.transforms.csvdata.conversion import convert_datacsv
 from healdata_utils.validators.validate import validate_vlmd_json,validate_vlmd_csv
 import json
 from pathlib import Path
-import pandas as pd
 import petl as etl
+import csv
 from collections import deque
 
 from healdata_utils.utils import find_docstring_desc
@@ -118,7 +118,13 @@ def convert_to_vlmd(
         # print data dictionaries
         jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
 
-        etl.fromdicts(templatecsv).tocsv(csvtemplate_path)
+        # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
+        (
+            etl.fromdicts(templatecsv)
+            .tocsv(csvtemplate_path,
+                quoting=csv.QUOTE_NONNUMERIC)
+
+        )
 
         # print errors
 
