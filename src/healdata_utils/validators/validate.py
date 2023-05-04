@@ -8,11 +8,12 @@ from healdata_utils.schemas import healjsonschema,healcsvschema
 from healdata_utils.io import read_table
 from healdata_utils.transforms.frictionless.conversion import convert_frictionless_to_jsonschema
 from .jsonschema import validate_against_jsonschema
+from healdata_utils import utils
 
 class Validator:
     """ 
-    input a tablular-like data object or pointer
-    to tabular-like data object with a given schema
+    input a data object or pointer/path
+    to data object with a given schema
     and corresponding type of schema. 
     validate against the said schema of a certain type.
     if the validation schema type is different than the 
@@ -83,11 +84,6 @@ def validate_vlmd_json(
     dict[bool,dict]
         the returned `validate` function object 
     """
-    validator_params = {
-        "data":data_or_path,
-        "schema":schema,
-        "schema_type":"jsonschema"
-    }
     if isinstance(data_or_path, (str, os.PathLike)):
         validator = Validator.from_jsonfile(
             path=data_or_path,
@@ -95,13 +91,12 @@ def validate_vlmd_json(
             schema_type="jsonschema"
         )
     else:
-        validator_params
         validator = Validator.from_jsonarray(
             data=data_or_path,
             schema=schema,
             schema_type="jsonschema"
         )
-    
+
     package = validator.validate(validation_schema_type)
     report = package["report"]
     # report_summary = []
@@ -111,7 +106,7 @@ def validate_vlmd_json(
             "message":error["message"]})
         # report_summary.append([error["json_path"],error["message"]])
 
-
+    package["report"] = {"valid":report["valid"],"errors":errors_list}
     # report_summary_str += "Validation summary for {data_name}"
     # report_summary_str += "\n\n"
     # report_summary_str += "VALID" if report["valid"] else "INVALID"
@@ -126,13 +121,14 @@ def validate_vlmd_json(
     #     maxcolwidths=[5, 5, 90]
     # ))
 
-    return {"valid":report["valid"],"errors":errors_list}
+    return package
     
 def validate_vlmd_csv(
     data_or_path,
     schema=healcsvschema,
     input_schema_type="frictionless",
-    validation_schema_type="jsonschema"
+    validation_schema_type="jsonschema",
+    to_sync_fields=True
 ):
     """
     Validates a json array against the heal variable level metadata
@@ -152,30 +148,36 @@ def validate_vlmd_csv(
         The schema to compare data_or_path to (default: HEAL frictionless template)
     input_schema_type: str, optional : the type of schema ["jsonschema","frictionless"]
     validation_schema_type: str, optional : the type of schema to use for validation (will convert if input does not eq validation schema types)
+    to_sync_fields : bool, optional[default=True]:whether to add missing fields (ie null) in schema before validation. 
+        Note, this is different than missing values. Missing values do not equal missing fields (think tabular dataset)
+        This also syncs the order of the fields to order of properties in schema.
     Returns
     -------
     dict[bool,dict]
         the returned `validate` function object 
         (eg., `{"valid":False,"errors":[...]}`)
     """
-    #TODO: refactor into multiple functions/classes
 
+    # instantiate validator object with correct class method depending on input
     if isinstance(data_or_path, (str, os.PathLike)):
         validator = Validator.from_csv_file(path=data_or_path,schema=schema,schema_type=input_schema_type)
 
     else:
         validator = Validator.from_jsonarray(data=data_or_path,schema=schema,schema_type=input_schema_type)
 
+    # sync fields
+    if input_schema_type=="frictionless":
+        field_list = [field["name"] for field in schema["fields"]]
+    elif input_schema_type=="jsonschema":
+        field_list = [fieldname for fieldname in list(schema["items"]["properties"])]
+    validator.data = utils.sync_fields(validator.data, field_list,missing_value="")
 
     package = validator.validate(validation_schema_type)
     report = package["report"]
 
-    if input_schema_type=="frictionless":
-        columns = [field["name"] for field in schema["fields"]]
-
+    # get most relevant report properties specific to tabular data
     error_list = []
     # report_summary = []
-
     for error in report["errors"]:
         if error["validator"]=="required":
             row = error["relative_path"][0]
@@ -190,6 +192,7 @@ def validate_vlmd_csv(
         )
         # report_summary.append([row,column,error["message"]])
 
+    package["report"] = {"valid":report["valid"],"errors":error_list}
 
     # report_summary_str += "Validation summary for {data_name}"
     # report_summary_str += "\n\n"
@@ -207,7 +210,7 @@ def validate_vlmd_csv(
 
 
 
-    return {"valid":report["valid"],"errors":error_list}
+    return package
 
     
 

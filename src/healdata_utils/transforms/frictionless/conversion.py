@@ -10,16 +10,15 @@ def convert_frictionless_to_jsonschema(frictionless_schema):
 
     # schema level properties
 
-    ## jsonschema
-    required = []
     # frictionless
-    missing_values = frictionless_schema.get("missingValues",None)
+    missing_values = frictionless_schema.get("missingValues",[None,""])
     primary_keys = frictionless_schema.get("primaryKeys",[])
 
     # frictionless --> jsonschema per field
     jsonschema_properties = {}
+    fieldnames = []
     for field in frictionless_fields:
-
+        fieldnames.append(field["name"])
         jsonschema_properties[field["name"]] = prop = {}
 
         #base props
@@ -62,18 +61,19 @@ def convert_frictionless_to_jsonschema(frictionless_schema):
             prop["maximum"] = constraints["maximum"]
 
 
-        # missing-ness and required
-        if "required" in constraints or field["name"] in primary_keys:
-            required.append(field["name"])
-        elif missing_values:
-            prop_with_missing = {"oneOf":[
-                prop,{"enum":missing_values}
+        # all fields are required - missing-ness vs. required in tabular perspective is tacked on to property
+        is_required = "required" in constraints or field["name"] in primary_keys
+        if not is_required:
+            prop_with_missing = {
+                "anyOf":[
+                    prop,{"enum":missing_values}
             ]}
             jsonschema_properties[field["name"]] = prop_with_missing
 
+    
     jsonschema_schema = {
         "type":"object",
-        "required":required,
+        "required":fieldnames, 
         "properties":jsonschema_properties
     }
 

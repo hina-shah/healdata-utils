@@ -97,10 +97,10 @@ def convert_to_vlmd(
     # get data dictionary package based on the input type
     data_dictionary_package = choice_fxn[inputtype](filepath,data_dictionary_props)
 
-    templatecsv = data_dictionary_package['templatecsv']['data_dictionary'] #TODO: currently only validates tabular but no reason this needs to be case
+    templatecsv = data_dictionary_package['templatecsv']['data_dictionary'] #TODO: currently only validates fields (ie table) but no reason it cant validate entire data package
     templatejson = data_dictionary_package['templatejson']
-
-    report_csv = validate_vlmd_csv(templatecsv)
+    
+    report_csv = validate_vlmd_csv(templatecsv,add_missing=True)
     report_json = validate_vlmd_json(templatejson)
     # write to file
     if outputdir!=None:
