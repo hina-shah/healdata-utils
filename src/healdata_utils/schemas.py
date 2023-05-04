@@ -2,12 +2,12 @@ import requests
 
 jsonschema_url = (
 "https://raw.githubusercontent.com/norc-heal/"
-"heal-metadata-schemas/mbkranz/variable-lvl-csvs/"
+"heal-metadata-schemas/mbkranz/variable-lvl-dev/"
 "variable-level-metadata-schema/schemas/jsonschema/fields.json"
 )
 csvschema_url = (
         "https://raw.githubusercontent.com/norc-heal/heal-metadata-schemas/"
-        "mbkranz/variable-lvl-csvs/"
+        "mbkranz/variable-lvl-dev/"
         "variable-level-metadata-schema/schemas/frictionless/csvtemplate/fields.json"
     )
 
