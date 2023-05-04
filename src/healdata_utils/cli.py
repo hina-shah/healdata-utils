@@ -97,11 +97,18 @@ def convert_to_vlmd(
     # get data dictionary package based on the input type
     data_dictionary_package = choice_fxn[inputtype](filepath,data_dictionary_props)
 
-    templatecsv = data_dictionary_package['templatecsv']['data_dictionary'] #TODO: currently only validates fields (ie table) but no reason it cant validate entire data package
-    templatejson = data_dictionary_package['templatejson']
-    
-    report_csv = validate_vlmd_csv(templatecsv,add_missing=True)
-    report_json = validate_vlmd_json(templatejson)
+    #TODO: currently only validates fields (ie table) but no reason it cant validate entire data package
+    package_csv = validate_vlmd_csv(data_dictionary_package['templatecsv']['data_dictionary'],to_sync_fields=True)
+    package_json = validate_vlmd_json(data_dictionary_package['templatejson'])
+
+    # TODO: in future just return the packages (eg reports nested within package and not out of)
+    # for now, keep same (report_xxx and templatexxx)
+
+    report_csv = package_csv["report"]
+    report_json = package_json["report"]
+    templatecsv = package_csv["data"]
+    templatejson = package_json["data"]
+
     # write to file
     if outputdir!=None:
         outputdir = Path(outputdir)
