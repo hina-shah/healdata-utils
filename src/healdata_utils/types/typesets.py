@@ -6,51 +6,12 @@ from functools import partial
 
 # for Categorical vision type reference, see ydata-profiling:
 # https://github.com/ydataai/ydata-profiling/blob/develop/src/ydata_profiling/model/typeset.py
-def is_category(series):
-    return pdt.is_categorical_dtype(series)
-
-def is_boolean(series):
-    return pdt.is_bool_dtype(series)
-
-def is_integer(series):
-    return pdt.is_integer_dtype(series)
-
-def is_float(series): 
-    return pdt.is_float_dtype(series)
-
-def is_number(series):
-    return pdt.is_number(series)
+# state param needed for visions graph traversal
 class contains:
     def is_category(series,state):
-        return is_category(series)
-
-    def is_integer_category(series,state):
-
-        is_valid = False 
-        if is_category(series):
-            if is_integer(series.categories):
-                is_valid = True
-
-        return is_valid
-
-    def is_string_category(series,state):
-
-        is_valid = False
-        if is_category(series):
-            if is_string(series.categories):
-                is_valid = True
-
-        return is_valid
-
-
-    def is_float_category(series,state):
-
-        is_valid = False
-        if is_category(series):
-            if is_float(series.categories):
-                is_valid = True 
-
-        return is_valid
+        return pdt.is_categorical_dtype(series)
+    def is_boolean(series,state):
+        return pdt.is_bool_dtype(series)
 
 class _transformers:
     def to_category(series,state):
@@ -78,35 +39,6 @@ class inference_relations:
                 transformer=_transformers.to_category)
             relationships.append(relation)
         return relationships    
-    # def integer_to_category(
-    #     k=5,
-    #     threshold=.2):
-    #     relation = dict(
-    #         related_type=v.Integer,
-    #         relationship=lambda series,state: partial(_relationships.type_is_category,k=k,threshold=threshold)(series),
-    #         transformer=_transformers.to_category)
-        
-    #     return relation
-
-    # def string_to_category(
-    #     k=5,
-    #     threshold=.2):
-    #     relation = dict(
-    #         related_type=v.String,
-    #         relationship=lambda series,state: partial(_relationships.type_is_category,k=k,threshold=threshold)(series),
-    #         transformer=_transformers.to_category)
-        
-    #     return relation
-                
-    # def float_to_category(
-    #     k=5,
-    #     threshold=.2):
-    #     relation = dict(
-    #         related_type=v.Float,
-    #         relationship=lambda series,state: partial(_relationships.type_is_category,k=k,threshold=threshold)(series),
-    #         transformer=_transformers.to_category)
-        
-    #     return relation
 # types in the CompleteSet but not in StandardSet
 ## just manually add additions so additional dependencies
 ## for unused types not necessary
@@ -132,32 +64,6 @@ Categorical= v.create_type(
     inference=inference_relations.type_to_category()
 )
 
-# CategoricalFloat = v.create_type(
-#     "CategoricalFloat",
-#     identity=[v.Float],
-#     contains=contains.is_float_category,
-#     inference=inference_relations.float_to_category()
-# )
-
-# CategoricalInteger = v.create_type(
-#     "CategoricalInteger",
-#     identity=v.Generic,
-#     contains=contains.is_integer_category,
-#     inference=inference_relations.type_to_category([v.Integer])
-# )
-# CategoricalFloat = v.create_type(
-#     "CategoricalFloat",
-#     identity=v.Generic,
-#     contains=contains.is_float_category,
-#     inference=inference_relations.type_to_category([v.Float])
-# )
-# CategoricalString = v.create_type(
-#     "CategoricalString",
-#     identity=v.Generic,
-#     contains=contains.is_string_category,
-#     inference=inference_relations.type_to_category([v.String])
-# )
-
 typeset_original = (
     v.StandardSet()
     - v.Categorical
@@ -168,38 +74,42 @@ typeset_with_categorical = (
     typeset_original
      + Categorical
  )
-    # + CategoricalInteger
-    # + CategoricalFloat
-    # + CategoricalString
 
-def infer_frictionless_schema(df,typeset=typeset_original):
-    df_inferred,paths,_ = typset.infer(df)
+typeset_mapping = {
+    "Integer":"integer",
+    "Float":"number",
+    "String":"string",
+    "Time":"time",
+    "TimeDelta":"duration",
+    "DateTime":"datetime",
+    "Boolean":"boolean"
+}
 
+
+def infer_frictionless_fields(
+    df,
+    typeset=typeset_with_categorical,
+    typset_mapping=typset_mapping):
+    # TODO: infer formats with extended dtypes (eg url, email etc)
+    df,typepaths,_ = typeset.infer(df) # typepaths is list of the visions graph traversal - last item is casted type
     fields = []
 
-    for col in list(df):
+    for col,typepath in typepaths.items():
         field = {"name":col}
 
-        # type mappings (before inferring categoricals)
-        coltype = types[col].lower()
-        if coltype=="float":
-            coltype = "number"
-        elif coltype=="generic":
-            coltype = "any"
-        field["type"] = coltype
+        if typepath[-1]=="Categorical":
+            typename = typeset_mapping.get(typepath[-2],"any")
+        else:
+            typename = typeset_mapping.get(typepath[-1],"any")
+
+        field["type"] = typename
 
         # enums for inferred categoricals
-        if [col].lower()=="categorical":
+        if typepath[-1]=="Categorical":
             field["constraints"] = {"enum":list(df[col].categories)}
         
         fields.append(field)
 
-        # TODO: infer formats with extended dtypes (eg url, email etc)
+        
     
     return fields
-
-import pandas as pd
-df = pd.read_csv("https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv"
-    ,dtype="string"
-)
-typeset_with_categorical.infer_type(df)
