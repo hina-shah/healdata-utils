@@ -1,5 +1,6 @@
 import visions as v
 import pandas.api.types as pdt
+import pandas as pd
 from functools import partial
 # for declarative API example used as reference see:
 # https://github.com/dylan-profiler/visions/blob/develop/examples/declarative_typeset.py
@@ -22,7 +23,7 @@ class _relationships:
         nunique = series.nunique()
         few_enough_cats = nunique<=k
         low_enough_thresh = (nunique/series.size)<threshold
-        is_not_boolean = not is_boolean(series)
+        is_not_boolean = not contains.is_boolean(series,None)
         return few_enough_cats and low_enough_thresh and is_not_boolean
 
 class inference_relations:
@@ -85,29 +86,25 @@ typeset_mapping = {
     "Boolean":"boolean"
 }
 
-
 def infer_frictionless_fields(
     df,
     typeset=typeset_with_categorical,
-    typset_mapping=typset_mapping):
+    typeset_mapping=typeset_mapping):
     # TODO: infer formats with extended dtypes (eg url, email etc)
     df,typepaths,_ = typeset.infer(df) # typepaths is list of the visions graph traversal - last item is casted type
     fields = []
 
     for col,typepath in typepaths.items():
         field = {"name":col}
-
-        if typepath[-1]=="Categorical":
-            typename = typeset_mapping.get(typepath[-2],"any")
+        type_final = str(typepath[-1])
+        type_second_to_final = str(typepath[-2])
+        if type_final=="Categorical":
+            field["type"] = typeset_mapping.get(type_second_to_final,"any")
+            # enums for inferred categoricals
+            field["constraints"] = {"enum":list(df[col].cat.categories)}       
         else:
-            typename = typeset_mapping.get(typepath[-1],"any")
+            field["type"] = typeset_mapping.get(str(type_final),"any")
 
-        field["type"] = typename
-
-        # enums for inferred categoricals
-        if typepath[-1]=="Categorical":
-            field["constraints"] = {"enum":list(df[col].categories)}
-        
         fields.append(field)
 
         
