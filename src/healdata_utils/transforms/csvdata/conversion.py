@@ -6,8 +6,8 @@ CSV data to HEAL VLMD conversion
 """ 
 from healdata_utils.io import read_table 
 from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
+from healdata_utils.types import typesets
 import pandas as pd
-
 def convert_datacsv(file_path,data_dictionary_props={}):
     """ 
     Takes a CSV file containing data (not metadata) and 
@@ -20,14 +20,9 @@ def convert_datacsv(file_path,data_dictionary_props={}):
     the basis of a VLMD submission.
     """  
     #TODO: support possible values; use visions package 
-    df = read_table(file_path,castdtype=None)#TODO: use visions package for inference (from pandas profile project)
-    fields = pd.io.json.build_table_schema(df,index=False)['fields'] #converts to frictionless Table Schema
-
-    for field in fields:
-        field.pop('extDtype',None)
-        fieldname = field['name']
-
+    df = read_table(file_path)
     data_dictionary = data_dictionary_props.copy()
+    fields = typeset.infer_frictionless_fields(df)
     data_dictionary['data_dictionary'] = fields 
 
     package = convert_templatejson(data_dictionary)
