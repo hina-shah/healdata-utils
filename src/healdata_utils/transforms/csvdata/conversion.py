@@ -22,7 +22,7 @@ def convert_datacsv(file_path,data_dictionary_props={}):
     #TODO: support possible values; use visions package 
     df = read_table(file_path)
     data_dictionary = data_dictionary_props.copy()
-    fields = typeset.infer_frictionless_fields(df)
+    fields = typesets.infer_frictionless_fields(df)
     data_dictionary['data_dictionary'] = fields 
 
     package = convert_templatejson(data_dictionary)
