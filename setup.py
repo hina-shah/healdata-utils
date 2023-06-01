@@ -24,7 +24,8 @@ setup(
         'PyYaml==6.0',
         'frictionless==4.40.8',
         'pyreadstat==1.2.0',
-        'charset_normalizer==2.1'
+        'charset_normalizer==2.1',
+        'visions== 0.7.5'
     ],
     entry_points='''
         [console_scripts]
