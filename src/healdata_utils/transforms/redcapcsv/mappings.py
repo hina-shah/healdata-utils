@@ -243,7 +243,7 @@ def maptruefalse(field):
 
 def mapslider(field):
     vallist = ["0","50","100"]
-    lbllist = utils.parse_list_str(field[slider_index],"|") 
+    lbllist = utils.parse_list_str(field[slider_fieldname],"|") 
     fieldencodings = {vallist[i]:lbl for i,lbl in enumerate(fieldenum)}
     return {
         "type":"integer",
