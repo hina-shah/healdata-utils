@@ -1,9 +1,0 @@
-{
-    "valid": false,
-    "errors": [
-        {
-            "json_path": "$.description",
-            "message": "None is not of type 'string'"
-        }
-    ]
-}
