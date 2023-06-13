@@ -22,10 +22,11 @@ setup(
         'jsonschema==4.17.3',
         'requests==2.28.2',
         'PyYaml==6.0',
-        # 'frictionless==4.40.8',
+        #'frictionless==4.40.8',
         'pyreadstat==1.2.0',
         'charset_normalizer==2.1',
-        'visions== 0.7.5'
+        'visions== 0.7.5',
+        "click==8.1.3"
     ],
     entry_points='''
         [console_scripts]
