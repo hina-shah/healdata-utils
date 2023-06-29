@@ -3,7 +3,7 @@
 In this section, supported formats for generating heal-compliant data dictionaries are listed. We also provide additional instructions on how to get the necessary input files format/software.
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) and for the __`json data dictionary`__ [click here](rendered-schemas/json-fields.md)
+    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) and for the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md)
 
 <!-- TODO: make a table of contents/list of supported formats and brief
 description of them (with links to each) -->
@@ -60,7 +60,7 @@ The HEAL data utilities `vlmd` tool can also input this `json` HEAL data diction
 2. Output from one of the below software-specific formats and then further annotate.
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for the __`json data dictionary`__ [click here](rendered-schemas/json-fields.md)
+    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md)
 
 
 #### Validate with the `vlmd` command
