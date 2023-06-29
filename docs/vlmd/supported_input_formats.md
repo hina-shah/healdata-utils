@@ -5,7 +5,8 @@ In this section, supported formats for generating heal-compliant data dictionari
 !!! note
     To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) and for the __`json data dictionary`__ [click here](rendered-schemas/json-fields.md)
 
-
+<!-- TODO: make a table of contents/list of supported formats and brief
+description of them (with links to each) -->
 ### `csv` Datasets
 
 CSV (comma-separated values) is the main open tabular data format for storage and exchange. It is easy to
@@ -26,7 +27,7 @@ as an additional step after additional annotation (e.g., from the HEAL csv data 
 
     [Click here to download a blank __csv__ HEAL data dictionary template here](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.csv){:download .md-button .md-button--primary }
 
-    [Click here to download an example of filled out __csv__ HEAL data dictionary template here](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/heal_dd_from_redcap_dd_export.csv){:download .md-button .md-button--primary }
+    [Click here to download an example of filled out __csv__ HEAL data dictionary template here](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.csv){:download .md-button .md-button--primary }
 
 2. Output from one of the below software-specific formats and then further annotate.
 
@@ -54,7 +55,7 @@ The HEAL data utilities `vlmd` tool can also input this `json` HEAL data diction
 
     [Click here to download a blank __json__ HEAL data dictionary template here](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.json){:download .md-button .md-button--primary }
 
-    [Click here to download an example of filled out __json__ HEAL data dictionary template here](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/heal_dd_from_redcap_dd_export.json){:download .md-button .md-button--primary }
+    [Click here to download an example of filled out __json__ HEAL data dictionary template here](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.json){:download .md-button .md-button--primary }
 
 2. Output from one of the below software-specific formats and then further annotate.
 
