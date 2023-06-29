@@ -10,9 +10,7 @@ Currently, the focus of the repo is on generating data-dictionaries (see Variabl
 
 To install the latest official release of healdata-utils, from your computer's command prompt, run:
 
-`pip install healdata-utils`
-
-to install the working, un-released version from this git repository, run:
+`pip install healdata-utils --pre` (**NOTE: currently in pre-lease**)
 
 `pip install git+https://github.com/norc-heal/healdata-utils.git`
 
@@ -79,8 +77,7 @@ vlmd --filepath "data/example_pyreadstat_output.sav" \
 
 #### Output
 
-Both the python and command line routes will result in a JSON and CSV version of the HEAL  data dictionary in the output folder along with 
-the validation reports in the `errors` folder. See below:
+Both the python and command line routes will result in a JSON and CSV version of the HEAL  data dictionary in the output folder along with the validation reports in the `errors` folder. See below:
 
 - `input/input/my-redcap-data-dictionary-export.csv` : your input file
 
@@ -88,6 +85,14 @@ the validation reports in the `errors` folder. See below:
     - see schema [here](https://github.com/norc-heal/heal-metadata-schemas/blob/main/variable-level-metadata-schema/schemas/frictionless/csvtemplate/fields.json)
 - `output/errors/heal-json-errors.json`:  outputted jsonschema validation report.
     - see schema [here](https://github.com/norc-heal/heal-metadata-schemas/blob/main/variable-level-metadata-schema/schemas/jsonschema/data-dictionary.json)
+
+!!! important
+    The main difference* between the CSV and JSON data dictionary validation lies in the way the data dictionaries are structured and the additional metadata included in the JSON data dictionary.
+    
+    The CSV data dictionary is a plain tabular representation with no additional metadata, while the JSON dataset includes fields along with additional metadata in the form of a root description and title.
+
+    * for field-specific differences, see the schemas in the documentation. 
+    
 
 - `output/heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
 - `output/heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary

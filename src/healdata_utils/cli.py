@@ -146,12 +146,12 @@ def convert_to_vlmd(
         # print errors
 
         if not report_json['valid']:
-            print("JSON data dictionary not valid, see heal-json-errors.json")
+            print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
+            print(f"(view the outputted data dictionary at {jsontemplate_path})")
  
         if not report_csv['valid']:
-            print("CSV data dictionary not valid, see heal-csv-errors.json and")
-            print("heal-csv-errors-summary.txt (which is a more human-readable error report)")
-        
+            print("CSV data dictionary not valid, see heal-csv-errors.json")
+            print(f"(view the outputted data dictionary at {csvtemplate_path})")
         
         # write error reports to file
         errordir = Path(outputdir).joinpath('errors')
