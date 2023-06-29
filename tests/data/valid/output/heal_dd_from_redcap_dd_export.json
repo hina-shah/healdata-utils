@@ -1,6 +1,6 @@
 {
-    "title": "redcap_dd_export.redcap",
-    "description": null,
+    "title": "Example Data Dictionary",
+    "description": "This is an example",
     "data_dictionary": [
         {
             "name": "study_id",
