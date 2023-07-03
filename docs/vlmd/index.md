@@ -8,7 +8,7 @@ on how to modify one's data dictionary to conform to make HEAL compliant.
 For support formats and more detailed software-specific instructions and recommendations, [see here](docs/supported_input_formats.md)
 
 
-For more information on variable level metadata properties (fields), see the [`csv` field specification](rendered-schemas/csv-fields.md) and [`json` field specification](rendered-schemas/json-fields.md). 
+For more information on variable level metadata properties (fields), see the [`csv` field specification](rendered-schemas/csv-fields.md) and [`json` field specification](rendered-schemas/json-data-dictionary.md). 
 
 
 
