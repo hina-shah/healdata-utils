@@ -1,25 +1,23 @@
 # Supported Input Formats
 
-In this section, supported formats for generating heal-compliant data dictionaries are listed. We also provide additional instructions on how to get the necessary input files format/software.
+In this section, supported formats for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided.
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) and for the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md)
+    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) or the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md)
 
 <!-- TODO: make a table of contents/list of supported formats and brief
 description of them (with links to each) -->
 ### `csv` Datasets
 
-CSV (comma-separated values) is the main open tabular data format for storage and exchange. It is easy to
-create and understand using basic text editors in addition to popular spreadsheet software like Google Sheets
-and Excel. Importantly, it is simple and can be easily integrated into web applications and just about any software.
+CSV (comma-separated values) is the main open tabular data format for storage and exchange. It is easy to create and understand using basic text editors in addition to popular spreadsheet software like Google Sheets and Excel. Importantly, CSVs are simple and can be easily integrated into web applications and just about any software.
 
-Currently, the HEAL data utilities `vlmd` function can infer a minimal-HEAL compliant dataset by inferring `name`,`type`,and `enum` (i.e., possible values). After this minimal data dictionary is generated, the researcher can further annotate
-it with fields' `description` and other optional properties in either the HEAL-compliant csv or json data dictionary (see the HEAL data dictionary template sections below for more information)
+Currently, the HEAL Data Utilities `vlmd` function can infer a minimal, HEAL-compliant dataset by inferring `name`, `type`, and `enum` (i.e., possible values). After this minimal data dictionary is generated, the researcher can further annotate
+it with fields' `description` and other optional properties in either the HEAL-compliant CSV- or JSON-formatted data dictionary (see the HEAL data dictionary template sections below for more information).
 
 ### `csv` HEAL data dictionary (e.g., from template)
 
-HEAL data utilities can also input a `csv` HEAL data dictionary either from a manually filled out template or 
-as an additional step after additional annotation (e.g., from the HEAL csv data dictionary output of the above file formats).
+The HEAL Data Utilities can also input a `csv` HEAL data dictionary either from a manually filled out template or 
+as an additional step after further annotation (e.g., from the HEAL csv data dictionary output of the above file formats).
 
 #### Creating a `csv` HEAL data dictionary
 
