@@ -4,7 +4,7 @@
 
 The HEAL Data Utilities python package provides data packaging tools for the HEAL Data Ecosystem to facilitate data discovery, sharing, and harmonization with a focus on the HEAL Platform Data Consultancy (DSC).
  
-Currently, the focus of the repo is on generating data dictionaries (see Variable-level Metadata section below). However, in the future, this will be expanded for all HEAL-specific data packaging functions (e.g., study- and file-level metadata and data).
+Currently, the focus of this repository is generating data dictionaries (see Variable-level Metadata section below). However, in the future, this will be expanded for all HEAL-specific data packaging functions (e.g., study- and file-level metadata and data).
 
 ## Installation
 
@@ -15,13 +15,13 @@ To install the latest official release of healdata-utils, from your computer's c
 `pip install git+https://github.com/norc-heal/healdata-utils.git`
 
 
-## Variable level metadata (data dictionaries)
+## Variable-level Metadata (Data Dictionaries)
 
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
 
-The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e "error") reports provide the user information as to a. if the exported data dictionary is valid according to HEAL specifications (see the schema repository [here](https://github.com/norc-heal/heal-metadata-schemas/tree/main/variable-level-metadata-schema)).
+The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
-For support formats and more detailed software specific instructions and recommendations, [see here](docs/supported_input_formats.md)
+For supported formats and more detailed software specific instructions and recommendations, [see here](supported_input_formats.md)
 
 ### Basic usage 
 
