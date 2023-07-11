@@ -12,7 +12,7 @@ from pathlib import Path
 # from frictionless import Resource,Package
 from healdata_utils.utils import convert_rec_to_json
 from healdata_utils.io import read_table
-from .mappings import fieldmap
+from .mappings import fieldmap,zipmap,typemap
 from os import PathLike
 
 def convert_templatecsv(
@@ -51,24 +51,44 @@ def convert_templatecsv(
     """
 
     if isinstance(csvtemplate,(str,PathLike)):
-        template_tbl = etl.fromdataframe(read_table(str(Path(csvtemplate))))
+        template_tbl = read_table(str(Path(csvtemplate)))
     else:
-        template_tbl = etl.fromdataframe(pd.DataFrame(csvtemplate))
+        template_tbl = pd.DataFrame(csvtemplate)
 
     # apply convert functions for fields that exist in input
     convertfields = {
         propname:fxn 
         for propname,fxn in mappings.items() 
-        if propname in etl.fieldnames(template_tbl)
+        if propname in template_tbl
     }
-    fields_csv = (
-        template_tbl
+
+    tbl_csv = (
+        etl.fromdataframe(template_tbl)
+        .convertnumbers()
+        .convertall(lambda val:str(val))
+    )
+    fields_csv = tbl_csv.dicts()
+    tbl_json = (
+        etl.fromdataframe(template_tbl)
         .convert(convertfields)
-        .convertnumbers() #TODO: make the number conversions explicit
-        .dicts()
+       .convertnumbers()
     )
 
-    fields_json = [convert_rec_to_json(rec) for rec in etl.dicts(template_tbl)]
+    fields_json = []
+    for record in tbl_json.dicts():
+        jsonrecord = convert_rec_to_json(record)
+        # if supposed to be an array of records,with properties spanning multiple columns in templatecsv, create that
+        # eg {"test":[1,2]} --> [{"test":1},{"test":2}]
+        for name in zipmap:
+            if name in jsonrecord:
+                field = jsonrecord.pop(name)
+                headers = field.keys()
+                values = field.values()
+                newfield = etl.fromcolumns(values,header=headers).dicts()
+                jsonrecord[name] = [{name:val for name,val in _record.items() if val} 
+                    for _record in newfield]
+        
+        fields_json.append(jsonrecord)
 
     template_json = dict(**data_dictionary_props,data_dictionary=fields_json)
     template_csv = dict(**data_dictionary_props,data_dictionary=fields_csv)

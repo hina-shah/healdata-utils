@@ -91,9 +91,15 @@ fieldmap = {
     # 'constraints.maximum':int,
     # 'constraints.minimum':int, #TODO:need to add to schema
     # 'constraints.maxLength':int,
-    'cde_id': lambda v: split_and_map(v, props['cde_id']),
-    'ontology_id': lambda v: split_and_map(v, props['ontology_id']),
-    'encoding':lambda v: loads_dict(v),
+    'standardsMappings.label': lambda v: split_str_array(v),
+    'standardsMappings.source': lambda v: split_str_array(v),
+    'standardsMappings.id': lambda v: split_str_array(v),
+    'standardsMappings.url': lambda v: split_str_array(v),
+    'relatedConcepts.label': lambda v: split_str_array(v),
+    'relatedConcepts.source': lambda v: split_str_array(v),
+    'relatedConcepts.id': lambda v: split_str_array(v),
+    'relatedConcepts.url': lambda v: split_str_array(v),
+    'encodings':lambda v: loads_dict(v),
     'format': lambda v: mapval(v,formatmap),
     'type':lambda v: mapval(v,typemap),
     #'univar_stats.cat_marginals':lambda v: split_and_map(v, prop['univar_stats']['cat_marginals']),
@@ -102,3 +108,5 @@ fieldmap = {
     'falseValues':lambda v: split_str_array(v),
     # TODO: add stats
 }
+
+zipmap = ["standardsMappings","relatedConcepts"]
