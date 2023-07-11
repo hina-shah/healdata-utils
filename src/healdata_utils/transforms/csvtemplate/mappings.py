@@ -8,7 +8,7 @@ def split_str_array(string,sep='|'):
     if string:
         return [s.strip() for s in string.split(sep)]
     else:
-        return None
+        return string
 
 # if object within array, assign to properties
 def map_keys_vals(keys,vals):
@@ -35,12 +35,14 @@ def split_and_map(string,prop):
             for x in split_str_array(string,sep='|')
         ]
     else:
-        return None
+        return string
 
 def loads_dict(string,item_sep='|',key_val_sep='='):
     if string:
         return dict([split_str_array(s,key_val_sep) 
             for s in split_str_array(string,item_sep)])
+    else:
+        return string
 def mapval(v,mapping):
     v = str(v)
     if v in mapping:
@@ -64,6 +66,11 @@ typemap = {
     'NUM':'number',
     'CHAR':'string'
 }
+# typemap = {
+#     "number":lambda val:float(val),
+#     "string":lambda val:str(val),
+#     "integer":lambda val:int(float(val)),
+# }
 
 formatmap = {
     'ISO8601':'' # NOTE: this is the default date format for frictionless so not necessary to specify
