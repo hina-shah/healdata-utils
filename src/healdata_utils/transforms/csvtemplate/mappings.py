@@ -66,11 +66,6 @@ typemap = {
     'NUM':'number',
     'CHAR':'string'
 }
-# typemap = {
-#     "number":lambda val:float(val),
-#     "string":lambda val:str(val),
-#     "integer":lambda val:int(float(val)),
-# }
 
 formatmap = {
     'ISO8601':'' # NOTE: this is the default date format for frictionless so not necessary to specify
@@ -83,7 +78,12 @@ props = schemas.healjsonschema['properties']
 true_values = ["true","1","yes","required","y"]
 false_values = ["false","0","no","not required","n"]
 
-
+csvtypes = {"integer":int,"number":float,"string":str}
+castmap = {
+    field["name"]:csvtypes[field["type"]]
+    for field in schemas.healcsvschema["fields"]
+    if field.get("type","") in csvtypes
+}
 
 fieldmap = {
     'constraints.required': lambda v: to_bool(v),
