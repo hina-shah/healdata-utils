@@ -53,7 +53,8 @@ def read_table(file_path,castdtype = "string"):
 
     currently supports csv and tsv
 
-    defaults to not casting values (ie all columns are string dtypes).
+    defaults to not casting values (ie all columns are string dtypes)
+    and not parsing strings into NA values (eg "" is kept as "")
     """ 
     ext = Path(file_path).suffix
     if ext==".csv":
@@ -63,7 +64,8 @@ def read_table(file_path,castdtype = "string"):
         
     encoding = detect_file_encoding(file_path)
     file_encoding = pd.read_csv(
-        file_path,sep=sep,encoding=encoding,dtype=castdtype)
+        file_path,sep=sep,encoding=encoding,dtype=castdtype,
+        keep_default_na=False)
 
     return file_encoding
 
