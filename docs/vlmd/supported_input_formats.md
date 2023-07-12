@@ -1,43 +1,41 @@
 # Supported Input Formats
 
-In this section, supported formats for generating heal-compliant data dictionaries are listed. We also provide additional instructions on how to get the necessary input files format/software.
+In this section, supported formats for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided.
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) and for the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md)
+    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) or the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md).
 
 <!-- TODO: make a table of contents/list of supported formats and brief
 description of them (with links to each) -->
 ### `csv` Datasets
 
-CSV (comma-separated values) is the main open tabular data format for storage and exchange. It is easy to
-create and understand using basic text editors in addition to popular spreadsheet software like Google Sheets
-and Excel. Importantly, it is simple and can be easily integrated into web applications and just about any software.
+CSV (comma-separated values) is the main open tabular data format for storage and exchange. It is easy to create and understand using basic text editors in addition to popular spreadsheet software like Google Sheets and Excel. Importantly, CSVs are simple and can be easily integrated into web applications and just about any software.
 
-Currently, the HEAL data utilities `vlmd` function can infer a minimal-HEAL compliant dataset by inferring `name`,`type`,and `enum` (i.e., possible values). After this minimal data dictionary is generated, the researcher can further annotate
-it with fields' `description` and other optional properties in either the HEAL-compliant csv or json data dictionary (see the HEAL data dictionary template sections below for more information)
+Currently, the HEAL Data Utilities `vlmd` function can infer a minimal, HEAL-compliant dataset by inferring `name`, `type`, and `enum` (i.e., possible values). After this minimal data dictionary is generated, the researcher can further annotate
+it with fields' `description` and other optional properties in either the HEAL-compliant `csv`- or `json`-formatted data dictionary (see the HEAL data dictionary template sections below for more information).
 
 ### `csv` HEAL data dictionary (e.g., from template)
 
-HEAL data utilities can also input a `csv` HEAL data dictionary either from a manually filled out template or 
-as an additional step after additional annotation (e.g., from the HEAL csv data dictionary output of the above file formats).
+The HEAL Data Utilities can also input a `csv` HEAL data dictionary either from a manually filled out template or 
+as an additional step after further annotation (e.g., from the `csv` HEAL data dictionary output of the above file formats).
 
 #### Creating a `csv` HEAL data dictionary
 
 1. Use the template and start from scratch
 
-    [Click here to download a blank __csv__ HEAL data dictionary template here](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.csv){:download .md-button .md-button--primary }
+    [Click here to download a blank __csv__ HEAL data dictionary template](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.csv){:download .md-button .md-button--primary }
 
-    [Click here to download an example of filled out __csv__ HEAL data dictionary template here](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.csv){:download .md-button .md-button--primary }
+    [Click here to download an example of a filled out __csv__ HEAL data dictionary template](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.csv){:download .md-button .md-button--primary }
 
 2. Output from one of the below software-specific formats and then further annotate.
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md)
+    To further annotate your outputted `csv` HEAL data dictionaries, see the variable level metadata field properties (with examples) for the __`csv data dictionary`__: [click here](rendered-schemas/csv-fields.md)
 
 
 #### Validate with the `vlmd` command
 
-After finishing your work on the csv HEAL data dictionary, run the `vlmd` command to ensure it is HEAL-compliant with:
+After finishing your work on the `csv` HEAL data dictionary, run the `vlmd` command to ensure it is HEAL-compliant with:
 
 ```bash
 vlmd --filepath data/heal-dd-output.csv --inputtype csvtemplate
@@ -46,42 +44,42 @@ vlmd --filepath data/heal-dd-output.csv --inputtype csvtemplate
 ### `json` HEAL data dictionary (e.g., from template)
 
 While the `csv` HEAL data dictionary provides a tabular format for HEAL-compliant data dictionaries, ultimately, 
-these csv data dictionary files are converted to a json file (the most common format to store and exchange data within web applications such as the HEAL data platform). 
+these csv data dictionary files are converted to a json file (the most common format to store and exchange data within web applications such as the HEAL Data Platform). 
 
-The HEAL data utilities `vlmd` tool can also input this `json` HEAL data dictionary either from a manually filled out template or as an additional step after additional annotation. Another advantage of `json` HEAL data dictionaries is that one can specify metadata describing the data dictionary as a whole (e.g., the `description` and `title`). 
+The HEAL Data Utilities `vlmd` tool can also input this `json` HEAL data dictionary either from a manually filled out template or as an additional step after further annotation. Another advantage of `json` HEAL data dictionaries is that one can specify metadata describing the data dictionary as a whole (e.g., the `description` and `title`). 
 
 #### Creating a `json` HEAL data dictionary
 1. Use the template and start from scratch (click on the template below to expand)
 
-    [Click here to download a blank __json__ HEAL data dictionary template here](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.json){:download .md-button .md-button--primary }
+    [Click here to download a blank __json__ HEAL data dictionary template](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.json){:download .md-button .md-button--primary }
 
-    [Click here to download an example of filled out __json__ HEAL data dictionary template here](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.json){:download .md-button .md-button--primary }
+    [Click here to download an example of filled out __json__ HEAL data dictionary template](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.json){:download .md-button .md-button--primary }
 
 2. Output from one of the below software-specific formats and then further annotate.
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable level metadata field properties (with examples) for the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md)
+    To further annotate your outputted `json` HEAL data dictionaries, see the variable-level metadata field properties (with examples) for the __`json data dictionary`__: [click here](rendered-schemas/json-data-dictionary.md)
 
 
 #### Validate with the `vlmd` command
 
-After finishing your work on the csv HEAL data dictionary, run the `vlmd` command to ensure it is HEAL-compliant with:
+After finishing your work on the `json` HEAL data dictionary, run the `vlmd` command to ensure it is HEAL-compliant with:
 
 ```bash
 vlmd --filepath data/heal-dd-output.json --inputtype jsontemplate
 ```
 
-### Redcap: Data Dictionary CSV Export
+### REDCap: Data Dictionary CSV Export
 
-For users collecting data in a [Redcap](https://www.project-redcap.org) data management system, HEAL-compliant data dictionaries can be generated directly from Redcap exports. 
+For users collecting data in a [REDCap](https://www.project-redcap.org) data management system, HEAL-compliant data dictionaries can be generated directly from REDCap exports. 
 
-The redcap data dictionary export serves the purpose of providing variable level metadata in a standardized, tabular format and is generally easy to export. The HEAL data utilities leverages this user experience and standardized format to enable HEAL researchers to generate a Heal-compliant data dictionary. 
+The REDCap data dictionary export serves the purpose of providing variable-level metadata in a standardized, tabular format and is generally easy to export. The HEAL data utilities leverages this user experience and standardized format to enable HEAL researchers to generate a Heal-compliant data dictionary. 
 
 #### Export your Redcap data dictionary 
 
-To download a Redcap CSV export do the following*: 
+To download a REDCap CSV export, do the following*: 
 
-1. After logging in to your Redcap project page, locate the `Data dictionary` page. A link to this page may be available on the project side bar (see image below) or in the `Project Setup tab` at the top of your page.
+1. After logging in to your REDCap project page, locate the `Data dictionary` page. A link to this page may be available on the project side bar (see image below) or in the `Project Setup tab` at the top of your page.
 
 ![redcap_dd_link](../assets/redcap_data_dictionary_page.png "Redcap DD Export button")
 
@@ -89,7 +87,7 @@ To download a Redcap CSV export do the following*:
 
 ![redcap_export_link](../assets/redcap_csv_dd_export_link.png "Redcap DD Export button")
 
-*there may be slight differences depending on your specific Redcap instance and version
+*there may be slight differences depending on your specific REDCap instance and version
 
 #### Run the `vlmd` command
 
@@ -99,15 +97,15 @@ vlmd --filepath input/example_redcap_demo.redcap.csv --inputtype redcap.csv --ou
 
 ### SAS `sas7bdat` (and `sas7bcat`) files
 
-To accommodate SAS users, HEAL data utilities supports the binary `sas7bdat` file format, which contains the actual data values (observations/records). This file also includes variable metadata (variable `names` and variable labels/ `descriptions`).
+To accommodate SAS users, the HEAL Data Utilities supports the binary `sas7bdat` file format, which contains the actual data values (observations/records). This file also includes variable metadata (variable `names` and variable labels/ `descriptions`).
 
-HEAL data utilities also provides the option to include a catalog file – `sas7bcat` format - with the `sas7bdat`.  A `sas7bcat` file contains variable value labels, or `encodings` that can be mapped onto the corresponding data from a sas7bdat file.
+The HEAL Data Utilities also provides the option to include a catalog file – `sas7bcat` format - with the `sas7bdat`.  A `sas7bcat` file contains variable value labels, or `encodings`, that can be mapped onto the corresponding data from a `sas7bdat` file.
 
 #### Creating a `sas7bdat` and a `sas7bcat` file
 
 Many SAS users build formats and labels into their data processing and analysis scripts. In this section, we provide syntax that can be easily copy-pasted into these existing workflows to create `sas7bdat` and `sas7bcat` files to input into the `vlmd` tool. 
 
-This script template can be run separately or inserted directly at the end of a SAS user's workflow 
+This script template can be run separately or inserted directly at the end of a SAS user's workflow. 
 
 !!! note
 If inserted directly, remember to delete the lines with `%INCLUDE`)
@@ -224,13 +222,13 @@ but for demonstration purposes, this example only uses one script and focuses on
 
 After creating the necessary `sas7bdat` and `sas7bcat` files, you can then run the `vlmd` command. Note, the `sas7bcat` files are optional. However, if you don't include a `sas7bcat` file, the `encodings` (i.e., value labels) will not be added.
 
-With the sas7bcat file:
+With the `sas7bcat` file:
 
 ```bash
 vlmd --filepath input/data.sas7bdat --sas7bcat-filepath input/formats.sas7bcat --inputtype sas7bdat
 ```
 
-Without the sas7bdat file:
+Without the `sas7bdat` file:
 
 
 ```bash
@@ -241,7 +239,7 @@ vlmd --filepath input/data.sas7bdat --inputtype sas7bdat
 
 ### SPSS `.sav` files
 
-For SPSS users, HEAL data utilities generates heal-compliant data dictionaries from SPSS's default file format for storing datasets: A `SAV` file. It not only stores the data itself but also stores metadata such as variable names, variable labels, types, and value labels. The HEAL data utilities extracts the data and metadata to create heal-compliant data dictionaries.
+For SPSS users, the HEAL Data Utilities generates HEAL-compliant data dictionaries from SPSS's default file format for storing datasets: a `SAV` file. It stores not only the data itself but also metadata such as variable names, variable labels, types, and value labels. The HEAL Data Utilities extracts these data and metadata to create HEAL-compliant data dictionaries.
 
 <!-- ### Creating a well-annotated `sav` file
 
@@ -253,7 +251,7 @@ vlmd --filepath data/example_pyreadstat_output.sav --inputtype sav
 ```
 ### Stata `.dta` files
 
-For Stata users, HEAL data utilities generates heal-compliant data dictionaries through Stata's default file format: the `DTA` files. `DTA` files not only store the data itself but also stores metadata such as variable names, variable labels, types, and value labels.
+For Stata users, the HEAL Data Utilities generates HEAL-compliant data dictionaries through Stata's default file format: a `DTA` file. `DTA` files store not only the data itself but also metadata such as variable names, variable labels, types, and value labels.
 
 <!-- ### Creating a well-annotated `dta` file
 

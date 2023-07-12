@@ -1,6 +1,6 @@
 # HEAL data dictionary schemas
 
-Click on each data dictionary schema below to view information about each formats data dictionary properties (such as a description, examples, etc)
+Click on each data dictionary schema below to view information about each format's data dictionary properties (such as a description, examples, etc).
 
 [CSV fields](csv-fields.md)
 

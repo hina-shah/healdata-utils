@@ -2,9 +2,9 @@
 
 # HEAL Data Utilities
 
-The HEAL data utilities python package provides data packaging tools for the HEAL data ecosystem to facilitate data discovery,sharing, and harmonization with a focus on the HEAL platform data consultancy (DSC).
+The HEAL Data Utilities python package provides data packaging tools for the HEAL Data Ecosystem to facilitate data discovery, sharing, and harmonization with a focus on the HEAL Platform Data Consultancy (DSC).
  
-Currently, the focus of the repo is on generating data-dictionaries (see Variable level metadata section below). However, in the future, this will be expanded for all heal specific data packaging functions (e.g., study and file level metadata and data).
+Currently, the focus of this repository is generating data dictionaries (see Variable-level Metadata section below). However, in the future, this will be expanded for all HEAL-specific data packaging functions (e.g., study- and file-level metadata and data).
 
 ## Installation
 
@@ -15,13 +15,13 @@ To install the latest official release of healdata-utils, from your computer's c
 `pip install git+https://github.com/norc-heal/healdata-utils.git`
 
 
-## Variable level metadata (data dictionaries)
+## Variable-level Metadata (Data Dictionaries)
 
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
 
-The healdata-utils variable level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-formatted data dictionaries (JSON and CSV formats). Additionally, exported validation (ie "error") reports provide the user information as to a. if the exported data dictionary is valid according to HEAL specifications (see the schema repository [here](https://github.com/norc-heal/heal-metadata-schemas/tree/main/variable-level-metadata-schema)).
+The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
-For support formats and more detailed software specific instructions and recommendations, [see here](docs/supported_input_formats.md)
+For supported formats and more detailed software specific instructions and recommendations, [see here](supported_input_formats.md)
 
 ### Basic usage 
 
@@ -48,9 +48,9 @@ data_dictionaries = convert_to_vlmd(
 )
 ```
 
-> This will output the data dictionaries to the specified output directory (see ooutput section below) and also save the json/csv versions in the `data_dictionaries` object.
+> This will output the data dictionaries to the specified output directory (see output section below) and also save the json/csv versions in the `data_dictionaries` object.
 
-> For the available input file formats (ie the available choices for the `inputtype` parameter), one can run (from python):
+> For the available input file formats (i.e., the available choices for the `inputtype` parameter), one can run (from python):
 
 ```python
 from healdata_utils.cli import input_descriptions
@@ -64,7 +64,7 @@ The `input_descriptions` object contains the choice for `inputtype` as the key a
 #### Using from the command line
 
 From your current working directory run:
-(note the `\` at the end of each line signals a line continuation for ease in understanding the long one line command.) Again the `--title` and `--description` options are optional.
+(note the `\` at the end of each line signals a line continuation for ease in understanding the long, one-line command.) Again, the `--title` and `--description` options are optional.
 For descriptions on the different flags/options, run `vlmd --help`
 
 ```bash
@@ -77,7 +77,7 @@ vlmd --filepath "data/example_pyreadstat_output.sav" \
 
 #### Output
 
-Both the python and command line routes will result in a JSON and CSV version of the HEAL  data dictionary in the output folder along with the validation reports in the `errors` folder. See below:
+Both the python and command line routes will result in a JSON and CSV version of the HEAL data dictionary in the output folder along with the validation reports in the `errors` folder. See below:
 
 - `input/input/my-redcap-data-dictionary-export.csv` : your input file
 
