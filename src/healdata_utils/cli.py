@@ -46,7 +46,8 @@ def convert_to_vlmd(
     data_dictionary_props={},
     inputtype=None,
     outputdir=None,
-    sas7bcat_filepath=None
+    sas7bcat_filepath=None,
+    csvtemplate_output_quoting=None,
 
     ):
     """
@@ -65,7 +66,12 @@ def convert_to_vlmd(
     inputtype : str, optional
         The input type. If none specified, will default to using the file extension.
         See the currently registered input types in the input_types list.
-
+    sas7bcat_filepath: str,optional
+        [FOR SAS7BDAT ONLY]: Path to a sas catalog file (sas7bcat). Needed for value formats if a sas (sas7bdat) input file
+    csvtemplate_output_quoting: bool, optional
+        If true, all nonnumeric values will be quoted. This helps reduce ambiguity for programs
+        like excel that uses special characters for specific purposes (eg = for formulas)
+    
     Returns
     -------
     dict
@@ -138,8 +144,9 @@ def convert_to_vlmd(
         # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
         (
             etl.fromdicts(templatecsv)
-            .tocsv(csvtemplate_path,
-                quoting=csv.QUOTE_NONNUMERIC)
+            .tocsv(
+                csvtemplate_path,
+                quoting=csv.QUOTE_NONNUMERIC if csvtemplate_output_quoting else csv.QUOTE_MINIMAL)
 
         )
 
@@ -178,7 +185,9 @@ def convert_to_vlmd(
 @click.option('--inputtype',default=None,type=click.Choice(list(choice_fxn.keys())),help='The type of your input file.')
 @click.option('--outputdir',default="",help='The folder where you want to output your HEAL data dictionary')
 @click.option('--sas7bcat-filepath',default=None,help="[FOR SAS7BDAT ONLY]: Path to a sas catalog file (sas7bcat). Needed for value formats if a sas (sas7bdat) input file")
-def main(filepath,title,description,inputtype,outputdir,sas7bcat_filepath):
+@click.option('--csvtemplate-output-quoting',default=None,help="If true, all nonnumeric values will be quoted."
+    " This helps reduce ambiguity for programs like excel that uses special characters for specific purposes (eg = for formulas)")
+def main(filepath,title,description,inputtype,outputdir,sas7bcat_filepath,csvtemplate_output_quoting):
     data_dictionary_props = {'title':title,'description':description}
 
     #save dds and error reports to files
@@ -187,7 +196,8 @@ def main(filepath,title,description,inputtype,outputdir,sas7bcat_filepath):
         data_dictionary_props=data_dictionary_props,
         outputdir=outputdir,
         inputtype=inputtype,
-        sas7bcat_filepath=sas7bcat_filepath
+        sas7bcat_filepath=sas7bcat_filepath,
+        csvtemplate_output_quoting=csvtemplate_output_quoting
     )
      
 if __name__=='__main__':
