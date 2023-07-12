@@ -78,11 +78,12 @@ props = schemas.healjsonschema['properties']
 true_values = ["true","1","yes","required","y"]
 false_values = ["false","0","no","not required","n"]
 
-csvtypes = {"integer":int,"number":float,"string":str}
-castmap = {
-    field["name"]:csvtypes[field["type"]]
+# cast numbers explicitly based on schema
+# this is needed in case there is only one record in a string column that is a number (ie don't want to convert)
+castnumbers = {
+    field["name"]:int if field["type"]=="integer" else float
     for field in schemas.healcsvschema["fields"]
-    if field.get("type","") in csvtypes
+    if field.get("type","") in ["integer","number"]
 }
 
 fieldmap = {

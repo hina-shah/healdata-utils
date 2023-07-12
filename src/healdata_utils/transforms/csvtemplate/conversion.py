@@ -12,7 +12,7 @@ from pathlib import Path
 # from frictionless import Resource,Package
 from healdata_utils.utils import convert_rec_to_json
 from healdata_utils.io import read_table
-from .mappings import fieldmap,zipmap,typemap,castmap
+from .mappings import fieldmap,zipmap,typemap,castnumbers
 from os import PathLike
 
 def convert_templatecsv(
@@ -63,13 +63,14 @@ def convert_templatecsv(
     }
     castfields = {
         propname:fxn 
-        for propname,fxn in castmap.items() 
+        for propname,fxn in castnumbers.items() 
         if propname in template_tbl
     }
 
     tbl_csv = (
         etl.fromdataframe(template_tbl)
         .convert(castfields)
+        .convertall({None:""})
     )
     fields_csv = tbl_csv.dicts()
     tbl_json = (
