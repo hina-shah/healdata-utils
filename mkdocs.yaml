@@ -52,8 +52,8 @@ markdown_extensions:
         url_download: True
 plugins:
   - search
-  - mkdocs-video:
-      is_video: True
+  # - mkdocs-video:
+  #     is_video: True
 
 # TODO: add footer (this may be included in the custom jinja template?)
 #    [![](img/gen3.png)](https://ctds.uchicago.edu/gen3)[![](img/createdby.png)](https://ctds.uchicago.edu/)
