@@ -23,9 +23,9 @@ as an additional step after further annotation (e.g., from the `csv` HEAL data d
 
 1. Use the template and start from scratch
 
-    [Click here to download a blank __csv__ HEAL data dictionary template](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.csv){:download .md-button .md-button--primary }
+    [Click here to download a blank __csv__ HEAL data dictionary template](../assets/templates/template_submission.csv){:download="example_submission.csv" .md-button .md-button--primary }
 
-    [Click here to download an example of a filled out __csv__ HEAL data dictionary template](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.csv){:download .md-button .md-button--primary }
+    [Click here to download an example of a filled out __csv__ HEAL data dictionary template](assets/examples/valid/template_submission.csv){:download="template_submission.csv" .md-button .md-button--primary }
 
 2. Output from one of the below software-specific formats and then further annotate.
 
@@ -53,8 +53,7 @@ The HEAL Data Utilities `vlmd` tool can also input this `json` HEAL data diction
 
     [Click here to download a blank __json__ HEAL data dictionary template](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/templates/template_submission.json){:download .md-button .md-button--primary }
 
-    [Click here to download an example of filled out __json__ HEAL data dictionary template](https://github.com/norc-heal/healdata-utils/blob/main/tests/data/valid/output/heal_dd_from_redcap_dd_export.json){:download .md-button .md-button--primary }
-
+    [Click here to download an example of filled out __json__ HEAL data dictionary template](https://github.com/norc-heal/heal-metadata-schemas/blob/mbkranz/variable-lvl-dev/variable-level-metadata-schema/examples/valid/template_submission.json){:download .md-button .md-button--primary }
 2. Output from one of the below software-specific formats and then further annotate.
 
 !!! note
