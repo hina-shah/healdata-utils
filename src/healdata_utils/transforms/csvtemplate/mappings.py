@@ -92,10 +92,12 @@ fieldmap = {
     # 'constraints.maximum':int,
     # 'constraints.minimum':int, #TODO:need to add to schema
     # 'constraints.maxLength':int,
+    'standardsMappings.type': lambda v: split_str_array(v),
     'standardsMappings.label': lambda v: split_str_array(v),
     'standardsMappings.source': lambda v: split_str_array(v),
     'standardsMappings.id': lambda v: split_str_array(v),
     'standardsMappings.url': lambda v: split_str_array(v),
+    'relatedConcepts.type': lambda v: split_str_array(v),
     'relatedConcepts.label': lambda v: split_str_array(v),
     'relatedConcepts.source': lambda v: split_str_array(v),
     'relatedConcepts.id': lambda v: split_str_array(v),
