@@ -5,8 +5,20 @@ In this section, supported formats for generating HEAL-compliant data dictionari
 !!! note
     To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](rendered-schemas/csv-fields.md) or the __`json data dictionary`__ [click here](rendered-schemas/json-data-dictionary.md).
 
-<!-- TODO: make a table of contents/list of supported formats and brief
-description of them (with links to each) -->
+
+From your data:
+- [CSV datasets](#csv-datasets)
+- [SPSS datasets](#spss-sav-files)
+- [SAS datasets](#sas-sas7bdat-and-sas7bcat-files)
+- [Stata datasets](#stata-dta-files)
+
+From your data dictionaries:
+- [REDCap data dictionary](#redcap-data-dictionary-csv-export)
+- [HEAL CSV template data dictionary](#csv-heal-data-dictionary-eg-from-template)
+- [HEAL JSON template data dictionary](#json-heal-data-dictionary-eg-from-template)
+
+
+
 ### `csv` Datasets
 
 CSV (comma-separated values) is the main open tabular data format for storage and exchange. It is easy to create and understand using basic text editors in addition to popular spreadsheet software like Google Sheets and Excel. Importantly, CSVs are simple and can be easily integrated into web applications and just about any software.
@@ -17,7 +29,7 @@ it with fields' `description` and other optional properties in either the HEAL-c
 ### `csv` HEAL data dictionary (e.g., from template)
 
 The HEAL Data Utilities can also input a `csv` HEAL data dictionary either from a manually filled out template or 
-as an additional step after further annotation (e.g., from the `csv` HEAL data dictionary output of the above file formats).
+as an additional step after further annotation (e.g., from the `csv` HEAL data dictionary output of the other file formats).
 
 #### Creating a `csv` HEAL data dictionary
 
@@ -107,7 +119,7 @@ Many SAS users build formats and labels into their data processing and analysis 
 This script template can be run separately or inserted directly at the end of a SAS user's workflow. 
 
 !!! note
-If inserted directly, remember to delete the lines with `%INCLUDE`)
+    If inserted directly, remember to delete the lines with `%INCLUDE`)
 
 ???+ Template
     ```sas title="template.sas"
