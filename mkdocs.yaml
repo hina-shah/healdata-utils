@@ -18,7 +18,7 @@ nav:
       - REDCap data dictionary: vlmd/formats/redcapcsv.md
     - Output Formats: 
       - vlmd/schemas/index.md
-      - Definitions:
+      - Definitions (schemas):
         - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
         - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
       
