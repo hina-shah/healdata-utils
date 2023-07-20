@@ -7,12 +7,14 @@ In this section, supported formats for generating HEAL-compliant data dictionari
 
 
 From your data:
+
 - [CSV datasets](./csvdata.md)
 - [SPSS datasets](./spss.md)
 - [SAS datasets](./sas.md)
 - [Stata datasets](./stata.md)
 
 From your data dictionaries:
+
 - [REDCap data dictionary](./redcapcsv.md)
 - [HEAL CSV template data dictionary](./csvtemplate.md)
 - [HEAL JSON template data dictionary](./jsontemplate.md)
