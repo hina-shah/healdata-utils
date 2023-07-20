@@ -18,9 +18,10 @@ nav:
       - REDCap data dictionary: vlmd/formats/redcapcsv.md
     - Output Formats: 
       - vlmd/schemas/index.md
-      - "CSV Data dictionary": vlmd/schemas/csv-fields.md
-      - "JSON Data dictionary": vlmd/schemas/json-data-dictionary.md
-    
+      - Definitions:
+        - CSV data dictionary: vlmd/schemas/csv-fields.md
+        - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
+      
 theme:
   name: material
   palette:
