@@ -4,9 +4,9 @@
 
 The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
-For supported formats and more detailed software-specific instructions and recommendations, [see here](supported_input_formats.md).
+For supported formats and more detailed software-specific instructions and recommendations, [see here](formats/index.md).
 
-For more information on variable-level metadata properties (fields), see the [`csv` field specification](rendered-schemas/csv-fields.md) and [`json` field specification](rendered-schemas/json-data-dictionary.md). 
+For more information on variable-level metadata properties (fields), see the [`csv` field specification](schemas/csv-fields.md) and [`json` field specification](schemas/json-data-dictionary.md). 
 
 Typical workflows for creating a HEAL-compliant data dictionary include:
 
@@ -15,8 +15,8 @@ Typical workflows for creating a HEAL-compliant data dictionary include:
 
 To further annotate and use the data dictionary, see the variable-level metadata field property information below:
 
-- [`csv` data dictionary](rendered-schemas/csv-fields.md)
-- [`json` data dictionary](rendered-schemas/json-data-dictionary.md)
+- [`csv` data dictionary](schemas/csv-fields.md)
+- [`json` data dictionary](schemas/json-data-dictionary.md)
 
 3. **Run the `vlmd` command** again with your HEAL data dictioanry as the input to validate.
 4. Repeat (2) and (3) until you are ready to submit. Please note, currently only `name` and `description` are required.

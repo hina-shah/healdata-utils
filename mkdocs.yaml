@@ -7,13 +7,21 @@ nav:
   # - contributing.md
   # - install.md
   - Variable Level Metadata:
-    - vlmd/index.md 
-    - vlmd/supported_input_formats.md
-    - Data dictionary definitions: 
-      - vlmd/rendered-schemas/index.md
-      - "CSV Data dictionary": vlmd/rendered-schemas/csv-fields.md
-      - "JSON Data dictionary": vlmd/rendered-schemas/json-data-dictionary.md
-    
+    - vlmd/index.md #TODO: write about the methodology/motivation, resources, and what each mean
+    - Input Formats:
+      - Tabular (CSV) data dictionary template: vlmd/formats/csvtemplate.md
+      - JSON data dictionary template: vlmd/formats/jsontemplate.md
+      - SAS dataset: vlmd/formats/sas.md
+      - SPSS dataset: vlmd/formats/spss.md
+      - Stata dataset: vlmd/formats/stata.md
+      - Tabular (CSV) dataset: vlmd/formats/csvdata.md
+      - REDCap data dictionary: vlmd/formats/redcapcsv.md
+    - Output Formats: 
+      - vlmd/schemas/index.md
+      - Definitions (schemas):
+        - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
+        - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
+      
 theme:
   name: material
   palette:
