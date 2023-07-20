@@ -4,7 +4,7 @@
 
 The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
-For supported formats and more detailed software-specific instructions and recommendations, [see here](supported_input_formats.md).
+For supported formats and more detailed software-specific instructions and recommendations, [see here](formats/index.md).
 
 For more information on variable-level metadata properties (fields), see the [`csv` field specification](rendered-schemas/csv-fields.md) and [`json` field specification](rendered-schemas/json-data-dictionary.md). 
 
