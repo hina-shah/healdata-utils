@@ -17,7 +17,6 @@ charset_normalizer==2.1
 visions== 0.7.5
 click==8.1.3'''
 
-
 setup(
     name='healdata_utils',
     version='0.1.4-alpha',
