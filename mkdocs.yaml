@@ -16,11 +16,9 @@ nav:
       - Stata dataset: vlmd/formats/stata.md
       - Tabular (CSV) dataset: vlmd/formats/csvdata.md
       - REDCap data dictionary: vlmd/formats/redcapcsv.md
-    - Output Formats: 
-      - vlmd/schemas/index.md
-      - Definitions (schemas):
-        - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
-        - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
+    - Data Dictionary Definitions (schemas):
+      - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
+      - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
       
 theme:
   name: material
@@ -56,8 +54,8 @@ markdown_extensions:
       baselevel: 1
   - pymdownx.superfences
   - pymdownx.details
-  - pymdownx.snippets:
-        url_download: True
+  - pymdownx.tabbed:
+      alternate_style: true
 plugins:
   - search
   # - mkdocs-video:

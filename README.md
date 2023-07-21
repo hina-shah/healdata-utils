@@ -15,14 +15,19 @@ To install the latest official release of healdata-utils, from your computer's c
 `pip install git+https://github.com/norc-heal/healdata-utils.git`
 
 
+--8<-- [end:intro]
+
+
+--8<-- [start:vlmd-intro]
 ## Variable-level Metadata (Data Dictionaries)
 
 [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
 
 The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
-For supported formats and more detailed software specific instructions and recommendations, [see here](supported_input_formats.md)
+--8<-- [end:vlmd-intro]
 
+--8<-- [start:vlmd-basic-usage]
 ### Basic usage 
 
 The vlmd tool can be used via python or the command line.
@@ -112,4 +117,5 @@ See the below notebooks demonstrating use and workflows using the `convert_to_vl
 
 2. [in development] Creating and iterating over a csv data dictionary to create a valid data dictionary file [click here](notebooks/demos/demo-csvtemplate-validation.ipynb)
 
---8<-- [end:intro]
+
+--8<-- [end:vlmd-basic-usage]
