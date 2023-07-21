@@ -1,6 +1,8 @@
 from setuptools import setup, find_namespace_packages
 from pathlib import Path
+import os 
 
+os.chdir(Path(__file__).parent)
 def generate_long_description():
     return Path("README.md").read_text()
 
