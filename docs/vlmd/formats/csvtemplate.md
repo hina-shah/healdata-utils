@@ -8,14 +8,14 @@ as an additional step after further annotation (e.g., from the `csv` HEAL data d
 
 1. Use the template and start from scratch
 
-    [Click here to download a blank __csv__ HEAL data dictionary template](../assets/templates/template_submission.csv){:download="example_submission.csv" .md-button .md-button--primary }
+    [Click here to download a blank __csv__ HEAL data dictionary template](../../assets/templates/template_submission.csv){:download="example_submission.csv" .md-button .md-button--primary }
 
-    [Click here to download an example of a filled out __csv__ HEAL data dictionary template](assets/examples/valid/template_submission.csv){:download="template_submission.csv" .md-button .md-button--primary }
+    [Click here to download an example of a filled out __csv__ HEAL data dictionary template](../../assets/examples/valid/template_submission.csv){:download="template_submission.csv" .md-button .md-button--primary }
 
 2. Output from one of the below software-specific formats and then further annotate.
 
 !!! note
-    To further annotate your outputted `csv` HEAL data dictionaries, see the variable level metadata field properties (with examples) for the __`csv data dictionary`__: [click here](rendered-schemas/csv-fields.md)
+    To further annotate your outputted `csv` HEAL data dictionaries, see the variable level metadata field properties (with examples) for the __`csv data dictionary`__: [click here](../schemas/csv-fields.md)
 
 
 ## Validate with the `vlmd` command

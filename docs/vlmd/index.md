@@ -89,7 +89,7 @@ See the below notebooks demonstrating use and workflows using the `convert_to_vl
 
 1. Generating a heal data dictionary from a variety of input files 
 
-- [click here for static notebook ](notebooks/demos/inputs-to-heal-data-dictionary.ipynb) 
+- [click here for static notebook ](https://github.com/norc-heal/healdata-utils/blob/main/notebooks/demos/inputs-to-heal-data-dictionary.ipynb) 
 - click binder badge for interactive [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
 
 <!-- 2. [in development] Creating and iterating over a csv data dictionary to create a valid data dictionary file [click here](notebooks/demos/demo-csvtemplate-validation.ipynb) -->

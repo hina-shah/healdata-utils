@@ -15,7 +15,7 @@ The HEAL Data Utilities `vlmd` tool can also input this `json` HEAL data diction
 2. Output from one of the below software-specific formats and then further annotate.
 
 !!! note
-    To further annotate your outputted `json` HEAL data dictionaries, see the variable-level metadata field properties (with examples) for the __`json data dictionary`__: [click here](rendered-schemas/json-data-dictionary.md)
+    To further annotate your outputted `json` HEAL data dictionaries, see the variable-level metadata field properties (with examples) for the __`json data dictionary`__: [click here](../schemas/json-data-dictionary.md)
 
 
 ## Validate with the `vlmd` command

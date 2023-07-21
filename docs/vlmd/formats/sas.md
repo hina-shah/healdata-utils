@@ -94,7 +94,7 @@ but for demonstration purposes, this example only uses one script and focuses on
     run;
     ```
 
-    This second script called `my_output.sas` is the filled out template ([see here](template.md)). Note the `%INCLUDE` function that calls `my_existing_sas_workflow.sas`
+    This second script called `my_output.sas` is the filled out template. Note the `%INCLUDE` function that calls `my_existing_sas_workflow.sas`
 
     ```sas title="my_output.sas"
     /*1. Read in data file without value labels and run full code. 

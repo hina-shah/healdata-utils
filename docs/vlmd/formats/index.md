@@ -6,7 +6,7 @@ In this section, supported formats for generating HEAL-compliant data dictionari
     The commands in these sections are very minimal. One can add other metadata (Ie metadata describing the data dictionary) via the command line (eg `--title` and `--description` options.) For an example of this, see the [basic usage section](../index.md/#basic-usage). 
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](schemas/csv-fields.md) or the __`json data dictionary`__ [click here](schemas/json-data-dictionary.md).
+    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](../schemas/csv-fields.md) or the __`json data dictionary`__ [click here](../schemas/json-data-dictionary.md).
 
 
 From your data:
