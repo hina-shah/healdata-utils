@@ -73,11 +73,9 @@ For more information on variable-level metadata properties (fields), see the [`c
 
     1. **Run the `vlmd` command** (or `convert_to_vlmd` if in python) to generate a HEAL-compliant data dictionary via your desired input format (See the basic usage section on the homepage for general installation and usage information).
     2. **Add/annotate with** additional information in your preferred HEAL data dictionary format (either `json` or `csv`).
-
-    To further annotate and use the data dictionary, see the variable-level metadata field property information below:
-
-    - [`csv` data dictionary](schemas/csv-fields.md)
-    - [`json` data dictionary](schemas/json-data-dictionary.md)
+        - To further annotate and use the data dictionary, see the variable-level metadata field property information below:
+            - [`csv` data dictionary](schemas/csv-fields.md)
+            - [`json` data dictionary](schemas/json-data-dictionary.md)
 
     3. **Run the `vlmd` command** again with your HEAL data dictioanry as the input to validate.
 
