@@ -97,8 +97,8 @@ def infer_frictionless_fields(
     for col,typepath in typepaths.items():
         field = {"name":col}
         type_final = str(typepath[-1])
-        type_second_to_final = str(typepath[-2])
         if type_final=="Categorical":
+            type_second_to_final = str(typepath[-2])
             field["type"] = typeset_mapping.get(type_second_to_final,"any")
             # enums for inferred categoricals
             field["constraints"] = {"enum":list(df[col].cat.categories)}       
