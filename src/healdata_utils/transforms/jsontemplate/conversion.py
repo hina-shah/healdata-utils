@@ -8,6 +8,7 @@ from os import PathLike
 
 def convert_templatejson(
     jsontemplate:str,
+    data_dictionary_props: dict,
     fields_name:str='data_dictionary',
     sep_iter = '|',
     sep_dict = '=',
