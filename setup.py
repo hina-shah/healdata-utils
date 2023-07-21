@@ -10,7 +10,7 @@ def get_install_requirements():
 
 setup(
     name='healdata_utils',
-    version='0.1.1-alpha',
+    version='0.1.2-alpha',
     author='Michael Kranz',
     author_email='kranz-michael@norc.org',
     long_description=generate_long_description(),
