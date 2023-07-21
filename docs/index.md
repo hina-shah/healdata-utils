@@ -4,6 +4,12 @@ The HEAL Data Utilities python package provides data packaging tools for the HEA
  
 Currently, the focus of this repository is generating data dictionaries ([click here](vlmd/index.md) for the Variable-level Metadata documentation section). However, in the future, this will be expanded for all HEAL-specific data packaging functions (e.g., study- and file-level metadata and data).
 
+## Prerequisites
+
+### Python
+
+While the HEAL Data Utilities should be compatible with most versions of Python, you can download the latest version of Python [here](https://www.python.org/downloads/) and install it on your local computer. We recommend installing Python version 3.10 or higher.
+
 ## Installation
 
 To install the latest official release of healdata-utils, from your computer's command prompt, run:
