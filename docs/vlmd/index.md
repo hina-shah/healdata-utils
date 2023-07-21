@@ -1,9 +1,21 @@
 # Variable-level Metadata (Data Dictionaries)
 
-The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
+## Motivation
+
+Variable level metadata (VLMD), in the form of standardized data dictionaries, provides an exciting opportunity:
+
+-  a way to search, understand, and compare datasets before (potentially sensitive) data is shared. 
+
+> For an example of this searchability in the context of study level metadata, [see the platform's discovery page](https://healdata.org/portal/discovery)
+
+- When data is available, VLMD provides a way to validate the data as well.
+
+- Supports HEAL projects and goals such as the [common data elements program](https://heal.nih.gov/data/common-data-elements)
 
 ## Basic usage
+
+The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
 === "Python"
     ```python
