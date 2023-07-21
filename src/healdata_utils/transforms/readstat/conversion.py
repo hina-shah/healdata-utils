@@ -65,7 +65,7 @@ def convert_readstat(file_path,
     """
     metaparams = dict(file_path=file_path,user_missing=True)
     if sas7bcat_file_path:
-        params["catalog_file"] = sas7bcat_file_path
+        metaparams["catalog_file"] = sas7bcat_file_path
     _,meta = read_pyreadstat(**metaparams) # get user missing values (for stata/sas will make string so need sep call to infer types)
     df,_ = read_pyreadstat(file_path) # dont fill user defined missing vals (to get correct types)
     fields = typesets.infer_frictionless_fields(df)
