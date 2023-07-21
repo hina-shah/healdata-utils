@@ -9,6 +9,7 @@ nav:
   - Variable Level Metadata:
     - vlmd/index.md #TODO: write about the methodology/motivation, resources, and what each mean
     - Input Formats:
+      - vlmd/formats/index.md
       - Tabular (CSV) data dictionary template: vlmd/formats/csvtemplate.md
       - JSON data dictionary template: vlmd/formats/jsontemplate.md
       - SAS dataset: vlmd/formats/sas.md

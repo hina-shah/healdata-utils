@@ -5,3 +5,8 @@ For Stata users, the HEAL Data Utilities generates HEAL-compliant data dictionar
 <!-- ## Creating a well-annotated `dta` file
 
 TO ADD -->
+
+## Run the `vlmd` command
+```bash
+vlmd --filepath data/mydatafile.dta --inputtype dta
+```
