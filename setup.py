@@ -20,7 +20,7 @@ click==8.1.3'''
 
 setup(
     name='healdata_utils',
-    version='0.1.3-alpha',
+    version='0.1.4-alpha',
     author='Michael Kranz',
     author_email='kranz-michael@norc.org',
     long_description=generate_long_description(),
