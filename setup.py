@@ -9,7 +9,7 @@ def generate_long_description():
 def get_install_requirements():
     return '''petl==1.7.12
 jsonschema==4.17.3
-requests==2.28.2
+# requests==2.28.2
 PyYaml==6.0
 #frictionless==4.40.8
 pyreadstat==1.2.0
