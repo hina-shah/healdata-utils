@@ -18,5 +18,12 @@ To install the latest official release of healdata-utils, from your computer's c
 
 `pip install healdata-utils --pre` (**NOTE: currently in pre-lease**)
 
+OR for the most up-to-date unreleased version run: 
+
 `pip install git+https://github.com/norc-heal/healdata-utils.git`
+
+!!! note
+
+    Installing the unreleased version requires having `git` software
+    installed.
 
