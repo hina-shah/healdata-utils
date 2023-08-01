@@ -59,7 +59,7 @@ def test_convert_to_vlmd_with_redcap_csv_no_output(compile_assertion=False):
         ),
         "title": "Healdata-utils Demonstration Data Dictionary",
     }
-    filepath = "tests/data/redcap_dd_export.redcap.csv"
+    filepath = "tests/data/valid/input/redcap_dd_export.redcap.csv"
     data_dictionaries = convert_to_vlmd(
         filepath, data_dictionary_props=data_dictionary_metadata
     )
