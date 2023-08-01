@@ -99,14 +99,20 @@ def infer_frictionless_fields(
         if len(typepath)==1:
             continue
         type_final = str(typepath[-1])
-        type_second_to_final = str(typepath[-2])
         if type_final=="Categorical":
+            # TODO: see visions PR https://github.com/dylan-profiler/visions/issues/160 -- best way 
+            # would probably be to use networkx graph. seems like this may be a good feature to add
+            # to visions package
+            type_second_to_final = str(typepath[-2])
             field["type"] = typeset_mapping.get(type_second_to_final,"any")
             # enums for inferred categoricals
             field["constraints"] = {"enum":list(df[col].cat.categories)}       
         else:
             field["type"] = typeset_mapping.get(str(type_final),"any")
 
+        
+        if field["type"]=="any":
+            print(field["name"])
         fields.append(field)
 
         

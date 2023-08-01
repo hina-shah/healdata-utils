@@ -8,6 +8,7 @@ from os import PathLike
 
 def convert_templatejson(
     jsontemplate:str,
+    data_dictionary_props:dict=None,
     fields_name:str='data_dictionary',
     sep_iter = '|',
     sep_dict = '=',
@@ -18,6 +19,9 @@ def convert_templatejson(
     into a HEAL-specified data dictionary in both csv format and json format.
 
     Converts in-memory data or a path to a data dictionary file.
+
+    If data_dictionary_props is specified, any properties passed in will be
+    overwritten.
     
     Parameters
     ----------
@@ -37,16 +41,26 @@ def convert_templatejson(
             - 'templatejson': the HEAL-specified JSON object.
             - 'templatecsv': the HEAL-specified tabular template.
 
+
+    TODO
+    ---------
+
+    Allow an array of fields to be passed in
+
     """
     if isinstance(jsontemplate,(str,PathLike)):
-        data_dictionary_props = json.loads(Path(jsontemplate).read_text())
+        jsontemplate_dict = json.loads(Path(jsontemplate).read_text())
     elif isinstance(jsontemplate, MutableMapping):
-        data_dictionary_props = jsontemplate
+        jsontemplate_dict = jsontemplate
     else:
         raise Exception("jsontemplate needs to be either dictionary-like or a path to a json")
 
+    if data_dictionary_props:
+        jsontemplate_dict.update(data_dictionary_props)
 
-    fields_json = data_dictionary_props.pop(fields_name)
+    fields_json = jsontemplate_dict.pop(fields_name)
+    data_dictionary_props = jsontemplate_dict
+    
     fields_csv = []
     for f in fields_json:
         field_flattened = flatten_except_if(f)

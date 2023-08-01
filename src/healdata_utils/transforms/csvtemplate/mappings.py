@@ -8,7 +8,7 @@ def split_str_array(string,sep='|'):
     if string:
         return [s.strip() for s in string.split(sep)]
     else:
-        return None
+        return string
 
 # if object within array, assign to properties
 def map_keys_vals(keys,vals):
@@ -35,12 +35,14 @@ def split_and_map(string,prop):
             for x in split_str_array(string,sep='|')
         ]
     else:
-        return None
+        return string
 
 def loads_dict(string,item_sep='|',key_val_sep='='):
     if string:
         return dict([split_str_array(s,key_val_sep) 
             for s in split_str_array(string,item_sep)])
+    else:
+        return string
 def mapval(v,mapping):
     v = str(v)
     if v in mapping:
@@ -76,7 +78,13 @@ props = schemas.healjsonschema['properties']
 true_values = ["true","1","yes","required","y"]
 false_values = ["false","0","no","not required","n"]
 
-
+# cast numbers explicitly based on schema
+# this is needed in case there is only one record in a string column that is a number (ie don't want to convert)
+castnumbers = {
+    field["name"]:int if field["type"]=="integer" else float
+    for field in schemas.healcsvschema["fields"]
+    if field.get("type","") in ["integer","number"]
+}
 
 fieldmap = {
     'constraints.required': lambda v: to_bool(v),
@@ -84,9 +92,17 @@ fieldmap = {
     # 'constraints.maximum':int,
     # 'constraints.minimum':int, #TODO:need to add to schema
     # 'constraints.maxLength':int,
-    'cde_id': lambda v: split_and_map(v, props['cde_id']),
-    'ontology_id': lambda v: split_and_map(v, props['ontology_id']),
-    'encoding':lambda v: loads_dict(v),
+    'standardsMappings.type': lambda v: split_str_array(v),
+    'standardsMappings.label': lambda v: split_str_array(v),
+    'standardsMappings.source': lambda v: split_str_array(v),
+    'standardsMappings.id': lambda v: split_str_array(v),
+    'standardsMappings.url': lambda v: split_str_array(v),
+    'relatedConcepts.type': lambda v: split_str_array(v),
+    'relatedConcepts.label': lambda v: split_str_array(v),
+    'relatedConcepts.source': lambda v: split_str_array(v),
+    'relatedConcepts.id': lambda v: split_str_array(v),
+    'relatedConcepts.url': lambda v: split_str_array(v),
+    'encodings':lambda v: loads_dict(v),
     'format': lambda v: mapval(v,formatmap),
     'type':lambda v: mapval(v,typemap),
     #'univar_stats.cat_marginals':lambda v: split_and_map(v, prop['univar_stats']['cat_marginals']),
@@ -95,3 +111,5 @@ fieldmap = {
     'falseValues':lambda v: split_str_array(v),
     # TODO: add stats
 }
+
+zipmap = ["standardsMappings","relatedConcepts"]

@@ -1,7 +1,0 @@
-name: healdata-utils
-dependencies:
-  - python
-  - pip
-  - jupyter
-  - pip:
-    - -e .

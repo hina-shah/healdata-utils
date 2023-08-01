@@ -1,4 +1,6 @@
 {
+    "title": "Example Data Dictionary",
+    "description": "This is an example",
     "data_dictionary": [
         {
             "name": "id",
