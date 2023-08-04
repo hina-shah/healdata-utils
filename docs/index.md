@@ -24,6 +24,6 @@ OR for the most up-to-date unreleased version run:
 
 !!! note
 
-    Installing the unreleased version requires having `git` software
-    installed.
+    Installing the unreleased version requires having [`git` software
+    installed](https://git-scm.com/downloads).
 
