@@ -8,7 +8,7 @@ import json
 def test_convert_frictionless_to_jsonschema():
     frictionless_input_schema = healcsvschema
     jsonschema_props = convert_frictionless_to_jsonschema(frictionless_input_schema)
-    with open("tests/criteria_data/test_frictionless_check1.json", "r") as fp:
+    with open("tests/criteria_data/transforms/frictionless/convert_frictionless_to_jsonschema_check1.json", "r") as fp:
         jsonschema_props_check = json.load(fp)
     test_passed = jsonschema_props == jsonschema_props_check
 
