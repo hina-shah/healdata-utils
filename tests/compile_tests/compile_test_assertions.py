@@ -1,9 +1,11 @@
+""" 
+calling this file from /healdata-utils/. recompiles the 
+files test_cli.py and test_conversion.py with new assertion statements
+""" 
+
 from healdata_utils.transforms.readstat.conversion import convert_readstat
 from healdata_utils.cli import convert_to_vlmd
 import os
-
-# calling this file from /healdata-utils/. recompiles the 
-# files test_cli.py and test_conversion.py with new assertion statements
 
 def compile_assertions_test_conversion():
     # use to bulk generate assertions statements for testing
