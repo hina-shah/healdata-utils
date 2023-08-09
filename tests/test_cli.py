@@ -29,7 +29,7 @@ def test_convert_to_vlmd_with_redcap_csv_no_output(compile_assertion=False):
 
 
     csvtemplate_0= {'module': 'demographics', 'name': 'study_id', 'title': 'Study ID', 'description': 'Study ID', 'type': 'string', 'format': '', 'constraints.maxLength': '', 'constraints.enum': '', 'constraints.pattern': '', 'constraints.maximum': '', 'constraints.minimum': '', 'encodings': '', 'ordered': '', 'missingValues': '', 'trueValues': '', 'falseValues': '', 'repo_link': '', 'standardsMappings.type': '', 'standardsMappings.label': '', 'standardsMappings.url': '', 'standardsMappings.source': '', 'standardsMappings.id': '', 'relatedConcepts.type': '', 'relatedConcepts.label': '', 'relatedConcepts.url': '', 'relatedConcepts.source': '', 'relatedConcepts.id': '', 'univarStats.median': '', 'univarStats.mean': '', 'univarStats.std': '', 'univarStats.min': '', 'univarStats.max': '', 'univarStats.mode': '', 'univarStats.count': '', 'univarStats.twentyFifthPercentile': '', 'univarStats.seventyFifthPercentile': '', 'univarStats.categoricalMarginals.name': '', 'univarStats.categoricalMarginals.count': ''}
-
+    #TODO: for each registered function, test each 
     try:
         assert csvtemplate[0] == csvtemplate_0
     except AssertionError:
