@@ -1,54 +1,62 @@
-import pprint
-import os
+import shutil
 from pathlib import Path
-import sys
-import traceback
 from healdata_utils.cli import convert_to_vlmd
+import json
 
+def test_convert_to_vlmd_with_registered_formats(
+    valid_input_params,valid_output_json,valid_output_csv,fields_propname):
+    inputtypes = list(valid_input_params.keys())
+    outputdir="tmp"
 
-# test convert vlmd with redcap csv
+    for inputtype in inputtypes:
+   
+        # make an empty temporary output directory
+        try:
+            Path(outputdir).mkdir()
+        except FileExistsError:
+            shutil.rmtree(outputdir)
+            Path(outputdir).mkdir()
 
-def test_convert_to_vlmd_with_redcap_csv_no_output(compile_assertion=False):
-    data_dictionary_metadata = {
-        "description": (
-            "This is a proof of concept to demonstrate"
-            " the healdata-utils functionality"
-        ),
-        "title": "Healdata-utils Demonstration Data Dictionary",
-    }
-    filepath = "tests/data/valid/input/redcap_dd_export.redcap.csv"
-    data_dictionaries = convert_to_vlmd(
-        filepath, data_dictionary_props=data_dictionary_metadata
-    )
-    csvtemplate = data_dictionaries["csvtemplate"]
-    jsontemplate = data_dictionaries["jsontemplate"]
-    errors = data_dictionaries["errors"]
+        _valid_input_params = valid_input_params[inputtype]
+        _valid_output_json = valid_output_json[inputtype]
+        _valid_output_csv = valid_output_csv[inputtype]
 
-    assertion_messages=''
-    ###regexflagstart###
+        data_dictionaries = convert_to_vlmd(
+            **_valid_input_params,
+        outputdir=outputdir
+        )
 
+        ddjson = json.loads(list(Path("tmp").glob("*.json"))[0].read_text())
+        #NOTE: csv are just fields so no ddcsv
 
-    csvtemplate_0= {'module': 'demographics', 'name': 'study_id', 'title': 'Study ID', 'description': 'Study ID', 'type': 'string', 'format': '', 'constraints.maxLength': '', 'constraints.enum': '', 'constraints.pattern': '', 'constraints.maximum': '', 'constraints.minimum': '', 'encodings': '', 'ordered': '', 'missingValues': '', 'trueValues': '', 'falseValues': '', 'repo_link': '', 'standardsMappings.type': '', 'standardsMappings.label': '', 'standardsMappings.url': '', 'standardsMappings.source': '', 'standardsMappings.id': '', 'relatedConcepts.type': '', 'relatedConcepts.label': '', 'relatedConcepts.url': '', 'relatedConcepts.source': '', 'relatedConcepts.id': '', 'univarStats.median': '', 'univarStats.mean': '', 'univarStats.std': '', 'univarStats.min': '', 'univarStats.max': '', 'univarStats.mode': '', 'univarStats.count': '', 'univarStats.twentyFifthPercentile': '', 'univarStats.seventyFifthPercentile': '', 'univarStats.categoricalMarginals.name': '', 'univarStats.categoricalMarginals.count': ''}
-    #TODO: for each registered function, test each 
-    try:
-        assert csvtemplate[0] == csvtemplate_0
-    except AssertionError:
-        _, _, tb = sys.exc_info()
-        traceback.print_tb(tb) # Fixed format
-        tb_info = traceback.extract_tb(tb)
-        filename, line, func, text = tb_info[-1]
-        assertion_messages+='\nfailure at line: '+ str(line) + ', text: ' + text
+        # check for incorrect fields       
+        csv_fields = list(Path("tmp").glob("*.csv"))[0].read_text().split("\n")
+        json_fields = ddjson.pop(fields_propname) #NOTE: testing individual fields
 
-    csvtemplate_1= {'module': 'demographics', 'name': 'date_enrolled', 'title': 'Date subject signed consent', 'description': 'Demographic Characteristics: Date subject signed consent', 'type': 'date', 'format': 'any', 'constraints.maxLength': '', 'constraints.enum': '', 'constraints.pattern': '', 'constraints.maximum': '', 'constraints.minimum': '', 'encodings': '', 'ordered': '', 'missingValues': '', 'trueValues': '', 'falseValues': '', 'repo_link': '', 'standardsMappings.type': '', 'standardsMappings.label': '', 'standardsMappings.url': '', 'standardsMappings.source': '', 'standardsMappings.id': '', 'relatedConcepts.type': '', 'relatedConcepts.label': '', 'relatedConcepts.url': '', 'relatedConcepts.source': '', 'relatedConcepts.id': '', 'univarStats.median': '', 'univarStats.mean': '', 'univarStats.std': '', 'univarStats.min': '', 'univarStats.max': '', 'univarStats.mode': '', 'univarStats.count': '', 'univarStats.twentyFifthPercentile': '', 'univarStats.seventyFifthPercentile': '', 'univarStats.categoricalMarginals.name': '', 'univarStats.categoricalMarginals.count': ''}
+        valid_output_json_fields = _valid_output_json.pop(fields_propname)
+        valid_output_csv_fields = _valid_output_csv
 
-    try:
-        assert csvtemplate[1] == csvtemplate_1
-    except AssertionError:
-        _, _, tb = sys.exc_info()
-        traceback.print_tb(tb) # Fixed format
-        tb_info = traceback.extract_tb(tb)
-        filename, line, func, text = tb_info[-1]
-        assertion_messages+='\nfailure at line: '+ str(line) + ', text: ' + text
+        invalid_json_fields = []
+        invalid_csv_fields = []
+        indices = range(len(json_fields))
+        for i in indices:
+            if json_fields[i]!=valid_output_json_fields[i]:
+                invalid_json_fields.append(i)
+            if csv_fields[i]!=valid_output_csv_fields[i]:
+                invalid_csv_fields.append(i)
+        
+        json_field_names = [f["name"] for f in json_fields]
+        csv_field_names = [f["name"] for f in json_fields]
 
-    csvtemplate_2= {'module': 'demographics', 'name': 'first_name', 'title': 'First Name', 'description': 'Demographic Characteristics: First Name', 'type': 'string', 'format': '', 'constraints.maxLength': '', 'constraints.enum': '', 'constraints.pattern': '', 'constraints.maximum': '', 'constraints.minimum': '', 'encodings': '', 'ordered': '', 'missingValues': '', 'trueValues': '', 'falseValues': '', 'repo_link': '', 'standardsMappings.type': '', 'standardsMappings.label': '', 'standardsMappings.url': '', 'standardsMappings.source': '', 'standardsMappings.id': '', 'relatedConcepts.type': '', 'relatedConcepts.label': '', 'relatedConcepts.url': '', 'relatedConcepts.source': '', 'relatedConcepts.id': '', 'univarStats.median': '', 'univarStats.mean': '', 'univarStats.std': '', 'univarStats.min': '', 'univarStats.max': '', 'univarStats.mode': '', 'univarStats.count': '', 'univarStats.twentyFifthPercentile': '', 'univarStats.seventyFifthPercentile': '', 'univarStats.categoricalMarginals.name': '', 'univarStats.categoricalMarginals.count': ''}
+        assert sorted(json_field_names)==sorted(csv_field_names),f"{inputtype} conversion: json fields must have the same field names as csv fields"
+        assert len(invalid_json_fields)==0,f"{inputtype} conversion: The following **json** dd fields are not valid: {str(invalid_json_fields)}"
+        assert len(invalid_csv_fields)==0,f"{inputtype} conversion: The following **csv** dd fields are not valid: {str(invalid_csv_fields)}"
+        
+        
+         # check if root level properties other than the fields are valid
+        for propname in ddjson:
+            assert ddjson[propname] == _valid_output_json[propname],f"{inputtype} conversion to json dd property '{propname}' assertion failed"
 
+    
+        # clean up
+        shutil.rmtree(outputdir)
