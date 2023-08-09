@@ -94,7 +94,7 @@ def convert_readstat(file_path,
             field['encodings'] = value_labels
             #NOTE: enums are assumed if labels represent entire set of values
             # this avoids value labels that are, for example, partials such as top/bottom encodings
-            enums = set(value_labels.keys()).difference(set(missing_values))
+            enums = [val for val in value_labels.keys() if not val in missing_values]
             constraints_enums = {'constraints':{'enum':[str(v) for v in enums]}}
             field.update(constraints_enums)
         

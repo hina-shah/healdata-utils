@@ -1,6 +1,6 @@
 {
-    "title": "Example Data Dictionary",
-    "description": "This is an example",
+    "description": "This is a proof of concept to demonstrate the healdata-utils functionality",
+    "title": "Healdata-utils Demonstration Data Dictionary",
     "data_dictionary": [
         {
             "name": "id",
@@ -9,12 +9,12 @@
         },
         {
             "name": "visit_dt",
-            "type": "datetime",
+            "type": "any",
             "description": "Date of the interview"
         },
         {
             "name": "sex_at_birth",
-            "type": "integer",
+            "type": "any",
             "encodings": {
                 "1": "Male",
                 "2": "Female",
@@ -39,7 +39,7 @@
         },
         {
             "name": "race",
-            "type": "integer",
+            "type": "any",
             "encodings": {
                 "1": "White",
                 "2": "Black or African American",
@@ -72,7 +72,7 @@
         },
         {
             "name": "hispanic_ethnicity",
-            "type": "integer",
+            "type": "boolean",
             "encodings": {
                 "0": "No",
                 "1": "Yes",
@@ -93,7 +93,7 @@
         },
         {
             "name": "SU4",
-            "type": "integer",
+            "type": "any",
             "encodings": {
                 "a": "Not reported",
                 "b": "Prefer not to answer"
@@ -116,8 +116,8 @@
             },
             "constraints": {
                 "enum": [
-                    "b",
-                    "a"
+                    "a",
+                    "b"
                 ]
             },
             "description": "Age of participant in year"

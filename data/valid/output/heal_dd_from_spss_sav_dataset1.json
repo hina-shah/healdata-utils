@@ -1,6 +1,6 @@
 {
-    "title": "Example Data Dictionary",
-    "description": "This is an example",
+    "description": "This is a proof of concept to demonstrate the healdata-utils functionality",
+    "title": "Healdata-utils Demonstration Data Dictionary",
     "data_dictionary": [
         {
             "name": "id",
@@ -13,7 +13,7 @@
         },
         {
             "name": "visit_dt",
-            "type": "datetime",
+            "type": "any",
             "missingValues": [
                 "1582-10-13 23:58:21",
                 "1582-10-13 23:58:22"
@@ -89,8 +89,8 @@
             },
             "constraints": {
                 "enum": [
-                    "0.0",
-                    "1.0"
+                    "1.0",
+                    "0.0"
                 ]
             },
             "missingValues": [

@@ -1,6 +1,6 @@
 {
-    "title": "Example Data Dictionary",
-    "description": "This is an example",
+    "description": "This is a proof of concept to demonstrate the healdata-utils functionality",
+    "title": "Healdata-utils Demonstration Data Dictionary",
     "data_dictionary": [
         {
             "name": "study_id",
