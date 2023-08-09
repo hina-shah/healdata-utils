@@ -58,6 +58,7 @@ class inference_relations:
 #  UUID}
 
 #TODO: make function to allow specification of params (eg k and threshold). Currently using sensiable default (see typesets_relations.py)
+#TODO: should we call this something more "frictionless-y" like "Enum"?
 Categorical= v.create_type(
     "Categorical",
     identity=[v.Generic],
@@ -88,10 +89,26 @@ typeset_mapping = {
 
 def infer_frictionless_fields(
     df,
-    typeset=typeset_with_categorical,
+    typesets=[typeset_original,typeset_with_categorical],
     typeset_mapping=typeset_mapping):
+
+    """ takes in a dataframe 
+    and infers types by iterating through typesets.
+    
+    
+    NOTE: This multiple typeset iteration was a solution to 
+    correctly inferring types within categoricals 
+    (eg integer categoricals from a float column. 
+    best solution may be too look into ordering inferences but
+    this does the same job.)
+
+
+    """
     # TODO: infer formats with extended dtypes (eg url, email etc)
-    df,typepaths,_ = typeset.infer(df) # typepaths is list of the visions graph traversal - last item is casted type
+    
+    for typeset in typesets:
+        df,typepaths,_ = typeset.infer(df) # typepaths is list of the visions graph traversal - last item is casted type
+    
     fields = []
 
     for col,typepath in typepaths.items():
