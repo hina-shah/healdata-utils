@@ -32,10 +32,10 @@ jobs:
       run: |
         python -m zipfile -c vlmd_${{ matrix.os }}.zip dist/vlmd.exe
 
-    - name: Upload Executable to Release
+    - name: Upload Executable to Tag
       uses: actions/upload-release-asset@v1
       with:
-        upload_url: ${{ github.event.release.upload_url }}
+        upload_url: ${{ github.event.tag.upload_url }}
         asset_path: dist/vlmd.exe # Change to match the PyInstaller output directory
         asset_name: vlmd_${{ matrix.os }} # Change the asset name
-        asset_content_type: application/octet-stream
+        asset_content_type: application/zip
