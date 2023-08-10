@@ -10,13 +10,13 @@ However, in the future, this will be expanded for all HEAL-specific data packagi
 
 ### Python
 
-While the HEAL Data Utilities should be compatible with most versions of Python, you can download the latest version of Python [here](https://www.python.org/downloads/) and install it on your local computer. We recommend installing Python version 3.10 or higher.
+While the HEAL Data Utilities should be compatible with most versions of Python, you can download the latest version of Python [here](https://www.python.org/downloads/) and install it on your local computer. We recommend installing Python version 3.10.
 
 ## Installation
 
 To install the latest official release of healdata-utils, from your computer's command prompt, run:
 
-`pip install healdata-utils --pre` (**NOTE: currently in pre-lease**)
+`pip install healdata-utils`
 
 OR for the most up-to-date unreleased version run: 
 
