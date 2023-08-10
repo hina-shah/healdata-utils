@@ -27,7 +27,7 @@ jobs:
         pip install pyinstaller
     - name: Bundle CLI
       run: |
-        pyinstaller --onefile scripts/vlmd.spec
+        pyinstaller scripts/vlmd.spec
     - name: Zip exe
       run: |
         python -m zipfile -c vlmd_${{ matrix.os }}.zip dist/vlmd.exe

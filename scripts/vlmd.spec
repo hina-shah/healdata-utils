@@ -9,7 +9,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['src\\healdata_utils\\cli.py'],
+    ['..\\src\\healdata_utils\\cli.py'],
     pathex=[],
     binaries=[],
     datas=datas,
