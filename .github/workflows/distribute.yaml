@@ -1,0 +1,41 @@
+name: Bundle CLI
+
+on:
+  push:
+    tags:
+      - "*"
+jobs:
+  publish:
+    name: Publish for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+          - os: macos-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller
+    - name: Bundle CLI
+      run: |
+        pyinstaller --onefile scripts/vlmd.spec
+    - name: Zip exe
+      run: |
+        python -m zipfile -c vlmd_${{ matrix.os }}.zip dist/vlmd.exe
+
+    - name: Upload Executable to Release
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: dist/vlmd.exe # Change to match the PyInstaller output directory
+        asset_name: vlmd_${{ matrix.os }} # Change the asset name
+        asset_content_type: application/octet-stream
