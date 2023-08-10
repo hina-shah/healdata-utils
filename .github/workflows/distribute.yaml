@@ -31,11 +31,23 @@ jobs:
     - name: Zip exe
       run: |
         python -m zipfile -c vlmd_${{ matrix.os }}.zip dist/vlmd.exe
-
+    # below steps taken from https://github.com/actions/upload-release-asset
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: true
+        prerelease: false
     - name: Upload Executable to Tag
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ github.event.tag.upload_url }}
-        asset_path: dist/vlmd.exe # Change to match the PyInstaller output directory
-        asset_name: vlmd_${{ matrix.os }} # Change the asset name
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/vlmd.exe
+        asset_name: vlmd_${{ matrix.os }}
         asset_content_type: application/zip
