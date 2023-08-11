@@ -17,6 +17,7 @@ nav:
       - Stata dataset: vlmd/formats/stata.md
       - Tabular (CSV) dataset: vlmd/formats/csvdata.md
       - REDCap data dictionary: vlmd/formats/redcapcsv.md
+      - Frictionless Table Schema: vlmd/formats/frictionlessschema.md
     - Data Dictionary Definitions (schemas):
       - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
       - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
