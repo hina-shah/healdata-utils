@@ -107,7 +107,11 @@ def find_docstring_desc(fxn):
     (ie text before Parameters)
     """
     exp = "^(.*)Parameters\\n"
-    docstring = fxn.__doc__.strip()
+
+    if fxn.__doc__:
+        docstring = fxn.__doc__.strip()
+    else:
+        docstring = "No documentation"
     try:
         return re.search(exp, docstring, re.DOTALL).group(1)
     except AttributeError:

@@ -4,13 +4,14 @@ command line interface for generating HEAL data dictionary/vlmd json files
 
 ''' 
 
-
 import click 
 from healdata_utils.transforms.csvtemplate.conversion import convert_templatecsv
 from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
 from healdata_utils.transforms.readstat.conversion import convert_readstat
 from healdata_utils.transforms.redcapcsv.conversion import convert_redcapcsv
 from healdata_utils.transforms.csvdata.conversion import convert_datacsv
+from healdata_utils.transforms.frictionless.conversion import convert_frictionless_tableschema
+
 from healdata_utils.validators.validate import validate_vlmd_json,validate_vlmd_csv
 import json
 from pathlib import Path
@@ -30,7 +31,8 @@ choice_fxn = {
     'sas7bdat':convert_readstat,
     'template.json':convert_templatejson,
     'json':convert_templatejson, #maintain for bwds compat
-    "redcap.csv":convert_redcapcsv
+    "redcap.csv":convert_redcapcsv,
+    "frictionless.schema.json":convert_frictionless_tableschema
 
 }
 

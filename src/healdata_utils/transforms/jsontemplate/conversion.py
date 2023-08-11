@@ -7,7 +7,7 @@ from healdata_utils.utils import flatten_except_if
 from os import PathLike
 
 def convert_templatejson(
-    jsontemplate:str,
+    jsontemplate,
     data_dictionary_props:dict=None,
     fields_name:str='data_dictionary',
     sep_iter = '|',
@@ -25,7 +25,7 @@ def convert_templatejson(
     
     Parameters
     ----------
-    csvtemplate : str or path-like or an object that can be inferred as data by frictionless's Resource class.
+    jsontemplate : str or path-like or an object that can be inferred as data by frictionless's Resource class.
         Data or path to data with the data being a tabular HEAL-specified data dictionary.
         This input can be any data object or path-like string excepted by a frictionless Resource object.
     data_dictionary_props : dict
