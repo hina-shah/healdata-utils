@@ -5,13 +5,11 @@ on:
     tags:
       - "*"
 jobs:
-
   bundle:
     name: Bundle cli for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
-    needs: release
     strategy:
       matrix:
         include:
@@ -46,6 +44,7 @@ jobs:
   release:
     name: Create a release from a tag
     runs-on: "ubuntu-latest"
+    needs: bundle
     permissions:
       contents: write
     steps:
