@@ -5,11 +5,13 @@ on:
     tags:
       - "*"
 jobs:
-  publish:
-    name: Publish for ${{ matrix.os }}
+
+  bundle:
+    name: Bundle cli for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     permissions:
       contents: write
+    needs: release
     strategy:
       matrix:
         include:
@@ -33,24 +35,26 @@ jobs:
     - name: Zip exe
       run: |
         python -m zipfile -c healdata_utils_${{ matrix.os }}.zip dist/vlmd.exe
-    # below steps taken from https://github.com/actions/upload-release-asset
-    # NOTE: need write permissions for contents
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload artifact (the zipped pyinstaller exe )
+      uses: actions/upload-artifact@v3
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: true
-        prerelease: false
-    - name: Upload Executable to Tag
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: healdata_utils_${{ matrix.os }}.zip
-        asset_name: healdata_utils_${{ matrix.os }}.zip
-        asset_content_type: application/zip
+        name: healdata_utils_${{ matrix.os }}.zip
+        path: healdata_utils_${{ matrix.os }}.zip
+  
+  # below steps taken from https://github.com/actions/upload-release-asset
+  # NOTE: need write permissions for contents
+  release:
+    name: Create a release from a tag
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Download artifacts (the zipped pyinstaller exe for each os)
+        uses: actions/download-artifact@v3
+      - name: Release with bundles
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            healdata-utils-windows-latest.zip
+            healdata-utils-ubuntu-latest.zip
+            healdata-utils-macos-latest.zip
