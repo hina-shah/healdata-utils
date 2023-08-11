@@ -36,7 +36,6 @@ jobs:
     - name: Upload artifact (the zipped pyinstaller exe )
       uses: actions/upload-artifact@v3
       with:
-        name: healdata-utils-${{ matrix.os }}
         path: healdata-utils-${{ matrix.os }}.zip
   
   # below steps taken from https://github.com/actions/upload-release-asset
