@@ -32,12 +32,12 @@ jobs:
         pyinstaller scripts/vlmd.spec
     - name: Zip exe
       run: |
-        python -m zipfile -c healdata-utils-${{ matrix.os.name }}.zip dist/vlmd.exe
+        python -m zipfile -c healdata-utils-${{ matrix.os }}.zip dist/vlmd.exe
     - name: Upload artifact (the zipped pyinstaller exe )
       uses: actions/upload-artifact@v3
       with:
-        name: healdata-utils-${{ matrix.os.name }}.zip
-        path: healdata-utils-${{ matrix.os.name }}.zip
+        name: healdata-utils-${{ matrix.os }}.zip
+        path: healdata-utils-${{ matrix.os }}.zip
   
   # below steps taken from https://github.com/actions/upload-release-asset
   # NOTE: need write permissions for contents
@@ -55,5 +55,6 @@ jobs:
       - name: Release with bundles
         uses: softprops/action-gh-release@v1
         with:
+          draft: true
           files: |
             *.zip
