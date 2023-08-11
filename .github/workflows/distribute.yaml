@@ -32,7 +32,7 @@ jobs:
         pyinstaller scripts/vlmd.spec
     - name: Zip exe
       run: |
-        python -m zipfile -c healdata-utils-${{ matrix.os }}.zip dist/vlmd.exe
+        python -m zipfile -c healdata-utils-${{ matrix.os.name }}.zip dist/vlmd.exe
     - name: Upload artifact (the zipped pyinstaller exe )
       uses: actions/upload-artifact@v3
       with:
