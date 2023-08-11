@@ -36,8 +36,8 @@ jobs:
     - name: Upload artifact (the zipped pyinstaller exe )
       uses: actions/upload-artifact@v3
       with:
-        name: healdata-utils-${{ matrix.os }}.zip
-        path: healdata-utils-${{ matrix.os }}.zip
+        name: healdata-utils-${{ matrix.os.name }}.zip
+        path: healdata-utils-${{ matrix.os.name }}.zip
   
   # below steps taken from https://github.com/actions/upload-release-asset
   # NOTE: need write permissions for contents
@@ -56,6 +56,4 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            healdata-utils-windows-latest.zip
-            healdata-utils-ubuntu-latest.zip
-            healdata-utils-macos-latest.zip
+            *.zip
