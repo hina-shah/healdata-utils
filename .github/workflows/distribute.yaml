@@ -32,9 +32,9 @@ jobs:
         pyinstaller scripts/vlmd.spec
     - name: Zip exe
       run: |
-        python -m zipfile -c vlmd_${{ matrix.os }}.zip dist/vlmd.exe
+        python -m zipfile -c healdata_utils_${{ matrix.os }}.zip dist/vlmd.exe
     # below steps taken from https://github.com/actions/upload-release-asset
-    # also see https://docs.github.com/en/actions/learn-github-actions/variables
+    # NOTE: need write permissions for contents
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
