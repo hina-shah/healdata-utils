@@ -56,7 +56,19 @@ def convert_templatejson(
         raise Exception("jsontemplate needs to be either dictionary-like or a path to a json")
 
     if data_dictionary_props:
-        jsontemplate_dict.update(data_dictionary_props)
+        for propname,prop in data_dictionary_props.items():
+
+            # determine if you should write or overwrite the
+            ## root level data dictionary props
+            if not jsontemplate_dict.get(propname):
+                write_prop = True
+            elif prop and prop!=jsontemplate_dict.get(propname):
+                write_prop = True
+            else:
+                write_prop = False
+
+            if write_prop:
+                jsontemplate_dict[propname] = prop
 
     fields_json = jsontemplate_dict.pop(fields_name)
     data_dictionary_props = jsontemplate_dict
