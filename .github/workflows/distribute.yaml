@@ -34,18 +34,20 @@ jobs:
         pyinstaller scripts/vlmd.spec
     - name: Zip exe
       run: |
-        python -m zipfile -c healdata_utils_${{ matrix.os }}.zip dist/vlmd.exe
+        python -m zipfile -c healdata-utils-${{ matrix.os }}.zip dist/vlmd.exe
     - name: Upload artifact (the zipped pyinstaller exe )
       uses: actions/upload-artifact@v3
       with:
-        name: healdata_utils_${{ matrix.os }}.zip
-        path: healdata_utils_${{ matrix.os }}.zip
+        name: healdata-utils-${{ matrix.os }}
+        path: healdata-utils-${{ matrix.os }}.zip
   
   # below steps taken from https://github.com/actions/upload-release-asset
   # NOTE: need write permissions for contents
   release:
     name: Create a release from a tag
     runs-on: "ubuntu-latest"
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
