@@ -1,5 +1,31 @@
 """ convert various frictionless objects to
 another format """
+from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
+import os 
+import yaml
+import json
+from pathlib import Path
+
+def convert_frictionless_tableschema(
+    schema,
+    data_dictionary_props:dict=None,
+    **kwargs
+):
+    if isinstance(schema,(os.PathLike,str)):
+        if Path(schema).suffixes[-1]==".yaml": #NOTE: not tested
+            schemajson = yaml.safe_load(Path(schema).read_text())
+        else:
+            schemajson = json.loads(Path(schema).read_text())
+    else:
+        schemajson = schema
+    data_dictionaries = convert_templatejson(
+        schemajson,
+        data_dictionary_props,
+        fields_name="fields",
+        **kwargs
+    )
+    return data_dictionaries
+
 
 def convert_frictionless_to_jsonschema(frictionless_schema):
     """ converts a frictionless schema to jsonschema """

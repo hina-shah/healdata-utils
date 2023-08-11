@@ -17,10 +17,12 @@ def valid_input_params():
         ),
         "title": "Healdata-utils Demonstration Data Dictionary",
     }
+    get_input_params = lambda input_filepath: {"filepath":inputdir.joinpath(input_filepath),"data_dictionary_props":data_dictionary_props}
     input_params = {
-        "dta":{"filepath":inputdir.joinpath("stata_dta_dataset1.dta"),"data_dictionary_props":data_dictionary_props},
-        "sav":{"filepath":inputdir.joinpath("spss_sav_dataset1.sav"),"data_dictionary_props":data_dictionary_props},
-        "redcap.csv":{"filepath":inputdir.joinpath("redcap_dd_export.redcap.csv"),"data_dictionary_props":data_dictionary_props},
+        "dta":get_input_params("stata_dta_dataset1.dta"),
+        "sav":get_input_params("spss_sav_dataset1.sav"),
+        "redcap.csv":get_input_params("redcap_dd_export.redcap.csv"),
+        "frictionless.schema.json":get_input_params("frictionless_dataset1.frictionless.schema.json")
     }
     return input_params
 
@@ -31,6 +33,7 @@ def valid_output_json():
         "dta":"heal_dd_from_stata_dta_dataset1.json",
         "sav":"heal_dd_from_spss_sav_dataset1.json",
         "redcap.csv":"heal_dd_from_redcap_dd_export.json",
+        "frictionless.schema.json":"heal_dd_from_frictionless_schema.json"
     }
     jsons = {}
     for inputtype,name in filenames.items():
@@ -48,6 +51,7 @@ def valid_output_csv():
         "dta":"heal_dd_from_stata_dta_dataset1.csv",
         "sav":"heal_dd_from_spss_sav_dataset1.csv",
         "redcap.csv":"heal_dd_from_redcap_dd_export.csv",
+        "frictionless.schema.json":"heal_dd_from_frictionless_schema.csv"
     }
     csvs = {}
     for inputtype,name in filenames.items():
