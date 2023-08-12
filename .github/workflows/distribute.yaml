@@ -45,9 +45,9 @@ jobs:
     - name: Bundle CLI
       run: |
         pyinstaller scripts/vlmd.spec
-    - name: Zip exe
+    - name: Zip exe (for windows) and pkg (for ubuntu/mac)
       run: |
-        python -m zipfile -c healdata-utils-${{ matrix.os }}.zip dist/vlmd.exe
+        python -m zipfile -c healdata-utils-${{ matrix.os }}.zip dist/vlmd.exe dist/vlmd.pkg
     - name: Release with bundles
       uses: softprops/action-gh-release@v1
       with:
