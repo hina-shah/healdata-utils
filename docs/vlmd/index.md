@@ -17,6 +17,17 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
 
 The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
+=== "Command Line Interface (CLI)"
+
+    ```bash
+
+    vlmd --filepath myproject/myfile.sav --inputtype sav --description "This contains my test data" --title "Test data"
+
+    ```
+    !!! note
+
+        For descriptions on the different flags/options, run `vlmd --help`
+
 === "Python"
     ```python
 
@@ -35,16 +46,6 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
     
         for a complete set of options with `convert_to_vlmd` see the docstring (if in a notebook, one can enter `convert_to_vlmd?`)
 
-=== "Command Line Interface (CLI)"
-
-    ```bash
-
-    vlmd --filepath myproject/myfile.sav --inputtype sav --description "This contains my test data" --title "Test data"
-
-    ```
-    !!! note
-
-        For descriptions on the different flags/options, run `vlmd --help`
 
 ### Output
 
