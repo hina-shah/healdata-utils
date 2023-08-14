@@ -2,7 +2,7 @@
 
 The HEAL Data Utilities python package provides data packaging tools for the HEAL Data Ecosystem to facilitate data discovery, sharing, and harmonization on the [HEAL Platform](https://healdata.org).
  
-Currently, the focus of this repository is generating standardized variable level metadata (VLMD) in the form of data dictionaries. ([Click here](vlmd/index.md) for the Variable-level Metadata documentation section).
+Currently, the focus of this repository is generating standardized variable level metadata (VLMD) in the form of data dictionaries. ([Click here](./vlmd/index.md) for the Variable-level Metadata documentation section).
 
 However, in the future, this will be expanded for all HEAL-specific data packaging functions (e.g., study- and file-level metadata and data).
 
