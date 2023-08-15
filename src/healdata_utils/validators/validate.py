@@ -32,8 +32,14 @@ class Validator:
     
     @classmethod 
     def from_jsonarray(cls,data,schema,schema_type):
+        jsonschema.validate(data,{"type":"array","items":{"type":"object"}})
         return cls(data,schema,schema_type)
 
+    @classmethod 
+    def from_jsonobject(cls,data,schema,schema_type):
+        jsonschema.validate(data,{"type":"object"})
+        return cls(data,schema,schema_type)
+        
     @classmethod
     def from_jsonfile(cls,path,schema,schema_type):
         data = json.loads(Path(path).read_text())
@@ -91,7 +97,7 @@ def validate_vlmd_json(
             schema_type="jsonschema"
         )
     else:
-        validator = Validator.from_jsonarray(
+        validator = Validator.from_jsonobject(
             data=data_or_path,
             schema=schema,
             schema_type="jsonschema"

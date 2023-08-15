@@ -22,7 +22,10 @@ def test_validate_vlmd_csv_with_data():
 
 # validate_vlmd_json
 def test_validate_vlmd_json_with_data():
-    data = [
+    data = {
+        "title":"This is a test",
+        "description":"This is a test",
+        "data_dictionary": [
         {
             "name": "field1",
             "description": "This is a test field",
@@ -31,6 +34,7 @@ def test_validate_vlmd_json_with_data():
         },
         {"name": "field2", "encodings": "1"},
     ]
+    }
     package = validate_vlmd_json(data)
     with open("tests/criteria_data/validators/validate_vlmd_json_check1.json", 'r') as fp:
         package_check = json.load(fp)
