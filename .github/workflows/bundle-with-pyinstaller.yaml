@@ -18,7 +18,7 @@ jobs:
       - name: Release with bundles
         uses: softprops/action-gh-release@v1
         with:
-          draft: false
+          draft: true
   bundle:
     name: Bundle cli for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -55,6 +55,6 @@ jobs:
     - name: Release with bundles
       uses: softprops/action-gh-release@v1
       with:
-        draft: false
+        draft: true
         files: |
           *healdata-utils-${{ matrix.name }}.zip
