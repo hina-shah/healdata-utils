@@ -131,7 +131,7 @@ With the `sas7bcat` file:
 vlmd --filepath input/data.sas7bdat --sas7bcat-filepath input/formats.sas7bcat --inputtype sas7bdat
 ```
 
-Without the `sas7bdat` file:
+Without the `sas7bcat` file:
 
 
 ```bash

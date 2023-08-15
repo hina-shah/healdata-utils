@@ -1,5 +1,5 @@
 import pandas as pd
-from healdata_utils.utils import to_int_if_base10
+from healdata_utils.utils import to_int_if_base10,stringify_keys
 from healdata_utils.io import read_pyreadstat
 from healdata_utils.types import typesets
 from ..jsontemplate.conversion import convert_templatejson
@@ -68,16 +68,20 @@ def convert_readstat(file_path,
         metaparams["catalog_file"] = sas7bcat_file_path
     _,meta = read_pyreadstat(**metaparams) # get user missing values (for stata/sas will make string so need sep call to infer types)
     df,_ = read_pyreadstat(file_path) # dont fill user defined missing vals (to get correct types)
-    fields = typesets.infer_frictionless_fields(df)
+    
+    # NOTE: not inferring categoricals as this is inferred from value labels
+    fields = typesets.infer_frictionless_fields(df,typesets=[typesets.typeset_original])
 
     for field in fields:
         field.pop('extDtype',None)
         fieldname = field['name']
 
-        value_labels = meta.variable_value_labels.get(fieldname)
+        variable_label = meta.column_names_to_labels.get(fieldname)
+        if variable_label:
+            field['description'] = variable_label
+
         missing_values = meta.missing_user_values.get(fieldname,[])
         missing_ranges = meta.missing_ranges.get(fieldname,[])
-
         #see NOTE in docstring (on missing values): 
         # below maps SPSS missing values
         for items in missing_ranges:
@@ -90,20 +94,26 @@ def convert_readstat(file_path,
             else:
                 raise Exception("Currently, only discrete values are supported")
 
+        # NOTE: stringify to conform to frictionless pattern
+        value_labels = meta.variable_value_labels.get(fieldname)
+
         if value_labels:
+            # NOTE: collect enums before stringfying - frictionless spec evaluates on logical representation
+            enums = [
+                val for val in list(value_labels.keys()) 
+                if not val in missing_values
+            ]
+            stringify_keys(value_labels)
             field['encodings'] = value_labels
-            #NOTE: enums are assumed if labels represent entire set of values
-            # this avoids value labels that are, for example, partials such as top/bottom encodings
-            enums = [val for val in value_labels.keys() if not val in missing_values]
-            constraints_enums = {'constraints':{'enum':[str(v) for v in enums]}}
-            field.update(constraints_enums)
+
+            if enums:
+                constraints_enums = {'constraints':{'enum':enums}}
+                field.update(constraints_enums)
         
         if missing_values:
-            field['missingValues'] = missing_values
-
-        variable_label = meta.column_names_to_labels.get(fieldname)
-        if variable_label:
-            field['description'] = variable_label
+            # NOTE: stringify to conform to frictionless standards (missing values evaluated on physical representation)
+            missing_values_str = [str(val) for val in missing_values]
+            field['missingValues'] = missing_values_str
 
     data_dictionary = data_dictionary_props.copy()
     data_dictionary['data_dictionary'] = fields 

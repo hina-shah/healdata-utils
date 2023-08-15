@@ -71,6 +71,10 @@ def flatten_except_if(dictionary, parent_key=False, sep=".", except_keys=["encod
             items.append((new_key, value))
     return dict(items)
 
+def stringify_keys(dictionary):
+    orig_keys = list(dictionary.keys())
+    for key in orig_keys:
+        dictionary[str(key)] = dictionary.pop(key)
 
 def convert_rec_to_json(field):
     """
