@@ -1,7 +1,7 @@
 from healdata_utils.validators.validate import validate_vlmd_csv, validate_vlmd_json
 import json
 import os
-
+from pathlib import Path
 # validate_vlmd_csv
 def test_validate_vlmd_csv_with_data():
     data = [
