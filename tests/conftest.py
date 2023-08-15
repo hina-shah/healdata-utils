@@ -23,7 +23,7 @@ def valid_input_params():
             **{"sas7bcat_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat")}
         }, #TODO: reduce data so easier to manage and test
         "dta":get_input_params("stata_dta_dataset1.dta"),
-        #"sav":get_input_params("../../JCOIN_NORC_Omnibus_SURVEY3_June2020.sav"),
+        # "sav":get_input_params("../../JCOIN_NORC_Omnibus_SURVEY3_June2020.sav"),
         "sav":get_input_params("spss_sav_dataset1.sav"),
         "redcap.csv":get_input_params("redcap_dd_export.redcap.csv"),
         "frictionless.schema.json":get_input_params("frictionless_dataset1.frictionless.schema.json")
@@ -34,7 +34,7 @@ def valid_input_params():
 def valid_output_json():
     path = Path("data/valid/output")
     filenames = {
-        "sas7bdat":"heal_dd_from_sas7bdat_with_sas7bcat.csv", #TODO: reduce data so easier to manage and test
+        "sas7bdat":"heal_dd_from_sas7bdat_with_sas7bcat.json", #TODO: reduce data so easier to manage and test
         "dta":"heal_dd_from_stata_dta_dataset1.json",
         "sav":"heal_dd_from_spss_sav_dataset1.json",
         "redcap.csv":"heal_dd_from_redcap_dd_export.json",
@@ -53,7 +53,7 @@ def valid_output_json():
 def valid_output_csv():
     path = Path("data/valid/output")
     filenames = {
-        "sas7bdat":"heal_dd_from_sas7bdat_with_sas7bcat.json",#TODO: reduce data so easier to manage and test
+        "sas7bdat":"heal_dd_from_sas7bdat_with_sas7bcat.csv",#TODO: reduce data so easier to manage and test
         "dta":"heal_dd_from_stata_dta_dataset1.csv",
         "sav":"heal_dd_from_spss_sav_dataset1.csv",
         "redcap.csv":"heal_dd_from_redcap_dd_export.csv",
