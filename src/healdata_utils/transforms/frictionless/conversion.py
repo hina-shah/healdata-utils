@@ -89,12 +89,23 @@ def convert_frictionless_to_jsonschema(frictionless_schema):
 
         # all fields are required - missing-ness vs. required in tabular perspective is tacked on to property
         is_required = "required" in constraints or field["name"] in primary_keys
-        if not is_required:
-            prop_with_missing = {
+
+        if is_required:
+            # if required value: MUST be NOT missing value and the property
+            prop_accounting_for_missing = {
+                "allOf":[
+                    prop,{"not": {"enum":missing_values}}
+                ]
+            }
+        else:
+            # if not required value: MUST be property OR the specified missing value
+            prop_accounting_for_missing = {
                 "anyOf":[
                     prop,{"enum":missing_values}
             ]}
-            jsonschema_properties[field["name"]] = prop_with_missing
+        
+        jsonschema_properties[field["name"]] = prop_accounting_for_missing
+            
 
     
     jsonschema_schema = {
