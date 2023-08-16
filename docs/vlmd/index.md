@@ -78,7 +78,22 @@ Both the python and command line routes will result in a JSON and CSV version of
 
 - `errors/heal-csv-errors.json`: outputted validation report for table in csv file against frictionless schema
 
+If valid, this file will contain:
+```json
+{
+    "valid": true,
+    "errors": []
+}
+```
 - `errors/heal-json-errors.json`:  outputted jsonschema validation report.
+
+- If valid, this file will contain:
+```json
+{
+    "valid": true,
+    "errors": []
+}
+```
 
 - `heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
 - `heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
