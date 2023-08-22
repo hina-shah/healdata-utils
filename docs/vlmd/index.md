@@ -26,7 +26,7 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
     ```
     !!! note
 
-        For descriptions on the different flags/options, run `vlmd --help`
+        To continue, it's recommended to go to the [input types and formats](#input-types-and-formats). Also, for more details on the different flags/options, run `vlmd --help`
 
 === "Python"
     ```python
@@ -43,12 +43,12 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
     ```
 
     !!! note
-    
-        for a complete set of options with `convert_to_vlmd` see the docstring (if in a notebook, one can enter `convert_to_vlmd?`)
 
-### Input Formats
+        To continue, it's recommended to go to the [input types and formats](#input-types-and-formats). For a complete set of options with `convert_to_vlmd` see the docstring (if in a notebook, one can enter `convert_to_vlmd?`)
 
-In this section, supported formats for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided. 
+### Input Types and Formats
+
+In this section, supported types and formats  for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided. 
 
 !!! note
     The commands in these sections are very minimal. One can add other metadata (Ie metadata describing the data dictionary) via the command line (eg `--title` and `--description` options.) For an example of this, see the [basic usage section](#basic-usage). 
