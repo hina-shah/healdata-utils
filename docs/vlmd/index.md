@@ -95,6 +95,8 @@ If valid, this file will contain:
 }
 ```
 
+If no `outputdir` specified, the resulting HEAL-compliant data dictionaries will be named:
+
 - `heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
 - `heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
 
