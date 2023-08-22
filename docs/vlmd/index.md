@@ -48,7 +48,7 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
 
 ### Input Types and Formats
 
-In this section, supported types and formats  for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided. 
+This section provides the specific syntax for running each of the supported types for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided. 
 
 !!! note
     The commands in these sections are very minimal. One can add other metadata (Ie metadata describing the data dictionary) via the command line (eg `--title` and `--description` options.) For an example of this, see the [basic usage section](#basic-usage). 
@@ -122,7 +122,7 @@ For more information on variable-level metadata properties (fields), see the [`c
 
     4. Repeat (2) and (3) until you are ready to submit. Please note, currently only `name` and `description` are required.
 
-## Interactive notebooks
+<!-- ## Interactive notebooks
 
 See the below notebooks demonstrating use and workflows using the `convert_to_vlmd` in python and `vlmd` in the command line. 
 
@@ -131,7 +131,7 @@ See the below notebooks demonstrating use and workflows using the `convert_to_vl
 1. Generating a heal data dictionary from a variety of input files 
 
 - [click here for static notebook ](https://github.com/norc-heal/healdata-utils/blob/main/notebooks/demos/inputs-to-heal-data-dictionary.ipynb) 
-- click binder badge for interactive [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb) 
+- click binder badge for interactive [![Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/norc-heal/healdata-utils/HEAD?labpath=notebooks%2Fdemos%2Finputs-to-heal-data-dictionary.ipynb)  -->
 
 <!-- 2. [in development] Creating and iterating over a csv data dictionary to create a valid data dictionary file [click here](notebooks/demos/demo-csvtemplate-validation.ipynb) -->
 
