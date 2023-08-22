@@ -16,6 +16,7 @@ from healdata_utils.validators.validate import validate_vlmd_json,validate_vlmd_
 import json
 from pathlib import Path
 import petl as etl
+import pandas as pd
 import csv
 from collections import deque
 
@@ -143,14 +144,16 @@ def convert_to_vlmd(
         # print data dictionaries
         jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
 
+        quoting = csv.QUOTE_NONNUMERIC if csvtemplate_output_quoting else csv.QUOTE_MINIMAL
         # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
-        (
-            etl.fromdicts(templatecsv)
-            .tocsv(
-                csvtemplate_path,
-                quoting=csv.QUOTE_NONNUMERIC if csvtemplate_output_quoting else csv.QUOTE_MINIMAL)
+        # (
+        #     etl.fromdicts(templatecsv)
+        #     .tocsv(
+        #         csvtemplate_path,
+        #         quoting=csv.QUOTE_NONNUMERIC if csvtemplate_output_quoting else csv.QUOTE_MINIMAL)
 
-        )
+        # )
+        pd.DataFrame(templatecsv).to_csv(csvtemplate_path,quoting=quoting,index=False)
 
         # print errors
 
