@@ -200,7 +200,7 @@ def mapcheckbox(field):
     fieldsnew = [
         {
             "description":f"[choice={choice}]",
-            "title": checkboxname.title()+":"+choice,
+            "title": checkboxname.title()+": "+choice,
             "name":checkboxname+"___"+re.sub("^\-","_",val).strip(), #NOTE: REDCAP changes negative sign to underscore
             "type":fieldtype,
             "constraints":{"enum":fieldenums},
