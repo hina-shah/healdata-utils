@@ -128,7 +128,7 @@
         },
         {
             "description": "Contact Information: Race[choice=American Indian/Alaska Native]",
-            "title": "Race:American Indian/Alaska NativeRace",
+            "title": "Race: American Indian/Alaska Native",
             "name": "race___0",
             "type": "boolean",
             "constraints": {
@@ -145,7 +145,7 @@
         },
         {
             "description": "Contact Information: Race[choice=Asian]",
-            "title": "Race:AsianRace",
+            "title": "Race: Asian",
             "name": "race___1",
             "type": "boolean",
             "constraints": {
@@ -162,7 +162,7 @@
         },
         {
             "description": "Contact Information: Race[choice=Native Hawaiian or Other Pacific Islander]",
-            "title": "Race:Native Hawaiian or Other Pacific IslanderRace",
+            "title": "Race: Native Hawaiian or Other Pacific Islander",
             "name": "race___2",
             "type": "boolean",
             "constraints": {
@@ -179,7 +179,7 @@
         },
         {
             "description": "Contact Information: Race[choice=Black or African American]",
-            "title": "Race:Black or African AmericanRace",
+            "title": "Race: Black or African American",
             "name": "race___3",
             "type": "boolean",
             "constraints": {
@@ -196,7 +196,7 @@
         },
         {
             "description": "Contact Information: Race[choice=White]",
-            "title": "Race:WhiteRace",
+            "title": "Race: White",
             "name": "race___4",
             "type": "boolean",
             "constraints": {
@@ -213,7 +213,7 @@
         },
         {
             "description": "Contact Information: Race[choice=More Than One Race]",
-            "title": "Race:More Than One RaceRace",
+            "title": "Race: More Than One Race",
             "name": "race___5",
             "type": "boolean",
             "constraints": {
@@ -230,7 +230,7 @@
         },
         {
             "description": "Contact Information: Race[choice=Unknown / Not Reported]",
-            "title": "Race:Unknown / Not ReportedRace",
+            "title": "Race: Unknown / Not Reported",
             "name": "race___6",
             "type": "boolean",
             "constraints": {
@@ -333,7 +333,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Gym (Weight Training)[choice=Monday]",
-            "title": "Gym:MondayGym (Weight Training)",
+            "title": "Gym: Monday",
             "name": "gym___0",
             "type": "boolean",
             "constraints": {
@@ -350,7 +350,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Gym (Weight Training)[choice=Tuesday]",
-            "title": "Gym:TuesdayGym (Weight Training)",
+            "title": "Gym: Tuesday",
             "name": "gym___1",
             "type": "boolean",
             "constraints": {
@@ -367,7 +367,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Gym (Weight Training)[choice=Wednesday]",
-            "title": "Gym:WednesdayGym (Weight Training)",
+            "title": "Gym: Wednesday",
             "name": "gym___2",
             "type": "boolean",
             "constraints": {
@@ -384,7 +384,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Gym (Weight Training)[choice=Thursday]",
-            "title": "Gym:ThursdayGym (Weight Training)",
+            "title": "Gym: Thursday",
             "name": "gym___3",
             "type": "boolean",
             "constraints": {
@@ -401,7 +401,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Gym (Weight Training)[choice=Friday]",
-            "title": "Gym:FridayGym (Weight Training)",
+            "title": "Gym: Friday",
             "name": "gym___4",
             "type": "boolean",
             "constraints": {
@@ -418,7 +418,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Aerobics[choice=Monday]",
-            "title": "Aerobics:MondayAerobics",
+            "title": "Aerobics: Monday",
             "name": "aerobics___0",
             "type": "boolean",
             "constraints": {
@@ -435,7 +435,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Aerobics[choice=Tuesday]",
-            "title": "Aerobics:TuesdayAerobics",
+            "title": "Aerobics: Tuesday",
             "name": "aerobics___1",
             "type": "boolean",
             "constraints": {
@@ -452,7 +452,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Aerobics[choice=Wednesday]",
-            "title": "Aerobics:WednesdayAerobics",
+            "title": "Aerobics: Wednesday",
             "name": "aerobics___2",
             "type": "boolean",
             "constraints": {
@@ -469,7 +469,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Aerobics[choice=Thursday]",
-            "title": "Aerobics:ThursdayAerobics",
+            "title": "Aerobics: Thursday",
             "name": "aerobics___3",
             "type": "boolean",
             "constraints": {
@@ -486,7 +486,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Aerobics[choice=Friday]",
-            "title": "Aerobics:FridayAerobics",
+            "title": "Aerobics: Friday",
             "name": "aerobics___4",
             "type": "boolean",
             "constraints": {
@@ -503,7 +503,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Eat Out (Dinner/Lunch)[choice=Monday]",
-            "title": "Eat:MondayEat Out (Dinner/Lunch)",
+            "title": "Eat: Monday",
             "name": "eat___0",
             "type": "boolean",
             "constraints": {
@@ -520,7 +520,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Eat Out (Dinner/Lunch)[choice=Tuesday]",
-            "title": "Eat:TuesdayEat Out (Dinner/Lunch)",
+            "title": "Eat: Tuesday",
             "name": "eat___1",
             "type": "boolean",
             "constraints": {
@@ -537,7 +537,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Eat Out (Dinner/Lunch)[choice=Wednesday]",
-            "title": "Eat:WednesdayEat Out (Dinner/Lunch)",
+            "title": "Eat: Wednesday",
             "name": "eat___2",
             "type": "boolean",
             "constraints": {
@@ -554,7 +554,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Eat Out (Dinner/Lunch)[choice=Thursday]",
-            "title": "Eat:ThursdayEat Out (Dinner/Lunch)",
+            "title": "Eat: Thursday",
             "name": "eat___3",
             "type": "boolean",
             "constraints": {
@@ -571,7 +571,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Eat Out (Dinner/Lunch)[choice=Friday]",
-            "title": "Eat:FridayEat Out (Dinner/Lunch)",
+            "title": "Eat: Friday",
             "name": "eat___4",
             "type": "boolean",
             "constraints": {
@@ -588,7 +588,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Drink (Alcoholic Beverages)[choice=Monday]",
-            "title": "Drink:MondayDrink (Alcoholic Beverages)",
+            "title": "Drink: Monday",
             "name": "drink___0",
             "type": "boolean",
             "constraints": {
@@ -605,7 +605,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Drink (Alcoholic Beverages)[choice=Tuesday]",
-            "title": "Drink:TuesdayDrink (Alcoholic Beverages)",
+            "title": "Drink: Tuesday",
             "name": "drink___1",
             "type": "boolean",
             "constraints": {
@@ -622,7 +622,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Drink (Alcoholic Beverages)[choice=Wednesday]",
-            "title": "Drink:WednesdayDrink (Alcoholic Beverages)",
+            "title": "Drink: Wednesday",
             "name": "drink___2",
             "type": "boolean",
             "constraints": {
@@ -639,7 +639,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Drink (Alcoholic Beverages)[choice=Thursday]",
-            "title": "Drink:ThursdayDrink (Alcoholic Beverages)",
+            "title": "Drink: Thursday",
             "name": "drink___3",
             "type": "boolean",
             "constraints": {
@@ -656,7 +656,7 @@
         },
         {
             "description": "Please provide the patient's weekly schedule for the activities below.: Drink (Alcoholic Beverages)[choice=Friday]",
-            "title": "Drink:FridayDrink (Alcoholic Beverages)",
+            "title": "Drink: Friday",
             "name": "drink___4",
             "type": "boolean",
             "constraints": {

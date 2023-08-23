@@ -65,7 +65,10 @@ def gather(sourcefields):
 
     def __add_title(sourcefield,targetfield):
         targettitle = targetfield.get("title","")
-        if sourcefield.get("label"):
+
+        if targettitle:
+            return targettitle
+        elif sourcefield.get("label"):
             return targettitle + utils.strip_html(sourcefield["label"].strip())
         else:
             return "No field label for this variable"
