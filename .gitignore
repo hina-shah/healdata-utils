@@ -10,6 +10,7 @@
 .gen3
 
 NOTES.txt
+notes/*
 
 build/
 
