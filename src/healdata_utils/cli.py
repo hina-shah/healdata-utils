@@ -24,7 +24,7 @@ from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 def vlmd():
     pass 
 
-@vlmd.command()
+@vlmd.command("quick-start")
 def quick_start():
     pass 
 
@@ -54,21 +54,23 @@ def validate(filepath):
     ext = Path(filepath).suffix.replace(".","")
 
     if ext == "csv":
-        package_csv = validate_vlmd_csv(
-            data_dictionary_package["templatecsv"]["data_dictionary"], to_sync_fields=True
-        )
+        package = validate_vlmd_csv(file, to_sync_fields=True)
+        report = package["report"]
     elif ext == "json":
-        package_json = validate_vlmd_json(data_dictionary_package["templatejson"])
-    
+        package = validate_vlmd_json(file)
+        report = package["report"]
+    else:
+        raise Exception("Need to specify either a csv or json file")
+
     if output_filepath:
         Path(outfile).write_text(
-            json.dumps(report_json, indent=4)
+            json.dumps(report, indent=4)
         )
     else:
         #TODO: color code; more informative errors
-        click.echo_via_pager(json.dumps(report_json, indent=4))
+        click.echo_via_pager(json.dumps(report, indent=4))
          
 
         
 if __name__=='__main__':
-    main()
+    vlmd()
