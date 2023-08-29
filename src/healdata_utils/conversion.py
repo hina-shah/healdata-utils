@@ -160,9 +160,12 @@ def convert_to_vlmd(
     in the heal specification repository.
     This is an intermediate solution to socialize a proof-of-concept.
 
+
     TODO
     --------
     make sub command for each file format rather than just one function? Added sas7bcat and can predict additional complexity
+    
+    Convert this to object-oriented framework -- this may be best done for entire package (eg individual types as well)?
 
     """
 
