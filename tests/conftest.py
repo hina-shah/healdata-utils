@@ -19,18 +19,21 @@ def valid_input_params():
     }
     get_input_params = lambda input_filepath: {"filepath":inputdir.joinpath(input_filepath),"data_dictionary_props":data_dictionary_props}
     input_params = {
-        "data.csv":{
+        "csv-data":{
             **get_input_params("data_csv_dataset1.data.csv"),
-            "inputtype":"data.csv"
+            "inputtype":"csv-data"
         },
-        "sas7bdat":{**get_input_params("sas-nmhss-2019/data.sas7bdat"),
-            "sas7bcat_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat")
+        "sas":{
+            **get_input_params("sas-nmhss-2019/data.sas7bdat"),
+            "sas7bcat_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat"),
+            "inputtype":"sas"
         }, #TODO: reduce data so easier to manage and test
-        "dta":get_input_params("stata_dta_dataset1.dta"),
+        "stata":{**get_input_params("stata_dta_dataset1.dta"),"inputtype":"stata"},
         # "sav":get_input_params("../../JCOIN_NORC_Omnibus_SURVEY3_June2020.sav"),
-        "sav":get_input_params("spss_sav_dataset1.sav"),
-        "redcap.csv":get_input_params("redcap_dd_export.redcap.csv"),
-        "frictionless.schema.json":get_input_params("frictionless_dataset1.frictionless.schema.json")
+        "spss":{**get_input_params("spss_sav_dataset1.sav"),"inputtype":"spss"},
+        "redcap":{**get_input_params("redcap_dd_export.redcap.csv"),"inputtype":"redcap"},
+        "frictionless":{**get_input_params("frictionless_dataset1.frictionless.schema.json"),
+            "inputtype":"frictionless"}
     }
     return input_params
 
@@ -38,12 +41,12 @@ def valid_input_params():
 def valid_output_json():
     path = Path("data/valid/output")
     filenames = {
-        "data.csv":"heal_dd_from_csv_data_dataset1.json",
-        "sas7bdat":"heal_dd_from_sas7bdat_with_sas7bcat.json", #TODO: reduce data so easier to manage and test
-        "dta":"heal_dd_from_stata_dta_dataset1.json",
-        "sav":"heal_dd_from_spss_sav_dataset1.json",
-        "redcap.csv":"heal_dd_from_redcap_dd_export.json",
-        "frictionless.schema.json":"heal_dd_from_frictionless_schema.json"
+        "csv-data":"heal_dd_from_csv_data_dataset1.json",
+        "sas":"heal_dd_from_sas7bdat_with_sas7bcat.json", #TODO: reduce data so easier to manage and test
+        "stata":"heal_dd_from_stata_dta_dataset1.json",
+        "spss":"heal_dd_from_spss_sav_dataset1.json",
+        "redcap":"heal_dd_from_redcap_dd_export.json",
+        "frictionless":"heal_dd_from_frictionless_schema.json"
     }
     jsons = {}
     for inputtype,name in filenames.items():
@@ -58,12 +61,12 @@ def valid_output_json():
 def valid_output_csv():
     path = Path("data/valid/output")
     filenames = {
-        "data.csv":"heal_dd_from_csv_data_dataset1.csv",
-        "sas7bdat":"heal_dd_from_sas7bdat_with_sas7bcat.csv",#TODO: reduce data so easier to manage and test
-        "dta":"heal_dd_from_stata_dta_dataset1.csv",
-        "sav":"heal_dd_from_spss_sav_dataset1.csv",
-        "redcap.csv":"heal_dd_from_redcap_dd_export.csv",
-        "frictionless.schema.json":"heal_dd_from_frictionless_schema.csv"
+        "csv-data":"heal_dd_from_csv_data_dataset1.csv",
+        "sas":"heal_dd_from_sas7bdat_with_sas7bcat.csv",#TODO: reduce data so easier to manage and test
+        "stata":"heal_dd_from_stata_dta_dataset1.csv",
+        "spss":"heal_dd_from_spss_sav_dataset1.csv",
+        "redcap":"heal_dd_from_redcap_dd_export.csv",
+        "frictionless":"heal_dd_from_frictionless_schema.csv"
     }
     csvs = {}
     for inputtype,name in filenames.items():
