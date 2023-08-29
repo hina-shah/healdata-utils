@@ -33,7 +33,7 @@ setup(
     install_requires=get_install_requirements(),
     entry_points='''
         [console_scripts]
-        vlmd=healdata_utils.cli:main
+        vlmd=healdata_utils.cli:vlmd
     '''
 
 )

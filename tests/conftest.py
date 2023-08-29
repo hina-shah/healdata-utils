@@ -30,7 +30,7 @@ def valid_input_params():
         },
         "sas":{
             **get_input_params("sas-nmhss-2019/data.sas7bdat"),
-            "sas7bcat_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat"),
+            "sas_catalog_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat"),
             "inputtype":"sas"
         }, #TODO: reduce data so easier to manage and test
         "stata":{**get_input_params("stata_dta_dataset1.dta"),"inputtype":"stata"},
@@ -83,7 +83,7 @@ def valid_output_csv():
     return csvs
 
 
-def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput):
+def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname):
     """ compares a given csv and json output to a tmp directory
     for both csv and json (vlmd - variable level metadata)
     """
@@ -109,11 +109,11 @@ def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput):
     json_field_names = [f["name"] for f in json_fields]
     csv_field_names = [f["name"] for f in json_fields]
 
-    assert sorted(json_field_names)==sorted(csv_field_names),f"{inputtype} conversion: json fields must have the same field names as csv fields"
-    assert len(invalid_json_fields)==0,f"{inputtype} conversion: The following **json** dd fields are not valid: {str(invalid_json_fields)}"
-    assert len(invalid_csv_fields)==0,f"{inputtype} conversion: The following **csv** dd fields are not valid: {str(invalid_csv_fields)}"
+    assert sorted(json_field_names)==sorted(csv_field_names),f"json fields must have the same field names as csv fields"
+    assert len(invalid_json_fields)==0,f"The following **json** dd fields are not valid: {str(invalid_json_fields)}"
+    assert len(invalid_csv_fields)==0,f"The following **csv** dd fields are not valid: {str(invalid_csv_fields)}"
     
     
     # check if root level properties other than the fields are valid
     for propname in ddjson:
-        assert ddjson[propname] == _valid_output_json[propname],f"{inputtype} conversion to json dd property '{propname}' assertion failed"
+        assert ddjson[propname] == jsonoutput[propname],f"json dd property '{propname}' assertion failed"
