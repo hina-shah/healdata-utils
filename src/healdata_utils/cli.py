@@ -32,19 +32,35 @@ def quick_start():
 @click.argument("inputfile",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
 @click.option('--outfile',default="",help='File path (or file name) where you want to output your HEAL data dictionary')
-@click.option('--inputtype',default=None,type=click.Choice(list(choice_fxn.keys())),help='The type of your input file.')
+@click.option('--inputtype',required=True,type=click.Choice(list(choice_fxn.keys())),help='The type of your input file.')
 @click.option('--title',default=None,help='The title of your data dictionary. If not specified, then the file name will be used')
 @click.option('--description',default=None,help='Description of data dictionary')
 def extract(inputfile,outfile,inputtype,title,description):
 
     data_dictionary_props = {'title':title,'description':description}
 
+    if inputtype == "sas":
+        sas_catalog_search = list(Path(inputfile).parent.glob("*.sas7bcat"))
+        if len(sas_catalog_search) == 1:
+            sas_catalog_filepath = sas_catalog_search[0]
+            click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}")
+        elif len(sas_catalog_search) > 1:
+            sas_catalog_filepath = sas_catalog_search[0]
+            click.secho(f"Warning: Found multiple SAS Catalog files")
+            click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}")
+        else:
+            sas_catalog_filepath = None
+            click.secho("No sas catalog file found so value labels will not be applied")
+    
+    else:
+        sas_catalog_filepath = None
     #save dds and error reports to files
     data_dictionaries = convert_to_vlmd(
         input_filepath=inputfile,
         data_dictionary_props=data_dictionary_props,
         output_filepath=outfile,
-        inputtype=inputtype
+        inputtype=inputtype,
+        sas_catalog_filepath=sas_catalog_filepath
     )
 
 #TODO: 

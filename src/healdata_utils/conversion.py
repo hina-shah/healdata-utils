@@ -196,12 +196,11 @@ def convert_to_vlmd(
 
     # get data dictionary package based on the input type
     if inputtype == "sas":
-        if sas_catalog_filepath:
-            data_dictionary_package = choice_fxn[inputtype](
-                input_filepath,
-                data_dictionary_props,
-                sas_catalog_filepath=sas_catalog_filepath,
-            )
+        data_dictionary_package = choice_fxn[inputtype](
+            input_filepath,
+            data_dictionary_props,
+            sas_catalog_filepath=sas_catalog_filepath,
+        )
     else:
         data_dictionary_package = choice_fxn[inputtype](
             input_filepath, data_dictionary_props
