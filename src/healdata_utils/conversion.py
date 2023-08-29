@@ -67,7 +67,7 @@ def _write_vlmd(jsontemplate, csvtemplate, csvreport, jsonreport, output_filepat
     csv_exists = csvtemplate_path.exists()
 
     if not dir_exists:
-        raise FileNotFoundError(
+        raise NotADirectoryError(
             f"{str(output_filepath.parent)} does not exist so cannot create {output_filepath.name}"
         )
     elif json_exists and csv_exists:
