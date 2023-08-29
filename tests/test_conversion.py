@@ -23,7 +23,7 @@ def test_convert_to_vlmd_with_registered_formats(
 
         data_dictionaries = convert_to_vlmd(
             **_valid_input_params,
-        outputdir=outputdir
+        output_filepath="tmp/heal-data-dictionary.json"
         )
 
         ddjson = json.loads(list(Path("tmp").glob("*.json"))[0].read_text())

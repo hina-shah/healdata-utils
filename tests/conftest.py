@@ -1,6 +1,6 @@
 import pytest 
 from pathlib import Path
-from healdata_utils.cli import choice_fxn
+from healdata_utils.conversion import choice_fxn
 import json
 
 @pytest.fixture(scope="module")
@@ -17,7 +17,7 @@ def valid_input_params():
         ),
         "title": "Healdata-utils Demonstration Data Dictionary",
     }
-    get_input_params = lambda input_filepath: {"filepath":inputdir.joinpath(input_filepath),"data_dictionary_props":data_dictionary_props}
+    get_input_params = lambda input_filepath: {"input_filepath":inputdir.joinpath(input_filepath),"data_dictionary_props":data_dictionary_props}
     input_params = {
         "csv-data":{
             **get_input_params("data_csv_dataset1.data.csv"),

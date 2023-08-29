@@ -45,7 +45,14 @@ input_descriptions = {
 }
 
 
-def _write_vlmd(jsontemplate, csvtemplate, csvreport, jsonreport, output_filepath=None):
+def _write_vlmd(
+    jsontemplate,
+    csvtemplate,
+    csvreport,
+    jsonreport,
+    output_filepath=None,
+    output_csv_quoting=None,
+):
     # NOTE: currently the default is to auto generate file name if output_filepath not specified
 
     # flipped wording around for vars
@@ -59,8 +66,8 @@ def _write_vlmd(jsontemplate, csvtemplate, csvreport, jsonreport, output_filepat
         jsontemplate_path = output_filepath.with_suffix(".json")
         csvtemplate_path = output_filepath.with_suffix(".csv")
     else:
-        jsontemplate_path = "heal-json-data-dictionary.json"
-        csvtemplate_path = "heal-csv-data-dictionary.csv"
+        jsontemplate_path = "heal-data-dictionary.json"
+        csvtemplate_path = "heal-data-dictionary.csv"
     # check existence of directory and output files
     dir_exists = output_filepath.parent.exists()
     json_exists = jsontemplate_path.exists()
@@ -95,11 +102,11 @@ def _write_vlmd(jsontemplate, csvtemplate, csvreport, jsonreport, output_filepat
 
     # print errors
 
-    if not report_json["valid"]:
+    if not reportjson["valid"]:
         print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
         print(f"(view the outputted data dictionary at {jsontemplate_path})")
 
-    if not report_csv["valid"]:
+    if not reportcsv["valid"]:
         print("CSV data dictionary not valid, see heal-csv-errors.json")
         print(f"(view the outputted data dictionary at {csvtemplate_path})")
 
@@ -107,10 +114,10 @@ def _write_vlmd(jsontemplate, csvtemplate, csvreport, jsonreport, output_filepat
     errordir = Path(output_filepath).parent.joinpath("errors")
     errordir.mkdir(exist_ok=True)
     errordir.joinpath("heal-json-errors.json").write_text(
-        json.dumps(report_json, indent=4)
+        json.dumps(reportjson, indent=4)
     )
     errordir.joinpath("heal-csv-errors.json").write_text(
-        json.dumps(report_csv, indent=4)
+        json.dumps(reportcsv, indent=4)
     )
 
 
@@ -163,8 +170,7 @@ def convert_to_vlmd(
 
     TODO
     --------
-    make sub command for each file format rather than just one function? Added sas7bcat and can predict additional complexity
-    
+
     Convert this to object-oriented framework -- this may be best done for entire package (eg individual types as well)?
 
     """
@@ -181,8 +187,8 @@ def convert_to_vlmd(
             )
 
     # backwards compatability
-    if sas7bcat_filepath:
-        sas_catalog_filepath = sas7bcat_filepath
+    if "sas7bcat_filepath" in kwargs:
+        sas_catalog_filepath = kwargs["sas7bcat_filepath"]
 
     ## add dd title
     if not data_dictionary_props.get("title"):
@@ -194,7 +200,7 @@ def convert_to_vlmd(
             data_dictionary_package = choice_fxn[inputtype](
                 input_filepath,
                 data_dictionary_props,
-                sas7bcat_file_path=sas_catalog_filepath,
+                sas_catalog_filepath=sas_catalog_filepath,
             )
     else:
         data_dictionary_package = choice_fxn[inputtype](
@@ -210,8 +216,8 @@ def convert_to_vlmd(
     # TODO: in future just return the packages (eg reports nested within package and not out of)
     # for now, keep same (report_xxx and templatexxx)
 
-    report_csv = package_csv["report"]
-    report_json = package_json["report"]
+    reportcsv = package_csv["report"]
+    reportjson = package_json["report"]
     dd_csv = package_csv["data"]
     dd_json = package_json["data"]
 
@@ -219,8 +225,8 @@ def convert_to_vlmd(
     _write_vlmd(
         jsontemplate=dd_json,
         csvtemplate=dd_csv,
-        csvreport=report_csv,
-        jsonreport=report_json,
+        csvreport=reportcsv,
+        jsonreport=reportjson,
         output_filepath=output_filepath,
     )
     # format csv and json paths
@@ -228,5 +234,5 @@ def convert_to_vlmd(
     return {
         "csvtemplate": dd_csv,
         "jsontemplate": dd_json,
-        "errors": {"csvtemplate": report_csv, "jsontemplate": report_json},
+        "errors": {"csvtemplate": reportcsv, "jsontemplate": reportjson},
     }
