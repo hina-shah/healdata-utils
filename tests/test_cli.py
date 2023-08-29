@@ -1,0 +1,59 @@
+from click.testing import CliRunner
+from healdata_utils.cli import vlmd
+from conftest import compare_vlmd_tmp_to_output
+import shutil
+
+def test_vlmd_extract(
+    valid_input_params,valid_output_json,valid_output_csv,fields_propname):
+
+    inputtypes = list(valid_input_params.keys())
+
+    for inputtype in inputtypes:
+
+        # collect CLI arguments
+        cli_params = ['extract']
+        _input_params = valid_input_params[inputtype]
+        for paramname,param in _input_params.items():
+            
+            # add CLI options
+            if paramname=="output_filepath":
+                cli_params.append("--outfile")
+                cli_params.append(str(param))
+            elif paramname=="input_filepath":
+                cli_args = param  # click argument
+            elif paramname == "data_dictionary_props":
+                for _paramname,_param in param.items():
+                    cli_params.append(f"--{_paramname}")
+                    cli_params.append(_param)
+            else:
+                cli_params.append(f"--{paramname}")
+                cli_params.append(str(param))
+
+        # add click arguments at end
+        cli_params.append(cli_args)
+
+        #run CLI
+        runner = CliRunner()
+        result = runner.invoke(vlmd, cli_params)
+
+        # test CLI output to existing output
+        _valid_output_json = valid_output_json[inputtype]
+        _valid_output_csv = valid_output_csv[inputtype]
+        _outdir = _input_params["output_filepath"].parent
+
+        compare_vlmd_tmp_to_output(
+            tmpdir=_outdir,
+            csvoutput=_valid_output_json,
+            jsonoutput=_valid_output_csv
+        )
+        # clean up
+        shutil.rmtree(_outdir)
+
+
+def test_vlmd_validate():
+
+    args = ["validate"]
+
+
+    # runner = CliRunner()
+    # result = runner.invoke(vlmd, ['validate', 'sync'])

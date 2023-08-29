@@ -10,6 +10,7 @@ def fields_propname():
 @pytest.fixture(scope="module")
 def valid_input_params():
     inputdir = Path("data/valid/input")
+    outputdir = Path("tmp")
     data_dictionary_props = {
         "description": (
             "This is a proof of concept to demonstrate"
@@ -17,7 +18,11 @@ def valid_input_params():
         ),
         "title": "Healdata-utils Demonstration Data Dictionary",
     }
-    get_input_params = lambda input_filepath: {"input_filepath":inputdir.joinpath(input_filepath),"data_dictionary_props":data_dictionary_props}
+    get_input_params = lambda input_filepath: {
+        "input_filepath":inputdir.joinpath(input_filepath),
+        "output_filepath":outputdir.joinpath("heal-dd.json"),
+        "data_dictionary_props":data_dictionary_props}
+        
     input_params = {
         "csv-data":{
             **get_input_params("data_csv_dataset1.data.csv"),
@@ -78,4 +83,37 @@ def valid_output_csv():
     return csvs
 
 
+def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput):
+    """ compares a given csv and json output to a tmp directory
+    for both csv and json (vlmd - variable level metadata)
+    """
+    ddjson = json.loads(list(tmpdir.glob("*.json"))[0].read_text())
+    #NOTE: csv are just fields so no ddcsv
+
+    # check for incorrect fields       
+    csv_fields = list(tmpdir.glob("*.csv"))[0].read_text().split("\n")
+    json_fields = ddjson.pop(fields_propname) #NOTE: testing individual fields
+
+    valid_output_json_fields = jsonoutput.pop(fields_propname)
+    valid_output_csv_fields = csvoutput
+
+    invalid_json_fields = []
+    invalid_csv_fields = []
+    indices = range(len(json_fields))
+    for i in indices:
+        if json_fields[i]!=valid_output_json_fields[i]:
+            invalid_json_fields.append(i)
+        if csv_fields[i]!=valid_output_csv_fields[i]:
+            invalid_csv_fields.append(i)
     
+    json_field_names = [f["name"] for f in json_fields]
+    csv_field_names = [f["name"] for f in json_fields]
+
+    assert sorted(json_field_names)==sorted(csv_field_names),f"{inputtype} conversion: json fields must have the same field names as csv fields"
+    assert len(invalid_json_fields)==0,f"{inputtype} conversion: The following **json** dd fields are not valid: {str(invalid_json_fields)}"
+    assert len(invalid_csv_fields)==0,f"{inputtype} conversion: The following **csv** dd fields are not valid: {str(invalid_csv_fields)}"
+    
+    
+    # check if root level properties other than the fields are valid
+    for propname in ddjson:
+        assert ddjson[propname] == _valid_output_json[propname],f"{inputtype} conversion to json dd property '{propname}' assertion failed"
