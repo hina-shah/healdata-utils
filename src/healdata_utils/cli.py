@@ -49,8 +49,26 @@ def extract(inputfile,outfile,inputtype,title,description):
 
 @vlmd.command()
 @click.argument("filepath")
-def validate():
-    pass 
-     
+@click.option("--outfile")
+def validate(filepath):
+    ext = Path(filepath).suffix.replace(".","")
+
+    if ext == "csv":
+        package_csv = validate_vlmd_csv(
+            data_dictionary_package["templatecsv"]["data_dictionary"], to_sync_fields=True
+        )
+    elif ext == "json":
+        package_json = validate_vlmd_json(data_dictionary_package["templatejson"])
+    
+    if output_filepath:
+        Path(outfile).write_text(
+            json.dumps(report_json, indent=4)
+        )
+    else:
+        #TODO: color code; more informative errors
+        click.secho(json.dumps(report_json, indent=4))
+         
+
+        
 if __name__=='__main__':
     main()
