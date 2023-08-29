@@ -66,7 +66,7 @@ def validate(filepath):
         )
     else:
         #TODO: color code; more informative errors
-        click.secho(json.dumps(report_json, indent=4))
+        click.echo_via_pager(json.dumps(report_json, indent=4))
          
 
         
