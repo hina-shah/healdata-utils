@@ -22,7 +22,8 @@ from collections import deque
 from healdata_utils.utils import find_docstring_desc
 
 choice_fxn = {
-    'csv':convert_datacsv,
+    'csv-data':convert_datacsv,
+    #'csv-data-dictionary':convert_datadictcsv,
     #'template.csv':convert_templatecsv,
     #'csv': convert_templatecsv, #maintained for backwards compatibility
     'spss': convert_readstat,
@@ -43,6 +44,76 @@ input_descriptions = {
     for name,fxn in choice_fxn.items()
 }
 
+
+def _write_vlmd(jsontemplate,csvtemplate,csvreport,jsonreport,output_filepath=None):
+    # NOTE: currently the default is to auto generate file name if output_filepath not specified
+
+    # flipped wording around for vars
+    templatejson = jsontemplate
+    templatecsv = csvtemplate
+    reportjson = csvreport
+    reportcsv = jsonreport
+    
+    if output_filepath:
+        output_filepath = Path(output_filepath)
+        jsontemplate_path = output_filepath.with_suffix(".json")
+        csvtemplate_path = output_filepath.with_suffix(".csv")
+    else:
+        jsontemplate_path = "heal-json-data-dictionary.json"
+        csvtemplate_path = "heal-csv-data-dictionary.csv"
+    # check existence of directory and output files
+    dir_exists = output_filepath.parent.exists()
+    json_exists = jsontemplate_path.exists()
+    csv_exists = csvtemplate_path.exists()
+
+    if not dir_exists:
+        raise FileNotFoundError(f"{str(output_filepath.parent)} does not exist so cannot create {output_filepath.name}")
+    elif json_exists and csv_exists:
+        raise FileExistsError(f"{str(jsontemplate_path)}\nand\n{str(csvtemplate_path)}\nexist.")
+    elif json_exists:
+        raise FileExistsError(f"{str(jsontemplate_path)} exists.")
+    elif csv_exists:
+        raise FileExistsError(f"{str(csvtemplate_path)} exists.")
+
+
+
+    # print data dictionaries
+    jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
+
+    quoting = csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL
+    # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
+    # (
+    #     etl.fromdicts(templatecsv)
+    #     .tocsv(
+    #         csvtemplate_path,
+    #         quoting=csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL)
+
+    # )
+    pd.DataFrame(templatecsv).to_csv(csvtemplate_path,quoting=quoting,index=False)
+
+    # print errors
+
+    if not report_json['valid']:
+        print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
+        print(f"(view the outputted data dictionary at {jsontemplate_path})")
+
+    if not report_csv['valid']:
+        print("CSV data dictionary not valid, see heal-csv-errors.json")
+        print(f"(view the outputted data dictionary at {csvtemplate_path})")
+    
+    # write error reports to file
+    errordir = Path(output_filepath).parent.joinpath('errors')
+    errordir.mkdir(exist_ok=True)
+    errordir.joinpath('heal-json-errors.json').write_text(
+        json.dumps(report_json,indent=4)
+    )
+    errordir.joinpath('heal-csv-errors.json').write_text(
+        json.dumps(report_csv,indent=4)
+    )
+
+
+
+
 def convert_to_vlmd(
     input_filepath,
     data_dictionary_props={},
@@ -50,7 +121,7 @@ def convert_to_vlmd(
     output_filepath=None,
     sas_catalog_filepath=None,
     output_csv_quoting=None,
-
+    **kwargs
     ):
     """
     Writes a data dictionary (i.e. variable level metadata) to a HEAL metadata JSON file using a registered function.
@@ -130,59 +201,17 @@ def convert_to_vlmd(
 
     report_csv = package_csv["report"]
     report_json = package_json["report"]
-    templatecsv = package_csv["data"]
-    templatejson = package_json["data"]
+    dd_csv = package_csv["data"]
+    dd_json = package_json["data"]
 
     # write to file
-    if output_filepath:
-        output_filepath = Path(output_filepath)
-
-        if output_filepath.parent.is_dir():
-            jsontemplate_path = output_filepath.with_suffix(".json")
-            csvtemplate_path = output_filepath.with_suffix(".csv")
-        else:
-            raise Exception(f"{str(output_filepath.parent)} does not exist")
-    else:
-        jsontemplate_path = "heal-jsontemplate-data-dictionary.json"
-        csvtemplate_path = "heal-csvtemplate-data-dictionary.csv"
-        
-        # print data dictionaries
-        jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
-
-        quoting = csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL
-        # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
-        # (
-        #     etl.fromdicts(templatecsv)
-        #     .tocsv(
-        #         csvtemplate_path,
-        #         quoting=csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL)
-
-        # )
-        pd.DataFrame(templatecsv).to_csv(csvtemplate_path,quoting=quoting,index=False)
-
-        # print errors
-
-        if not report_json['valid']:
-            print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
-            print(f"(view the outputted data dictionary at {jsontemplate_path})")
+    _write_vlmd(jsontemplate=dd_json,csvtemplate=dd_csv,csvreport=report_csv,
+        jsonreport=report_json,output_filepath=output_filepath)
+    # format csv and json paths
  
-        if not report_csv['valid']:
-            print("CSV data dictionary not valid, see heal-csv-errors.json")
-            print(f"(view the outputted data dictionary at {csvtemplate_path})")
-        
-        # write error reports to file
-        errordir = Path(output_filepath).parent.joinpath('errors')
-        errordir.mkdir(exist_ok=True)
-        errordir.joinpath('heal-json-errors.json').write_text(
-            json.dumps(report_json,indent=4)
-        )
-        errordir.joinpath('heal-csv-errors.json').write_text(
-            json.dumps(report_csv,indent=4)
-        )
-    
     return {
-        "csvtemplate":templatecsv,
-        "jsontemplate":templatejson,
+        "csvtemplate":dd_csv,
+        "jsontemplate":dd_json,
         "errors":{
             "csvtemplate":report_csv,
             "jsontemplate":report_json}
