@@ -29,7 +29,7 @@ def quick_start():
     pass 
 
 @vlmd.command()
-@click.argument("inputfile")
+@click.argument("inputfile",type=click.Path(exists=True),readable=True)
 #TODO: --output-file or --output-filepath?
 @click.option('--outfile',default="",help='File path (or file name) where you want to output your HEAL data dictionary')
 @click.option('--inputtype',default=None,type=click.Choice(list(choice_fxn.keys())),help='The type of your input file.')
@@ -47,9 +47,10 @@ def extract(inputfile,outfile,inputtype,title,description):
         inputtype=inputtype
     )
 
+#TODO: 
 @vlmd.command()
-@click.argument("filepath")
-@click.option("--outfile")
+@click.argument("filepath",type=click.Path(exists=True),readable=True)
+@click.option("--outfile",default=None)
 def validate(filepath):
     ext = Path(filepath).suffix.replace(".","")
 
