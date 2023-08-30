@@ -5,6 +5,9 @@ import pyreadstat
 import pandas as pd 
 from pathlib import Path
 import charset_normalizer
+import re
+
+from healdata_utils import schemas
 # read pyreadstat files
 
 def read_pyreadstat(file_path,**kwargs):
@@ -68,5 +71,66 @@ def read_table(file_path,castdtype = "string"):
         keep_default_na=False)
 
     return file_encoding
+
+
+def _generate_jsontemplate(schema):
+    template = {}
+    if 'properties' in schema:
+        for prop, prop_schema in schema['properties'].items():
+            if 'type' in prop_schema:
+                if prop_schema['type'] == 'object':
+                    template[prop] = generate_template(prop_schema)
+                elif prop_schema['type'] == 'array':
+                    if prop_schema.get("items"):
+                        template[prop] = [generate_template(prop_schema['items'])]
+                    else:
+                        template[prop] = []
+                else:
+                    template[prop] = None
+    return template
+
+    
+def write_vlmd_template(outputfile,output_overwrite=False,field_num=1):
+
+    """ 
+    Writes a  json or csv template:
+    If writing a json template, will iniiate null vals for all fields
+    If writing a csv template (ie csv tabular template), will copy the recommendation level across num fields specified.
+    
+
+    NOTE
+    -----
+    - Recommendation level is in description property with expression [<recommendation level>]. The 
+    "required" property takes precdence over rec level.
+
+    - csv is a frictionless table schema and json is a jsonschema
+    """  
+    
+
+    ext = Path(outputfile).suffix 
+
+    # if file exists and overwrite option is false, raise error
+    if Path(outputfile).exists() and not output_overwrite:
+        raise FileExistsError(f"{outputfile} exists")
+
+
+    if ext == ".json":
+        schema = schemas.healjsonschema
+        fields_propname = "data_dictionary"
+        template = _generate_jsontemplate(schema)
+        template[fields_propname] = field_num*[template[fields_propname]]
+        Path(outputfile).write_text(json.dumps(template,indent=2))
+    
+    elif ext == ".csv":
+        schema = schemas.healcsvschema
+        fields_propname = "fields"
+        cols = [field["name"] for field in schema["fields"]]
+        vals = [field_num* [
+            "[Required]" if field.get("constraints",{}).get("required") else
+            re.search("\[.*\]",field["description"]).group()
+            ] for field in schema["fields"]]
+
+        template = pd.DataFrame(vals,columns=cols)
+        template.to_csv(outputfile,index=False)
 
 
