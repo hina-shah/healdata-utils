@@ -2,9 +2,10 @@ from click.testing import CliRunner
 from healdata_utils.cli import vlmd
 from conftest import compare_vlmd_tmp_to_output
 import shutil
+import os
 from pathlib import Path
 
-def test_vlmd_extract(
+def test_vlmd_extract_all_params(
     valid_input_params,valid_output_json,valid_output_csv,fields_propname):
 
     inputtypes = list(valid_input_params.keys())
@@ -63,6 +64,38 @@ def test_vlmd_extract(
         )
         # clean up
         shutil.rmtree(_outdir)
+
+
+def test_vlmd_extract_minimal(valid_input_params):
+
+    inputtypes = list(valid_input_params.keys())
+
+    for inputtype in inputtypes:
+
+        filepath = str(valid_input_params[inputtype]["input_filepath"].resolve())
+
+        try:
+            Path("tmp").mkdir()
+        except FileExistsError:
+            shutil.rmtree("tmp")
+            Path("tmp").mkdir()
+
+        os.chdir("tmp")
+
+        # collect CLI arguments
+        
+        cli_params = ['extract',"--inputtype",inputtype,filepath]
+
+        #run CLI
+        runner = CliRunner()
+        result = runner.invoke(vlmd, cli_params)
+
+        assert result.exit_code == 0,result.output
+
+
+        # clean up
+        os.chdir("..")
+        shutil.rmtree("tmp")
 
 
 def test_vlmd_validate():

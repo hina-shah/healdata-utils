@@ -87,6 +87,7 @@ def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname):
     """ compares a given csv and json output to a tmp directory
     for both csv and json (vlmd - variable level metadata)
     """
+    
     ddjson = json.loads(list(tmpdir.glob("*.json"))[0].read_text())
     #NOTE: csv are just fields so no ddcsv
 
