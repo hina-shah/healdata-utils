@@ -66,8 +66,9 @@ def _write_vlmd(
         jsontemplate_path = output_filepath.with_suffix(".json")
         csvtemplate_path = output_filepath.with_suffix(".csv")
     else:
-        jsontemplate_path = "heal-data-dictionary.json"
-        csvtemplate_path = "heal-data-dictionary.csv"
+        output_filepath = Path()
+        jsontemplate_path = output_filepath/"heal-data-dictionary.json"
+        csvtemplate_path = output_filepath/"heal-data-dictionary.csv"
     # check existence of directory and output files
     dir_exists = output_filepath.parent.exists()
     json_exists = jsontemplate_path.exists()
