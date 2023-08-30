@@ -23,18 +23,18 @@ from healdata_utils.io import write_vlmd_template
 # TODO: validate takes in either a heal specified json or a csv and validates
 subcmds = ["extract","validate","template"]
 
-prompt_subcmds = """
-Select one of the following:
+prompt_subcmds = f"""
+{click.style("SELECT ONE OF THE FOLLOWING:",fg="green",bold=True)}
 
-validate: check (validate) an existing HEAL data dictionary to see if it maps the HEAL specifications.
-extract: take an existing format and extract the variable level metadata out.
-template: generate a HEAL template to fill in. 
+{click.style("validate",bold=True)}: check (validate) an existing HEAL data dictionary to see if it maps the HEAL specifications.
+{click.style("extract",bold=True)}: take an existing format and extract the variable level metadata out.
+{click.style("template",bold=True)}: generate a HEAL template to fill in. 
 
 
 """
 
-prompt_inputfile = """
-What is the path to your input file? 
+prompt_inputfile = f"""
+{click.style("What is the path to your input file?",bold=True,fg="green")}
 
 This can be an:
 1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/data/inputfilename.csv)
@@ -43,16 +43,19 @@ This can be an:
 
 """
 
-prompt_extract_inputtypes = """
-What type of file do you want to extract variable level metadata from?
+prompt_extract_inputtypes = f"""
+{click.style("What type of file do you want to extract variable level metadata from?",bold=True,fg="green")}
+
 """
 
-prompt_template_nfields = """
-How many variables (ie fields) are in your data (ie are going to be in your data dictionary)?
+prompt_template_nfields = f"""
+{click.style("How many variables (ie fields) are in your data (ie are going to be in your data dictionary)?",bold=True,fg="green")}
+
 """ 
 
-prompt_template_outputfile = """
-What do you want the output file called?
+prompt_template_outputfile = f"""
+
+{click.style("What do you want the output file called?",bold=True,fg="green")}
 
 This can be an:
 1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/heal-data-dictionary.csv)
@@ -62,18 +65,19 @@ This can be an:
 Note, if you specify a csv file, this will generate a HEAL csv templated file and if you specify a json file, this
 will generate a HEAL json templated file.
 
-
 """ 
-prompt_extract_outputfile = """ 
-What do you want the output file called? 
+prompt_extract_outputfile = f""" 
+
+{click.style("What do you want the output file called?",bold=True,fg="green")}
 
 Note, whether you specify a json or csv, both formats will be generated for convenience 
 (i.e., heal-dd.json generates heal-dd.json and heal-dd.csv)
 
 """
 
-prompt_overwrite = """
-Do you want to overwrite the specified output files (if they exist)?
+prompt_overwrite = f"""
+
+{click.style("Do you want to overwrite the specified output files (if they exist)?",bold=True,fg="green")}
 
 """
 
@@ -105,14 +109,14 @@ def _prompt_outputfile_overwrite(outputfile_prompt):
 
     fileexts = [".json",".csv"]
     if not outputfile.suffix in fileexts:
-        click.secho(f"File must be {' or '.join(fileexts)}")
+        click.secho(f"File must be {' or '.join(fileexts)}",fg="red")
         outputfile,outputfile_overwrite = _prompt_outputfile_overwrite(outputfile_prompt)
     else:
         if outputfile_csv.exists():
-            click.secho(f"Warning: {outputfile_csv} exists")
+            click.secho(f"Warning: {outputfile_csv} exists",fg="red")
 
         if outputfile_json.exists():
-            click.secho(f"Warning: {outputfile_json} exists")  
+            click.secho(f"Warning: {outputfile_json} exists",fg="red")  
 
         if outputfile_json.exists() or outputfile_csv.exists():
             outputfile_overwrite = click.confirm(prompt_overwrite)
@@ -183,7 +187,7 @@ def template(outputfile,nfields):
 @click.argument("inputfile",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
 @click.option('--outputfile',default="heal-data-dictionary.json",help=prompt_extract_outputfile)
-@click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),help=prompt_extract_inputtypes)
+@click.option('--inputtype',help=prompt_extract_inputtypes,type=click.Choice(list(choice_fxn.keys())))
 @click.option('--overwrite-outputfile',is_flag=True,help=prompt_overwrite)
 def extract(inputfile,outputfile,inputtype,overwrite_outputfile):
 
