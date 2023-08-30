@@ -21,8 +21,18 @@ from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 # TODO: vlmd group that invokes input prompts and directs towards one of the three sub commands
 # TODO: validate takes in either a heal specified json or a csv and validates
 @click.group()
-def vlmd():
-    pass 
+def vlmd(invoke_without_command=True):
+
+    if ctx.invoked_subcommand is None:
+        subcommand = click.prompt() # TODO: have language for the commands
+
+        if subcommand == "extract":
+            pass 
+        elif subcommand == "validate":
+            pass 
+        elif subcommand == "quick-start":
+            pass 
+
 
 @vlmd.command("quick-start")
 def quick_start():
@@ -65,7 +75,6 @@ def extract(inputfile,outfile,inputtype,title,description):
 
 @vlmd.command()
 @click.argument("filepath",type=click.Path(exists=True))
-@click.option("--outputfile",default=None)
 def validate(filepath,outputfile):
 
     ext = Path(filepath).suffix.replace(".","")
