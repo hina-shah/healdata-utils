@@ -50,6 +50,7 @@ def _write_vlmd(
     csvtemplate,
     csvreport,
     jsonreport,
+    output_overwrite=False,
     output_filepath=None,
     output_csv_quoting=None,
 ):
@@ -78,14 +79,17 @@ def _write_vlmd(
         raise NotADirectoryError(
             f"{str(output_filepath.parent)} does not exist so cannot create {output_filepath.name}"
         )
-    elif json_exists and csv_exists:
-        raise FileExistsError(
-            f"{str(jsontemplate_path)}\nand\n{str(csvtemplate_path)}\nexist."
-        )
-    elif json_exists:
-        raise FileExistsError(f"{str(jsontemplate_path)} exists.")
-    elif csv_exists:
-        raise FileExistsError(f"{str(csvtemplate_path)} exists.")
+
+    if not output_overwrite:
+        if json_exists and csv_exists:
+            raise FileExistsError(
+                f"{str(jsontemplate_path)}\nand\n{str(csvtemplate_path)}\nexist."
+            )
+        elif json_exists:
+            raise FileExistsError(f"{str(jsontemplate_path)} exists.")
+        elif csv_exists:
+            raise FileExistsError(f"{str(csvtemplate_path)} exists.")
+
 
     # print data dictionaries
     jsontemplate_path.write_text(json.dumps(templatejson, indent=4))
@@ -129,6 +133,7 @@ def convert_to_vlmd(
     output_filepath=None,
     sas_catalog_filepath=None,
     output_csv_quoting=None,
+    output_overwrite=False,
     **kwargs,
 ):
     """
@@ -228,6 +233,7 @@ def convert_to_vlmd(
         csvreport=reportcsv,
         jsonreport=reportjson,
         output_filepath=output_filepath,
+        output_overwrite=output_overwrite
     )
     # format csv and json paths
 
