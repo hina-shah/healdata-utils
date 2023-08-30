@@ -31,7 +31,7 @@ def quick_start():
 @vlmd.command()
 @click.argument("inputfile",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
-@click.option('--outfile',default="",help='File path (or file name) where you want to output your HEAL data dictionary')
+@click.option('--outputfile',default="",help='File path (or file name) where you want to output your HEAL data dictionary')
 @click.option('--inputtype',required=True,type=click.Choice(list(choice_fxn.keys())),help='The type of your input file.')
 @click.option('--title',default=None,help='The title of your data dictionary. If not specified, then the file name will be used')
 @click.option('--description',default=None,help='Description of data dictionary')
@@ -63,29 +63,29 @@ def extract(inputfile,outfile,inputtype,title,description):
         sas_catalog_filepath=sas_catalog_filepath
     )
 
-#TODO: 
 @vlmd.command()
 @click.argument("filepath",type=click.Path(exists=True))
-@click.option("--outfile",default=None)
-def validate(filepath):
+@click.option("--outputfile",default=None)
+def validate(filepath,outputfile):
+
     ext = Path(filepath).suffix.replace(".","")
 
     if ext == "csv":
-        package = validate_vlmd_csv(file, to_sync_fields=True)
+        package = validate_vlmd_csv(filepath, to_sync_fields=True)
         report = package["report"]
     elif ext == "json":
-        package = validate_vlmd_json(file)
+        package = validate_vlmd_json(filepath)
         report = package["report"]
     else:
         raise Exception("Need to specify either a csv or json file")
 
-    if output_filepath:
-        Path(outfile).write_text(
+    if outputfile:
+        Path(outputfile).write_text(
             json.dumps(report, indent=4)
         )
     else:
         #TODO: color code; more informative errors
-        click.echo_via_pager(json.dumps(report, indent=4))
+        click.secho(json.dumps(report, indent=4))
          
 
         

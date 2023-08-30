@@ -20,7 +20,7 @@ def test_vlmd_extract_all_params(
             
             # add CLI options
             if paramname=="output_filepath":
-                cli_params.append("--outfile")
+                cli_params.append("--outfilepath")
                 cli_params.append(str(param))
             elif paramname=="input_filepath":
                 cli_args = str(param)  # click argument
@@ -100,8 +100,9 @@ def test_vlmd_extract_minimal(valid_input_params):
 
 def test_vlmd_validate():
 
-    args = ["validate"]
+    paths = Path("data/valid/output").glob("*")
+    for path in paths:
+        runner = CliRunner()
+        result = runner.invoke(vlmd, ['validate',str(path)])
 
-
-    runner = CliRunner()
-    result = runner.invoke(vlmd, ['validate', ''])
+        assert result.exit_code == 0,result.output
