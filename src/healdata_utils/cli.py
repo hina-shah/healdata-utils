@@ -21,20 +21,10 @@ from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 from healdata_utils.io import write_vlmd_template
 # TODO: vlmd group that invokes input prompts and directs towards one of the three sub commands
 # TODO: validate takes in either a heal specified json or a csv and validates
-subcmds = ["extract","validate","template"]
 
-prompt_subcmds = f"""
-{click.style("SELECT ONE OF THE FOLLOWING:",fg="green",bold=True)}
-
-{click.style("validate",bold=True)}: check (validate) an existing HEAL data dictionary to see if it maps the HEAL specifications.
-{click.style("extract",bold=True)}: take an existing format and extract the variable level metadata out.
-{click.style("template",bold=True)}: generate a HEAL template to fill in. 
-
-
-"""
 
 prompt_file = f"""
-{click.style("What is the path to your input file?",bold=True,fg="green")}
+{click.style("Enter the path to your file:",bold=True,fg="green")}
 
 This can be an:
 1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/data/filename.csv)
@@ -81,108 +71,115 @@ prompt_overwrite = f"""
 
 """
 
-def _prompt_outputfile_overwrite(outputfile_prompt):
+def _check_suffix_for_json_or_csv(ctx,param,value):
+    fileexts = [".json",".csv"]
+    if not Path(value).suffix in fileexts:
+        click.secho(f"File must be {' or '.join(fileexts)}",fg="red")
+        click.pause(click.style("Press any key to exit program and try again"))
+        ctx.exit()
+
+
+def _check_overwrite(ctx,param,value):
 
     """ 
-    Prompts for output file path,
-    checks that it is either a csv or json file,
+    Takes the specified file/outputfile argument 
     if the file exists, prompts user if they want to overwrite.
 
-    Prompts (ie function) start over if user specifies no overwrite and file exists
-    or if the file specified is not a csv or json
+    Then, if the user has specified no on overwrite, the command 
+    will abort. 
+
+    If the overwrite flag is true (either because the user confirmed the overwrite
+    or the user applied the flag), steps out of this callback function.
 
     NOTE
     ----- 
+    Note, both the csv and json files are checked for existence. 
     Reasoning for checking both csv and json is to ensure they are "synced" and
     currently the convert_to_vlmd fxn outputs both csv and json by default
 
     """ 
-    outputfile = click.prompt(
-        text=outputfile_prompt,
-        type=click.Path()
-    )
-    outputfile = Path(outputfile)
+
     # Check for existence and ask if they want to overwrite file
     
-    outputfile_csv = Path(outputfile).with_suffix(".csv")
-    outputfile_json = Path(outputfile).with_suffix(".json")
+    filepath = ctx.params.get("file",ctx.params.get("outputfile"))
 
-    fileexts = [".json",".csv"]
-    if not outputfile.suffix in fileexts:
-        click.secho(f"File must be {' or '.join(fileexts)}",fg="red")
-        outputfile,outputfile_overwrite = _prompt_outputfile_overwrite(outputfile_prompt)
+    filepath_csv = Path(filepath).with_suffix(".csv")
+    filepath_json = Path(filepath).with_suffix(".json")
+
+    # if overwrite specified pass through (true)
+    # if overwrite not specified (false), check existence and prompt user if they want to overwrite,
+    #  if files don't exist, pass through (false)
+    if value:
+        return value
+    elif filepath_json.exists() or filepath_csv.exists():
+
+        if filepath_csv.exists():
+            click.secho(f"Warning: {filepath_csv} exists",fg="red")
+
+        if filepath_json.exists():
+            click.secho(f"Warning: {filepath_json} exists",fg="red")  
+
+        if click.confirm(prompt_overwrite):
+            return True
+        else:
+            click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
+            click.pause(click.style("Press any key to exit program and try again"))
+            ctx.exit()
     else:
-        if outputfile_csv.exists():
-            click.secho(f"Warning: {outputfile_csv} exists",fg="red")
-
-        if outputfile_json.exists():
-            click.secho(f"Warning: {outputfile_json} exists",fg="red")  
-
-        if outputfile_json.exists() or outputfile_csv.exists():
-            outputfile_overwrite = click.confirm(prompt_overwrite)
-            if not outputfile_overwrite:
-                outputfile,outputfile_overwrite = _prompt_outputfile_overwrite(outputfile_prompt)
-
-    return outputfile,outputfile_overwrite
-
-def _prompt_arg(ctx,param,value):
-    pass 
+        return value        
+                        
 
 
 @click.group(invoke_without_command=True)
 @click.pass_context
 def vlmd(ctx):
-    if ctx.invoked_subcommand is None:
-        # For the validate and extract, prompts are put here rather than in subcommand options/args 
-        # as this is intended for user unfamiliar with CLI.
 
-        subcmds = vlmd.list_commands(ctx)
-        subcmd = click.prompt(text=prompt_subcmds,
+    if ctx.invoked_subcommand is None:
+        subcmds = []
+        
+
+        info = ctx.command.to_info_dict(ctx)["commands"]
+        prompt_subcmds = f"{click.style('START BY TYPING ONE OF THE THREE COMMANDS:')}\n\n"
+        for subcmd_name,subcmd_info in info.items():
+
+            subcmds.append(subcmd_name)
+            subcmd_help = f"{click.style(subcmd_name,bold=True)}: "
+            subcmd_help += f'{subcmd_info["help"]+":" if subcmd_info["help"] else ""}\n'
+            prompt_subcmds += subcmd_help + "\n"
+
+        subcmd = click.prompt(
+            text=prompt_subcmds,
             type=click.Choice(subcmds)
+        )
+        filepath = click.prompt(
+            text=prompt_file,
+            type=click.Path()
         )
         # invoke subcommand chosen with "all bells and whistles"
         #NOTE: for Command.main method:
         # https://github.com/pallets/click/blob/b63ace28d50b53e74b5260f6cb357ccfe5560133/src/click/core.py#L1255
-        ctx.command.commands[subcmd].main()
+        ctx.command.commands[subcmd].main(args=[filepath])
         
 
-@vlmd.command(help="Write a template to get started from scratch",callback=add_arg)
-@click.argument("file",type=click.Path(),
-    default=click.prompt(text=prompt_template_outputfile,type=click.Path()))
-@click.option('--overwrite',default=False,is_flag=True)
+@vlmd.command(help="Start a data dictionary from an empty template")
+@click.argument("file",type=click.Path())
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
 @click.option("--nfields",default=1,type=int,prompt=prompt_template_nfields)
 def template(file,overwrite,nfields):
     write_vlmd_template(outputfile,output_overwrite=overwrite,nfields=nfields)
 
-@vlmd.command(help="Extract the variable level metadata into HEAL compliant format.")
-@click.argument("file",type=click.Path(exists=True),
-    default=click.prompt(text=prompt_template_outputfile,type=click.Path(exists=True)))
+
+@vlmd.command(help="Extract the variable level metadata from an existing file with a specific type/format")
+@click.argument("file",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
 @click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),prompt=prompt_extract_inputtypes)
 @click.option('--outputfile',
     default="heal-data-dictionary.json",
-    prompt=prompt_extract_outputfile,
-    callback=_prompt_outputfile_overwrite(outputfile_prompt))
-@click.option('--overwrite',default=False,is_flag=True)
+    prompt=prompt_extract_outputfile)
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
 def extract(file,outputfile,inputtype,overwrite):
 
     data_dictionary_props = {}
-
-    if inputtype == "sas":
-        sas_catalog_search = list(Path(file).parent.glob("*.sas7bcat"))
-        if len(sas_catalog_search) == 1:
-            sas_catalog_filepath = sas_catalog_search[0]
-            click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}",fg="green")
-        elif len(sas_catalog_search) > 1:
-            sas_catalog_filepath = sas_catalog_search[0]
-            click.secho(f"Warning: Found multiple SAS Catalog files",fg="red")
-            click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}")
-        else:
-            sas_catalog_filepath = None
-            click.secho("No sas catalog file found so value labels will not be applied")
-    
-    else:
-        sas_catalog_filepath = None
     #save dds and error reports to files
     data_dictionaries = convert_to_vlmd(
         input_filepath=file,
@@ -193,9 +190,11 @@ def extract(file,outputfile,inputtype,overwrite):
         overwrite_output_file=overwrite
     )
 
-@vlmd.command("check (validate) an existing HEAL data dictionary to see if it maps the HEAL specifications.")
+
+@vlmd.command(help="Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications.")
 @click.argument("file",type=click.Path(exists=True))
-@click.option('--outputfile',default="heal-data-dictionary.json",help="Write the report to a file")
+@click.option('--outputfile',help="Write the report to a file")
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
 def validate(file,outputfile):
 
     ext = Path(file).suffix.replace(".","")
