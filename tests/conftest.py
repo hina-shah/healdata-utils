@@ -30,7 +30,8 @@ def valid_input_params():
         },
         "sas":{
             **get_input_params("sas-nmhss-2019/data.sas7bdat"),
-            "sas_catalog_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat"),
+            #NOTE: now auto detecting sas formats file
+            # "sas_catalog_filepath":inputdir.joinpath("sas-nmhss-2019/formats.sas7bcat"),
             "inputtype":"sas"
         }, #TODO: reduce data so easier to manage and test
         "stata":{**get_input_params("stata_dta_dataset1.dta"),"inputtype":"stata"},

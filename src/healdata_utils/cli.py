@@ -102,7 +102,7 @@ def _check_overwrite(ctx,param,value):
 
     # Check for existence and ask if they want to overwrite file
     
-    filepath = ctx.params.get("file",ctx.params.get("outputfile"))
+    filepath = ctx.params.get("outputfile")
 
     filepath_csv = Path(filepath).with_suffix(".csv")
     filepath_json = Path(filepath).with_suffix(".json")
@@ -177,48 +177,48 @@ def documentation():
     click.launch(VLMD_DEFS_URL)
 
 @vlmd.command(help="Start a data dictionary from an empty template")
-@click.argument("file",type=click.Path())
+@click.argument("outputfile",type=click.Path())
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
 @click.option("--nfields",default=1,type=int,prompt=prompt_template_nfields)
-def template(file,overwrite,nfields):
+def template(outputfile,overwrite,nfields):
     write_vlmd_template(outputfile,output_overwrite=overwrite,nfields=nfields)
 
 
 @vlmd.command(help="Extract the variable level metadata from an existing file with a specific type/format")
-@click.argument("file",type=click.Path(exists=True))
+@click.argument("inputfile",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
 @click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),prompt=prompt_extract_inputtypes)
 @click.option('--outputfile',
     default="heal-data-dictionary.json",
     prompt=prompt_extract_outputfile)
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
-def extract(file,outputfile,inputtype,overwrite):
+def extract(inputfile,outputfile,inputtype,overwrite):
 
-    data_dictionary_props = {}
+   # data_dictionary_props = {}
     #save dds and error reports to files
+    #NOTE: ported the sas catalog inference to core function
     data_dictionaries = convert_to_vlmd(
-        input_filepath=file,
-        data_dictionary_props=data_dictionary_props,
+        input_filepath=inputfile,
+        #data_dictionary_props=data_dictionary_props,
         output_filepath=outputfile,
         inputtype=inputtype,
-        sas_catalog_filepath=sas_catalog_filepath,
         overwrite_output_file=overwrite
     )
 
 
 @vlmd.command(help="Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications.")
-@click.argument("file",type=click.Path(exists=True))
+@click.argument("inputfile",type=click.Path(exists=True))
 @click.option('--outputfile',help="Write the report to a file")
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
-def validate(file,outputfile):
+def validate(inputfile,outputfile):
 
-    ext = Path(file).suffix.replace(".","")
+    ext = Path(inputfile).suffix.replace(".","")
 
     if ext == "csv":
-        package = validate_vlmd_csv(file, to_sync_fields=True)
+        package = validate_vlmd_csv(inputfile, to_sync_fields=True)
         report = package["report"]
     elif ext == "json":
-        package = validate_vlmd_json(file)
+        package = validate_vlmd_json(inputfile)
         report = package["report"]
     else:
         raise Exception("Need to specify either a csv or json file")
