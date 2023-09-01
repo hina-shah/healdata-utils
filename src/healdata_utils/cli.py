@@ -19,6 +19,7 @@ from healdata_utils.utils import find_docstring_desc
 from healdata_utils.conversion import convert_to_vlmd,choice_fxn
 from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 from healdata_utils.io import write_vlmd_template
+from healdata_utils.config import VLMD_DEFS_URL
 # TODO: vlmd group that invokes input prompts and directs towards one of the three sub commands
 # TODO: validate takes in either a heal specified json or a csv and validates
 
@@ -160,6 +161,11 @@ def vlmd(ctx):
         # https://github.com/pallets/click/blob/b63ace28d50b53e74b5260f6cb357ccfe5560133/src/click/core.py#L1255
         ctx.command.commands[subcmd].main(args=[filepath])
         
+
+@vlmd.command(help="Launch the vlmd data dictionary definitions in the documentation")
+def documentation():
+    click.launch(VLMD_DEFS_URL)
+
 
 @vlmd.command(help="Start a data dictionary from an empty template")
 @click.argument("file",type=click.Path())
