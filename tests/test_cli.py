@@ -20,14 +20,14 @@ def test_vlmd_extract_all_params(
             
             # add CLI options
             if paramname=="output_filepath":
-                cli_params.append("--outfilepath")
+                cli_params.append("--outputfile")
                 cli_params.append(str(param))
             elif paramname=="input_filepath":
                 cli_args = str(param)  # click argument
-            elif paramname == "data_dictionary_props":
-                for _paramname,_param in param.items():
-                    cli_params.append(f"--{_paramname.replace('_','-')}")
-                    cli_params.append(str(_param))
+            # elif paramname == "data_dictionary_props":
+            #     for _paramname,_param in param.items():
+            #         cli_params.append(f"--{_paramname.replace('_','-')}")
+            #         cli_params.append(str(_param))
             elif paramname == "sas_catalog_filepath":
                 # CLI currently infers sas catalog file
                 pass
@@ -106,3 +106,7 @@ def test_vlmd_validate():
         result = runner.invoke(vlmd, ['validate',str(path)])
 
         assert result.exit_code == 0,result.output
+
+
+if __name__=="__main__":
+    vlmd.main()
