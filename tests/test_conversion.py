@@ -1,6 +1,6 @@
 import shutil
 from pathlib import Path
-from healdata_utils.cli import convert_to_vlmd
+from healdata_utils.conversion import convert_to_vlmd
 import json
 
 def test_convert_to_vlmd_with_registered_formats(

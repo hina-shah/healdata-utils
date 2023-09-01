@@ -20,6 +20,7 @@ import petl as etl
 import pandas as pd
 import csv
 from collections import deque
+import click
 
 from healdata_utils.utils import find_docstring_desc
 
@@ -192,16 +193,26 @@ def convert_to_vlmd(
                 f"No inputtype specified as file of type {ext} does not have a registered inputtype"
             )
 
-    # backwards compatability
-    if "sas7bcat_filepath" in kwargs:
-        sas_catalog_filepath = kwargs["sas7bcat_filepath"]
-
     ## add dd title
     if not data_dictionary_props.get("title"):
         data_dictionary_props["title"] = input_filepath.stem
 
     # get data dictionary package based on the input type
     if inputtype == "sas":
+
+        if not sas_catalog_filepath:
+            sas_catalog_search = list(Path(input_filepath).parent.glob("*.sas7bcat"))
+            if len(sas_catalog_search) == 1:
+                sas_catalog_filepath = sas_catalog_search[0]
+                click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}",fg="green")
+            elif len(sas_catalog_search) > 1:
+                sas_catalog_filepath = sas_catalog_search[0]
+                click.secho(f"Warning: Found multiple SAS Catalog files",fg="red")
+                click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}")
+            else:
+                sas_catalog_filepath = None
+                click.secho("No sas catalog file found so value labels will not be applied")
+
         data_dictionary_package = choice_fxn[inputtype](
             input_filepath,
             data_dictionary_props,
