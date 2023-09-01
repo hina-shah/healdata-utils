@@ -162,10 +162,19 @@ def vlmd(ctx):
         ctx.command.commands[subcmd].main(args=[filepath])
         
 
+# @vlmd.command(help="Lookup the definition and examples for a given field within a given data dictionary format or for both")
+# @vlmd.option("--format",
+#     default="both",
+#     type=click.Choice(["csv","json","both"]),
+#     help="Format to look up",
+#     prompt="Which format do you want to look up?")
+# @vlmd.option("--name",default="description",
+# def lookup():
+#     pass 
+
 @vlmd.command(help="Launch the vlmd data dictionary definitions in the documentation")
 def documentation():
     click.launch(VLMD_DEFS_URL)
-
 
 @vlmd.command(help="Start a data dictionary from an empty template")
 @click.argument("file",type=click.Path())
