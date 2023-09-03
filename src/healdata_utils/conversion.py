@@ -129,7 +129,7 @@ def _write_vlmd(
 
 def convert_to_vlmd(
     input_filepath,
-    data_dictionary_props={},
+    data_dictionary_props=None,
     inputtype=None,
     output_filepath=None,
     sas_catalog_filepath=None,
@@ -193,9 +193,12 @@ def convert_to_vlmd(
                 f"No inputtype specified as file of type {ext} does not have a registered inputtype"
             )
 
-    ## add dd title
-    if not data_dictionary_props.get("title"):
-        data_dictionary_props["title"] = input_filepath.stem
+    if not data_dictionary_props:
+        data_dictionary_props = {}
+        
+    # ## add dd title
+    # if not data_dictionary_props.get("title"):
+    #     data_dictionary_props["title"] = input_filepath.stem
 
     # get data dictionary package based on the input type
     if inputtype == "sas":

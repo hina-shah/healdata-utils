@@ -191,8 +191,17 @@ def template(outputfile,overwrite,nfields):
 @click.option('--outputfile',
     default="heal-data-dictionary.json",
     prompt=prompt_extract_outputfile)
-@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
-def extract(inputfile,outputfile,inputtype,overwrite):
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite,
+    help="If true, will replace (overwrite) the existing file if it exists. If false (the default) and there is a file of same name, will prompt user if they want to overwrite.")
+@click.option(
+    "--prop",
+    "data_dictionary_props",
+    multiple=True,nargs=2,
+    help="<name of root level data dictionary property> <value of the specified property>. For example, title 'This is my title' Remember quotes if spaces!"
+)
+def extract(inputfile,outputfile,inputtype,overwrite,data_dictionary_props):
+
+    data_dictionary_props = dict(data_dictionary_props)
 
    # data_dictionary_props = {}
     #save dds and error reports to files
@@ -202,7 +211,8 @@ def extract(inputfile,outputfile,inputtype,overwrite):
         #data_dictionary_props=data_dictionary_props,
         output_filepath=outputfile,
         inputtype=inputtype,
-        overwrite_output_file=overwrite
+        overwrite_output_file=overwrite,
+        data_dictionary_props=data_dictionary_props
     )
 
 

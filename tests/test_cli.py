@@ -24,10 +24,11 @@ def test_vlmd_extract_all_params(
                 cli_params.append(str(param))
             elif paramname=="input_filepath":
                 cli_args = str(param)  # click argument
-            # elif paramname == "data_dictionary_props":
-            #     for _paramname,_param in param.items():
-            #         cli_params.append(f"--{_paramname.replace('_','-')}")
-            #         cli_params.append(str(_param))
+            elif paramname == "data_dictionary_props":
+                for _paramname,_param in param.items():
+                    cli_params.append("--prop")
+                    cli_params.append(_paramname)
+                    cli_params.append(_param)
             elif paramname == "sas_catalog_filepath":
                 # CLI currently infers sas catalog file
                 pass
@@ -60,8 +61,6 @@ def test_vlmd_extract_all_params(
         # NOTE: removed options for title/description to simplify. 
         # By default, the core convert_to_vlmd function adds a title by getting the stem of filename
         # So, replaced title and deleted description so passes these comparison assertions
-        _valid_output_json["title"] = _input_params["input_filepath"].stem
-        del _valid_output_json["description"]
         
         compare_vlmd_tmp_to_output(
             tmpdir=_outdir,
