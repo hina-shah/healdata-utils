@@ -90,7 +90,7 @@ def _check_overwrite(ctx,param,value):
     will abort. 
 
     If the overwrite flag is true (either because the user confirmed the overwrite
-    or the user applied the flag), steps out of this callback function.
+    or the user applied the flag) or if the outfile is None, steps out of this callback function.
 
     NOTE
     ----- 
@@ -107,11 +107,16 @@ def _check_overwrite(ctx,param,value):
     filepath_csv = Path(filepath).with_suffix(".csv")
     filepath_json = Path(filepath).with_suffix(".json")
 
+    # if no output file, then pass through (as not applicable)
     # if overwrite specified pass through (true)
     # if overwrite not specified (false), check existence and prompt user if they want to overwrite,
     #  if files don't exist, pass through (false)
-    if value:
+    if not filepath:
         return value
+
+    elif value:
+        return value
+
     elif filepath_json.exists() or filepath_csv.exists():
 
         if filepath_csv.exists():
