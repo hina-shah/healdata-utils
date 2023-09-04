@@ -114,12 +114,16 @@ def _check_overwrite(ctx,param,value):
 
     if filepath_json.exists() or filepath_csv.exists():
 
+        # Write to console the existence of csv and json files
+        # with specified stem
         if filepath_csv.exists():
             click.secho(f"Warning: {filepath_csv} exists",fg="red")
 
         if filepath_json.exists():
             click.secho(f"Warning: {filepath_json} exists",fg="red")  
 
+
+        
         if click.confirm(prompt_overwrite):
             return True
         else:
