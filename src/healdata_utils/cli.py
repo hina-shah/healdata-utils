@@ -89,8 +89,11 @@ def _check_overwrite(ctx,param,value):
     Then, if the user has specified no on overwrite, the command 
     will abort. 
 
-    If the overwrite flag is true (either because the user confirmed the overwrite
-    or the user applied the flag) or if the outfile is None, steps out of this callback function.
+
+    # if no output file, then pass through (as not applicable)
+    # if overwrite specified pass through (true)
+    # if overwrite not specified (false), check existence and prompt user if they want to overwrite,
+    #  if files don't exist, pass through (false)
 
     NOTE
     ----- 
@@ -98,26 +101,18 @@ def _check_overwrite(ctx,param,value):
     Reasoning for checking both csv and json is to ensure they are "synced" and
     currently the convert_to_vlmd fxn outputs both csv and json by default
 
-    """ 
-
-    # Check for existence and ask if they want to overwrite file
+    """
     
     filepath = ctx.params.get("outputfile")
+
+
+    if not filepath or value:
+        return value
 
     filepath_csv = Path(filepath).with_suffix(".csv")
     filepath_json = Path(filepath).with_suffix(".json")
 
-    # if no output file, then pass through (as not applicable)
-    # if overwrite specified pass through (true)
-    # if overwrite not specified (false), check existence and prompt user if they want to overwrite,
-    #  if files don't exist, pass through (false)
-    if not filepath:
-        return value
-
-    elif value:
-        return value
-
-    elif filepath_json.exists() or filepath_csv.exists():
+    if filepath_json.exists() or filepath_csv.exists():
 
         if filepath_csv.exists():
             click.secho(f"Warning: {filepath_csv} exists",fg="red")
@@ -131,8 +126,8 @@ def _check_overwrite(ctx,param,value):
             click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
             click.pause(click.style("Press any key to exit program and try again"))
             ctx.exit()
-    else:
-        return value        
+    
+    return value        
                         
 
 
