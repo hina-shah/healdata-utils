@@ -220,7 +220,7 @@ def extract(inputfile,outputfile,inputtype,overwrite,data_dictionary_props):
 @click.argument("inputfile",type=click.Path(exists=True))
 @click.option('--outputfile',help="Write the report to a file")
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
-def validate(inputfile,outputfile):
+def validate(inputfile,outputfile,overwrite):
 
     ext = Path(inputfile).suffix.replace(".","")
 
