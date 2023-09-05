@@ -3,6 +3,7 @@ from healdata_utils.cli import vlmd
 from conftest import compare_vlmd_tmp_to_output
 import shutil
 import os
+import json
 from pathlib import Path
 
 def test_vlmd_extract_all_params(
@@ -114,8 +115,30 @@ def test_vlmd_validate():
         assert result.exit_code == 0,result.output
 
 
-def test_vlmd_template():
-    pass 
+def test_vlmd_template(fields_propname):
+
+    tmpdir = Path("tmp")
+
+    if tmpdir.exists():
+        shutil.rmtree(tmpdir)
+
+    tmpdir.mkdir()
+
+    runner = CliRunner()
+    resultjson = runner.invoke(vlmd, ['template',"tmp/templatejson.json","--numfields","2"])
+    resultcsv = runner.invoke(vlmd, ['template',"tmp/templatecsv.csv","--numfields","2"])
+
+    assert resultjson.exit_code == 0,resultjson.output
+    assert resultcsv.exit_code == 0,resultcsv.output
+
+    csvoutput = Path("data/templates/twofields.csv").read_text().split("\n")
+    jsonoutput = json.loads(Path("data/templates/twofields.json").read_text())
+
+    compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname)
+
+    shutil.rmtree(tmpdir) 
+
+    
 
 
 
