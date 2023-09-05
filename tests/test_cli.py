@@ -114,5 +114,15 @@ def test_vlmd_validate():
         assert result.exit_code == 0,result.output
 
 
+def test_vlmd_template():
+    pass 
+
+
+
 if __name__=="__main__":
     vlmd.main()
+
+
+
+
+

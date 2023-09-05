@@ -110,8 +110,11 @@ def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname):
     
     json_field_names = [f["name"] for f in json_fields]
     csv_field_names = [f["name"] for f in json_fields]
-
-    assert sorted(json_field_names)==sorted(csv_field_names),f"json fields must have the same field names as csv fields"
+    try:
+        assert sorted(json_field_names)==sorted(csv_field_names),f"json fields must have the same field names as csv fields"
+    except:
+        assert json_field_names == csv_field_names, "json field names must be same as csv field names"
+    
     assert len(invalid_json_fields)==0,f"The following **json** dd fields are not valid: {str(invalid_json_fields)}"
     assert len(invalid_csv_fields)==0,f"The following **csv** dd fields are not valid: {str(invalid_csv_fields)}"
     
