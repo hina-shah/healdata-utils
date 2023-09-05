@@ -17,8 +17,8 @@ def test_write_vlmd_template(fields_propname):
 
     tmpdir.mkdir(exist_ok=True)
 
-    write_vlmd_template(tmpdir.joinpath("heal.json"),field_num=2)
-    write_vlmd_template(tmpdir.joinpath("heal.csv"),field_num=2)
+    write_vlmd_template(tmpdir.joinpath("heal.json"),numfields=2)
+    write_vlmd_template(tmpdir.joinpath("heal.csv"),numfields=2)
 
 
     csvoutput = Path("data/templates/twofields.csv").read_text().split("\n")

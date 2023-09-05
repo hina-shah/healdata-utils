@@ -93,7 +93,7 @@ def _generate_jsontemplate(schema):
     return val
 
     
-def write_vlmd_template(outputfile,output_overwrite=False,field_num=1):
+def write_vlmd_template(outputfile,output_overwrite=False,numfields=1):
 
     """ 
     Writes a  json or csv template:
@@ -121,7 +121,7 @@ def write_vlmd_template(outputfile,output_overwrite=False,field_num=1):
         schema = schemas.healjsonschema
         fields_propname = "data_dictionary"
         template = _generate_jsontemplate(schema)
-        template[fields_propname] = field_num *  template[fields_propname]
+        template[fields_propname] = numfields *  template[fields_propname]
         Path(outputfile).write_text(json.dumps(template,indent=2))
     
     elif ext == ".csv":
@@ -140,7 +140,7 @@ def write_vlmd_template(outputfile,output_overwrite=False,field_num=1):
             else:
                 val = ""
                 
-            vals[field["name"]] = field_num * [val]
+            vals[field["name"]] = numfields * [val]
 
         template = pd.DataFrame(vals)
         template.to_csv(outputfile,index=False)
