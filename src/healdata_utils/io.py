@@ -4,6 +4,7 @@ functions to read and write files in a "smart" way
 import pyreadstat
 import pandas as pd 
 from pathlib import Path
+import json
 import charset_normalizer
 import re
 
@@ -74,20 +75,22 @@ def read_table(file_path,castdtype = "string"):
 
 
 def _generate_jsontemplate(schema):
-    template = {}
-    if 'properties' in schema:
-        for prop, prop_schema in schema['properties'].items():
-            if 'type' in prop_schema:
-                if prop_schema['type'] == 'object':
-                    template[prop] = generate_template(prop_schema)
-                elif prop_schema['type'] == 'array':
-                    if prop_schema.get("items"):
-                        template[prop] = [generate_template(prop_schema['items'])]
-                    else:
-                        template[prop] = []
-                else:
-                    template[prop] = None
-    return template
+
+    if schema.get('type','') == 'object':
+        val = {}
+        if 'properties' in schema:
+            for prop, prop_schema in schema['properties'].items():
+                val[prop] = _generate_jsontemplate(prop_schema)
+    elif schema.get('type','') == 'array':
+        val = []
+        if schema.get("items"):
+            val.append(_generate_jsontemplate(schema['items']))
+    # elif schema.get("enum"):
+    #     val = f"Pick one of: {str(schema['enum'])}"
+    else:
+        val = None
+   
+    return val
 
     
 def write_vlmd_template(outputfile,output_overwrite=False,field_num=1):
@@ -118,19 +121,28 @@ def write_vlmd_template(outputfile,output_overwrite=False,field_num=1):
         schema = schemas.healjsonschema
         fields_propname = "data_dictionary"
         template = _generate_jsontemplate(schema)
-        template[fields_propname] = field_num*[template[fields_propname]]
+        template[fields_propname] = field_num *  template[fields_propname]
         Path(outputfile).write_text(json.dumps(template,indent=2))
     
     elif ext == ".csv":
         schema = schemas.healcsvschema
         fields_propname = "fields"
-        cols = [field["name"] for field in schema["fields"]]
-        vals = [field_num* [
-            "[Required]" if field.get("constraints",{}).get("required") else
-            re.search("\[.*\]",field["description"]).group()
-            ] for field in schema["fields"]]
+        cols = []
+        vals = {}
 
-        template = pd.DataFrame(vals,columns=cols)
+        for field in schema["fields"]:
+            cols.append(field["name"])
+            if field.get("constraints",{}).get("required"):
+                val = "[Required]"
+            elif re.search("\[Highly Recommended\]",field.get("description",""),
+                flags=re.IGNORECASE):
+                val = "[Highly Recommended]"
+            else:
+                val = ""
+                
+            vals[field["name"]] = field_num * [val]
+
+        template = pd.DataFrame(vals)
         template.to_csv(outputfile,index=False)
 
 
