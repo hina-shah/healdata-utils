@@ -176,18 +176,6 @@ def vlmd(ctx):
 # def lookup():
 #     pass 
 
-@vlmd.command(help="Launch the vlmd data dictionary definitions in the documentation")
-def documentation():
-    click.launch(VLMD_DEFS_URL)
-
-@vlmd.command(help="Start a data dictionary from an empty template")
-@click.argument("outputfile",type=click.Path())
-@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
-@click.option("--nfields",default=1,type=int,prompt=prompt_template_nfields)
-def template(outputfile,overwrite,nfields):
-    write_vlmd_template(outputfile,output_overwrite=overwrite,nfields=nfields)
-
-
 @vlmd.command(help="Extract the variable level metadata from an existing file with a specific type/format")
 @click.argument("inputfile",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
@@ -245,6 +233,16 @@ def validate(inputfile,outputfile,overwrite):
         #TODO: color code; more informative errors
         click.secho(json.dumps(report, indent=4))
          
+@vlmd.command(help="Launch the vlmd data dictionary definitions in the documentation")
+def documentation():
+    click.launch(VLMD_DEFS_URL)
+
+@vlmd.command(help="Start a data dictionary from an empty template")
+@click.argument("outputfile",type=click.Path())
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
+@click.option("--numfields",default=1,type=int,prompt=prompt_template_nfields,help="The number of fields (variables) in your data dictionary. This is used to make the template to write empty fields in the template.")
+def template(outputfile,overwrite,numfields):
+    write_vlmd_template(outputfile,output_overwrite=overwrite,numfields=numfields)
 
         
 if __name__=='__main__':
