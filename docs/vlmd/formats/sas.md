@@ -123,17 +123,9 @@ but for demonstration purposes, this example only uses one script and focuses on
 
 ## Run the `vlmd` command
 
-After creating the necessary `sas7bdat` and `sas7bcat` files, you can then run the `vlmd` command. Note, the `sas7bcat` files are optional. However, if you don't include a `sas7bcat` file, the `encodings` (i.e., value labels) will not be added.
-
-With the `sas7bcat` file:
-
-```bash
-vlmd --filepath input/data.sas7bdat --sas7bcat-filepath input/formats.sas7bcat --inputtype sas7bdat
-```
-
-Without the `sas7bcat` file:
+After creating the necessary `sas7bdat` and `sas7bcat` files, you can then run the `vlmd` command. The tool, will automatically detect the sas7bcat file **if** located in the same directory as your data file. If not detected, the command will run without the sas7bcat catalog file and the `encodings` (i.e., value labels) will not be extracted from the catalog file.
 
 
 ```bash
-vlmd --filepath input/data.sas7bdat --inputtype sas7bdat
+vlmd extract --inputtype sas input/data.sas7bdat 
 ```

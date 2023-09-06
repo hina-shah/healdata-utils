@@ -23,5 +23,5 @@ as an additional step after further annotation (e.g., from the `csv` HEAL data d
 After finishing your work on the `csv` HEAL data dictionary, run the `vlmd` command to ensure it is HEAL-compliant with:
 
 ```bash
-vlmd --filepath data/heal-dd-output.csv --inputtype csvtemplate
+vlmd validate data/heal-dd-output.csv
 ```
