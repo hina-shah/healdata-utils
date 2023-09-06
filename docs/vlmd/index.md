@@ -39,8 +39,9 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
     Typical workflows for creating a HEAL-compliant data dictionary include:
 
     1. 
-        (a) **Run the `vlmd extract` command** (or `convert_to_vlmd` if in python) to generate a HEAL-compliant data dictionary via your desired input format 
-        (b) Or start a template with the `vlmd template` command
+        (a) Run the `vlmd extract` command (or `convert_to_vlmd` if in python) to generate a HEAL-compliant data dictionary via your desired input format 
+
+        (b) Run the `vlmd template` command to start from an empty template.
 
     2. **Add/annotate with** additional information in your preferred HEAL data dictionary format (either `json` or `csv`).
         - To further annotate and use the data dictionary, see the variable-level metadata field property information below:
