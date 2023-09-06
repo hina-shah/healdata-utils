@@ -22,5 +22,5 @@ To download a REDCap CSV export, do the following*:
 ## Run the `vlmd` command
 
 ```bash
-vlmd --filepath input/example_redcap_demo.redcap.csv --inputtype redcap.csv --outputdir output/heal-vlmd-from-redcap.csv
+vlmd extract --inputtype redcap input/example_redcap_demo.redcap.csv 
 ```

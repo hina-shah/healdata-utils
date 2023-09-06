@@ -1,62 +1,151 @@
+from click.testing import CliRunner
+from healdata_utils.cli import vlmd
+from conftest import compare_vlmd_tmp_to_output
 import shutil
-from pathlib import Path
-from healdata_utils.cli import convert_to_vlmd
+import os
 import json
+from pathlib import Path
 
-def test_convert_to_vlmd_with_registered_formats(
+def test_vlmd_extract_all_params(
     valid_input_params,valid_output_json,valid_output_csv,fields_propname):
+
     inputtypes = list(valid_input_params.keys())
-    outputdir="tmp"
 
     for inputtype in inputtypes:
-   
-        # make an empty temporary output directory
-        try:
-            Path(outputdir).mkdir()
-        except FileExistsError:
-            shutil.rmtree(outputdir)
-            Path(outputdir).mkdir()
 
-        _valid_input_params = valid_input_params[inputtype]
+        # collect CLI arguments
+        cli_params = ['extract']
+        _input_params = valid_input_params[inputtype]
+        
+        for paramname,param in _input_params.items():
+            
+            # add CLI options
+            if paramname=="output_filepath":
+                cli_params.append("--outputfile")
+                cli_params.append(str(param))
+            elif paramname=="input_filepath":
+                cli_args = str(param)  # click argument
+            elif paramname == "data_dictionary_props":
+                for _paramname,_param in param.items():
+                    cli_params.append("--prop")
+                    cli_params.append(_paramname)
+                    cli_params.append(_param)
+            elif paramname == "sas_catalog_filepath":
+                # CLI currently infers sas catalog file
+                pass
+
+            elif paramname in ["inputtype"]:
+                cli_params.append(f"--{paramname.replace('_','-')}")
+                cli_params.append(str(param))
+
+        # make an empty temporary output directory
+        _outdir = _input_params["output_filepath"].parent
+        try:
+            Path(_outdir).mkdir()
+        except FileExistsError:
+            shutil.rmtree(_outdir)
+            Path(_outdir).mkdir()
+
+        # add click arguments at end
+        cli_params.append(cli_args)
+
+        #run CLI
+        runner = CliRunner()
+        result = runner.invoke(vlmd, cli_params)
+
+        assert result.exit_code == 0
+
+        # test CLI output to existing output
         _valid_output_json = valid_output_json[inputtype]
         _valid_output_csv = valid_output_csv[inputtype]
 
-        data_dictionaries = convert_to_vlmd(
-            **_valid_input_params,
-        outputdir=outputdir
+        # NOTE: removed options for title/description to simplify. 
+        # By default, the core convert_to_vlmd function adds a title by getting the stem of filename
+        # So, replaced title and deleted description so passes these comparison assertions
+        
+        compare_vlmd_tmp_to_output(
+            tmpdir=_outdir,
+            csvoutput=_valid_output_csv,
+            jsonoutput=_valid_output_json,
+            fields_propname=fields_propname
         )
+        # clean up
+        shutil.rmtree(_outdir)
 
-        ddjson = json.loads(list(Path("tmp").glob("*.json"))[0].read_text())
-        #NOTE: csv are just fields so no ddcsv
 
-        # check for incorrect fields       
-        csv_fields = list(Path("tmp").glob("*.csv"))[0].read_text().split("\n")
-        json_fields = ddjson.pop(fields_propname) #NOTE: testing individual fields
+def test_vlmd_extract_minimal(valid_input_params):
 
-        valid_output_json_fields = _valid_output_json.pop(fields_propname)
-        valid_output_csv_fields = _valid_output_csv
+    inputtypes = list(valid_input_params.keys())
 
-        invalid_json_fields = []
-        invalid_csv_fields = []
-        indices = range(len(json_fields))
-        for i in indices:
-            if json_fields[i]!=valid_output_json_fields[i]:
-                invalid_json_fields.append(i)
-            if csv_fields[i]!=valid_output_csv_fields[i]:
-                invalid_csv_fields.append(i)
+    for inputtype in inputtypes:
+
+        filepath = str(valid_input_params[inputtype]["input_filepath"].resolve())
+
+        try:
+            Path("tmp").mkdir()
+        except FileExistsError:
+            shutil.rmtree("tmp")
+            Path("tmp").mkdir()
+
+        os.chdir("tmp")
+
+        # collect CLI arguments
         
-        json_field_names = [f["name"] for f in json_fields]
-        csv_field_names = [f["name"] for f in json_fields]
+        cli_params = ['extract',"--inputtype",inputtype,filepath]
 
-        assert sorted(json_field_names)==sorted(csv_field_names),f"{inputtype} conversion: json fields must have the same field names as csv fields"
-        assert len(invalid_json_fields)==0,f"{inputtype} conversion: The following **json** dd fields are not valid: {str(invalid_json_fields)}"
-        assert len(invalid_csv_fields)==0,f"{inputtype} conversion: The following **csv** dd fields are not valid: {str(invalid_csv_fields)}"
-        
-        
-         # check if root level properties other than the fields are valid
-        for propname in ddjson:
-            assert ddjson[propname] == _valid_output_json[propname],f"{inputtype} conversion to json dd property '{propname}' assertion failed"
+        #run CLI
+        runner = CliRunner()
+        result = runner.invoke(vlmd, cli_params)
+
+        assert result.exit_code == 0,result.output
+
+
+        # clean up
+        os.chdir("..")
+        shutil.rmtree("tmp")
+
+
+def test_vlmd_validate():
+
+    paths = Path("data/valid/output").glob("*")
+    for path in paths:
+        runner = CliRunner()
+        result = runner.invoke(vlmd, ['validate',str(path)])
+
+        assert result.exit_code == 0,result.output
+
+
+def test_vlmd_template(fields_propname):
+
+    tmpdir = Path("tmp")
+
+    if tmpdir.exists():
+        shutil.rmtree(tmpdir)
+
+    tmpdir.mkdir()
+
+    runner = CliRunner()
+    resultjson = runner.invoke(vlmd, ['template',"tmp/templatejson.json","--numfields","2"])
+    resultcsv = runner.invoke(vlmd, ['template',"tmp/templatecsv.csv","--numfields","2"])
+
+    assert resultjson.exit_code == 0,resultjson.output
+    assert resultcsv.exit_code == 0,resultcsv.output
+
+    csvoutput = Path("data/templates/twofields.csv").read_text().split("\n")
+    jsonoutput = json.loads(Path("data/templates/twofields.json").read_text())
+
+    compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname)
+
+    shutil.rmtree(tmpdir) 
 
     
-        # clean up
-        shutil.rmtree(outputdir)
+
+
+
+if __name__=="__main__":
+    vlmd.main()
+
+
+
+
+

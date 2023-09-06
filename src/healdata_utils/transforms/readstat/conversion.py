@@ -8,12 +8,12 @@ from datetime import datetime
 
 def convert_readstat(file_path,
     data_dictionary_props={},
-    sas7bcat_file_path=None,):
+    sas_catalog_filepath=None,):
     """
     Converts a "metadata-rich" (ie statistical software file) 
     into a HEAL-specified data dictionary in both csv format and json format.
 
-    This function relies on [readstat](https://github.com/Roche/pyreadstat) which supports SPSS (sav and por), 
+    This function relies on [readstat](https://github.com/Roche/pyreadstat) which supports SPSS (sav), 
     SAS (sas7bdat), and Stata (dta). 
 
     > Currently, this function uses both data and metadata to generate 
@@ -29,7 +29,7 @@ def convert_readstat(file_path,
     data_dictionary_props : dict
         The HEAL-specified data dictionary properties.
     
-    sas7bcat_file_path : str or path-like
+    sas_catalog_filepath : str or path-like
         Path to a sas catalog file (sas7bcat). Needed for value formats if a sas (sas7bdat) input file
 
     Returns
@@ -64,8 +64,8 @@ def convert_readstat(file_path,
 
     """
     metaparams = dict(file_path=file_path,user_missing=True)
-    if sas7bcat_file_path:
-        metaparams["catalog_file"] = sas7bcat_file_path
+    if sas_catalog_filepath:
+        metaparams["catalog_file"] = sas_catalog_filepath
     _,meta = read_pyreadstat(**metaparams) # get user missing values (for stata/sas will make string so need sep call to infer types)
     df,_ = read_pyreadstat(file_path) # dont fill user defined missing vals (to get correct types)
     

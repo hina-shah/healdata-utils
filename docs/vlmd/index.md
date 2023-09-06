@@ -13,15 +13,27 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
 
 - Supports HEAL projects and goals such as the [common data elements program](https://heal.nih.gov/data/common-data-elements)
 
+
+## Quick start
+
+=== "Command Line Interface (CLI)"
+
+**Double click** on the `vlmd` (or `vlmd.exe`) executable or **run** the `vlmd` executable without any arguments to quickly start using this tool. This "quick start" will take walk you through step by step.
+
+The executables can be found 
+
 ## Basic usage
 
-The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and exports HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
+
+### `Extract` VLMD from another data type and format
+
+The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and extracts HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
 === "Command Line Interface (CLI)"
 
     ```bash
 
-    vlmd --filepath myproject/myfile.sav --inputtype sav --description "This contains my test data" --title "Test data"
+    vlmd extract --inputtype spss myproject/myfile.sav
 
     ```
     !!! note
@@ -33,12 +45,7 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
 
     from healdata_utils import convert_to_vlmd
 
-    description = "This is a proof of concept to demonstrate the healdata-utils functionality"
-    title = "Healdata-utils Demonstration Data Dictionary"
-
-    convert_to_vlmd(
-        filepath="myproject/myfile.sav",inputtype="sav",
-        data_dictionary_props={"description":"This contains my test data","title":"Test data"})
+    convert_to_vlmd(filepath="myproject/myfile.sav",inputtype="spss")
 
     ```
 
@@ -46,33 +53,28 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
 
         To continue, it's recommended to go to the [input types and formats](#input-types-and-formats). For a complete set of options with `convert_to_vlmd` see the docstring (if in a notebook, one can enter `convert_to_vlmd?`)
 
-### Input Types and Formats
+
+#### Input Types and Formats
 
 This section provides the specific syntax for running each of the supported types for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided. 
 
-!!! note
-    The commands in these sections are very minimal. One can add other metadata (Ie metadata describing the data dictionary) via the command line (eg `--title` and `--description` options.) For an example of this, see the [basic usage section](#basic-usage). 
 
 !!! note
     To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](./schemas/csv-fields.md) or the __`json data dictionary`__ [click here](./schemas/json-data-dictionary.md).
 
 <!-- TODO: Automate creation of these lists below -->
-From your data:
+
+
+Extract variable level metadata from your data:
 
 - [CSV datasets](./formats/csvdata.md)
 - [SPSS datasets](./formats/spss.md)
 - [SAS datasets](./formats/sas.md)
 - [Stata datasets](./formats/stata.md)
-
-From your data dictionaries:
-
 - [REDCap data dictionary](./formats/redcapcsv.md)
 - [Frictionless Table Schema](./formats/frictionlessschema.md)
-- [HEAL CSV template data dictionary](./formats/csvtemplate.md)
-- [HEAL JSON template data dictionary](./formats/jsontemplate.md)
 
-
-### Output
+#### Output
 
 Both the python and command line routes will result in a JSON and CSV version of the HEAL data dictionary in the output folder along with the validation reports in the `errors` folder. See below:
 
@@ -99,6 +101,84 @@ If no `outputdir` specified, the resulting HEAL-compliant data dictionaries will
 
 - `heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
 - `heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
+### `Template`: Create and annotate a HEAL data dictionary
+
+Some folks may prefer to extract their vlmd themselves. To support this, we have created a utility that creates either a json or csv template. 
+
+For more details (and downloadable examples) see:
+
+- [HEAL CSV template data dictionary](./formats/csvtemplate.md)
+- [HEAL JSON template data dictionary](./formats/jsontemplate.md)
+
+=== Command line interface (CLI)
+
+
+To create a template `json` version with 10 fields (variables):
+
+```bash
+
+vlmd template myhealdd.json --numfields 10
+
+```
+
+To create a template `csv` version with 10 fields (variables):
+
+```bash
+
+vlmd template myhealdd.csv --numfields 10
+
+```
+
+
+=== Python
+
+```python
+
+from healdata_utils import write_vlmd_template
+
+write_vlmd_template(tmpdir.joinpath("heal.json"),numfields=10)
+    
+```
+
+To create a template csv version with 10 fields (variables):
+
+```python
+
+from healdata_utils import write_vlmd_template
+
+write_vlmd_template(tmpdir.joinpath("heal.csv"),numfields=10)
+
+```
+
+### `Validate` Check (validate) an existing HEAL data dictionary file 
+
+Will indicate if the data dictionary complies with the HEAL specifications.
+
+=== Command line interface (CLI)
+
+```bash
+
+vlmd validate data/myhealcsvdd.csv
+
+vlmd validate data/myhealjsondd.json
+
+
+
+```
+
+=== Python
+
+
+```python
+
+from healdata_utils import validate_vlmd_csv,validate_vlmd_json
+
+validate_vlmd_csv("data/myhealcsvdd.csv")
+
+validate_vlmd_json("data/myhealjsondd.json")
+
+```
+
 
 ## CSV and JSON data dictionary definitions
 !!! important

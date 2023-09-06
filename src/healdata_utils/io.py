@@ -4,7 +4,11 @@ functions to read and write files in a "smart" way
 import pyreadstat
 import pandas as pd 
 from pathlib import Path
+import json
 import charset_normalizer
+import re
+
+from healdata_utils import schemas
 # read pyreadstat files
 
 def read_pyreadstat(file_path,**kwargs):
@@ -68,5 +72,77 @@ def read_table(file_path,castdtype = "string"):
         keep_default_na=False)
 
     return file_encoding
+
+
+def _generate_jsontemplate(schema):
+
+    if schema.get('type','') == 'object':
+        val = {}
+        if 'properties' in schema:
+            for prop, prop_schema in schema['properties'].items():
+                val[prop] = _generate_jsontemplate(prop_schema)
+    elif schema.get('type','') == 'array':
+        val = []
+        if schema.get("items"):
+            val.append(_generate_jsontemplate(schema['items']))
+    # elif schema.get("enum"):
+    #     val = f"Pick one of: {str(schema['enum'])}"
+    else:
+        val = None
+   
+    return val
+
+    
+def write_vlmd_template(outputfile,output_overwrite=False,numfields=1):
+
+    """ 
+    Writes a  json or csv template:
+    If writing a json template, will iniiate null vals for all fields
+    If writing a csv template (ie csv tabular template), will copy the recommendation level across num fields specified.
+    
+
+    NOTE
+    -----
+    - Recommendation level is in description property with expression [<recommendation level>]. The 
+    "required" property takes precdence over rec level.
+
+    - csv is a frictionless table schema and json is a jsonschema
+    """  
+    
+
+    ext = Path(outputfile).suffix 
+
+    # if file exists and overwrite option is false, raise error
+    if Path(outputfile).exists() and not output_overwrite:
+        raise FileExistsError(f"{outputfile} exists")
+
+
+    if ext == ".json":
+        schema = schemas.healjsonschema
+        fields_propname = "data_dictionary"
+        template = _generate_jsontemplate(schema)
+        template[fields_propname] = numfields *  template[fields_propname]
+        Path(outputfile).write_text(json.dumps(template,indent=2))
+    
+    elif ext == ".csv":
+        schema = schemas.healcsvschema
+        fields_propname = "fields"
+        cols = []
+        vals = {}
+
+        for field in schema["fields"]:
+            cols.append(field["name"])
+            if field.get("constraints",{}).get("required"):
+                val = "[Required]"
+            elif re.search("\[Highly Recommended\]",field.get("description",""),
+                flags=re.IGNORECASE):
+                val = "[Highly Recommended]"
+            else:
+                val = ""
+                
+            vals[field["name"]] = numfields * [val]
+
+        template = pd.DataFrame(vals)
+        template.to_csv(outputfile,index=False)
 
 

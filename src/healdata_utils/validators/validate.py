@@ -1,6 +1,7 @@
 """ utilities to validate data and metadata """ 
 import jsonschema
 import os
+from pathlib import Path
 import pandas as pd
 import json
 
@@ -22,7 +23,7 @@ class Validator:
     """ 
     @classmethod
     def from_csv_file(cls,path,schema,schema_type):
-        data = read_table(path)
+        data = read_table(path).to_dict(orient="records")
         return cls(data,schema,schema_type)
 
     @classmethod
@@ -176,7 +177,9 @@ def validate_vlmd_csv(
         field_list = [field["name"] for field in schema["fields"]]
     elif input_schema_type=="jsonschema":
         field_list = [fieldname for fieldname in list(schema["items"]["properties"])]
-    validator.data = utils.sync_fields(validator.data, field_list,missing_value="")
+    
+    if to_sync_fields:
+        validator.data = utils.sync_fields(validator.data, field_list,missing_value="")
 
     package = validator.validate(validation_schema_type)
     report = package["report"]

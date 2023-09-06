@@ -8,5 +8,5 @@ TO ADD -->
 
 ## Run the `vlmd` command
 ```bash
-vlmd --filepath data/mydatafile.dta --inputtype dta
+vlmd extract --inputtype stata data/mydatafile.dta 
 ```

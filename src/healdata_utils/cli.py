@@ -5,12 +5,7 @@ command line interface for generating HEAL data dictionary/vlmd json files
 ''' 
 
 import click 
-from healdata_utils.transforms.csvtemplate.conversion import convert_templatecsv
-from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
-from healdata_utils.transforms.readstat.conversion import convert_readstat
-from healdata_utils.transforms.redcapcsv.conversion import convert_redcapcsv
-from healdata_utils.transforms.csvdata.conversion import convert_datacsv
-from healdata_utils.transforms.frictionless.conversion import convert_frictionless_tableschema
+
 
 from healdata_utils.validators.validate import validate_vlmd_json,validate_vlmd_csv
 import json
@@ -21,189 +16,234 @@ import csv
 from collections import deque
 
 from healdata_utils.utils import find_docstring_desc
+from healdata_utils.conversion import convert_to_vlmd,choice_fxn
+from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
+from healdata_utils.io import write_vlmd_template
+from healdata_utils.config import VLMD_DEFS_URL
+# TODO: vlmd group that invokes input prompts and directs towards one of the three sub commands
+# TODO: validate takes in either a heal specified json or a csv and validates
 
-choice_fxn = {
-    'data.csv':convert_datacsv,
-    'template.csv':convert_templatecsv,
-    'csv': convert_templatecsv, #maintained for backwards compatibility
-    'sav': convert_readstat,
-    'dta':convert_readstat,
-    #'por':convert_readstat,
-    'sas7bdat':convert_readstat,
-    'template.json':convert_templatejson,
-    'json':convert_templatejson, #maintain for bwds compat
-    "redcap.csv":convert_redcapcsv,
-    "frictionless.schema.json":convert_frictionless_tableschema
 
-}
+prompt_file = f"""
+{click.style("Enter the path to your file:",bold=True,fg="green")}
 
-input_types = " - "+"\n - ".join(list(choice_fxn.keys()))
+This can be an:
+1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/data/filename.csv)
+2. relative path (e.g., data/filename.csv)
+3. filename (e.g., filename.csv)
 
-input_descriptions = {
-    name:find_docstring_desc(fxn)
-    for name,fxn in choice_fxn.items()
-}
+"""
 
-def convert_to_vlmd(
-    filepath,
-    data_dictionary_props={},
-    inputtype=None,
-    outputdir=None,
-    sas7bcat_filepath=None,
-    csvtemplate_output_quoting=None,
+prompt_extract_inputtypes = f"""
+{click.style("What type of file do you want to extract variable level metadata from?",bold=True,fg="green")}
 
-    ):
-    """
-    Writes a data dictionary (i.e. variable level metadata) to a HEAL metadata JSON file using a registered function.
+"""
 
-    Parameters
-    ----------
-    filepath : str
-        Path to input file. See documentation on individual input types for more details.
-    outputdir : str
-        output file path or directory to where output will go. 
-        1. Outputdir is a directory, will give standard names,
-        2. If path to the to-be-written file is specified, will use this as new outputted filename
-    data_dictionary_props : dict, optional
-        The other data-dictionary level properties. By default, will give the data_dictionary `title` property as the file name stem.
-    inputtype : str, optional
-        The input type. If none specified, will default to using the file extension.
-        See the currently registered input types in the input_types list.
-    sas7bcat_filepath: str,optional
-        [FOR SAS7BDAT ONLY]: Path to a sas catalog file (sas7bcat). Needed for value formats if a sas (sas7bdat) input file
-    csvtemplate_output_quoting: bool, optional
-        If true, all nonnumeric values will be quoted. This helps reduce ambiguity for programs
-        like excel that uses special characters for specific purposes (eg = for formulas)
-    
-    Returns
-    -------
-    dict
-        Dictionary with:
-         1. csvtemplated array of fields.
-         2. jsontemplated data dictionary object as specified by an originally drafted design doc.
-            That is, a dictionary with title:<title>,description:<description>,data_dictionary:<fields>
-            where data dictionary is an array of fields as specified by the JSON schema.
-         3. error objects for corresponding validators (ie frictionless for csv and jsonschema for json)
+prompt_template_nfields = f"""
+{click.style("How many variables (ie fields) are in your data (ie are going to be in your data dictionary)?",bold=True,fg="green")}
+
+""" 
+
+prompt_template_outputfile = f"""
+
+{click.style("What do you want the output file called?",bold=True,fg="green")}
+
+This can be an:
+1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/heal-data-dictionary.csv)
+2. relative path (e.g., heal-data-dictionary.csv)
+3. filename (e.g., heal-data-dictionary.csv)
+
+Note, if you specify a csv file, this will generate a HEAL csv templated file and if you specify a json file, this
+will generate a HEAL json templated file.
+
+""" 
+prompt_extract_outputfile = f""" 
+
+{click.style("What do you want the output file called?",bold=True,fg="green")}
+
+Note, whether you specify a json or csv, both formats will be generated for convenience 
+(i.e., heal-dd.json generates heal-dd.json and heal-dd.csv)
+
+"""
+
+prompt_overwrite = f"""
+
+{click.style("Do you want to overwrite the specified output files (if they exist)?",bold=True,fg="green")}
+
+"""
+
+def _check_suffix_for_json_or_csv(ctx,param,value):
+    fileexts = [".json",".csv"]
+    if not Path(value).suffix in fileexts:
+        click.secho(f"File must be {' or '.join(fileexts)}",fg="red")
+        click.pause(click.style("Press any key to exit program and try again"))
+        ctx.exit()
+
+
+def _check_overwrite(ctx,param,value):
+
+    """ 
+    Takes the specified file/outputfile argument 
+    if the file exists, prompts user if they want to overwrite.
+
+    Then, if the user has specified no on overwrite, the command 
+    will abort. 
+
+
+    # if no output file, then pass through (as not applicable)
+    # if overwrite specified pass through (true)
+    # if overwrite not specified (false), check existence and prompt user if they want to overwrite,
+    #  if files don't exist, pass through (false)
+
     NOTE
-    ----
-    In future versions, this will be more of a package bundled with corresponding schemas (whether csv or JSON),better organization 
-    (e.g., see frictionless Package). 
-    However, right now, it simply returns the csvtemplate and jsontemplate as specified
-    in the heal specification repository.
-    This is an intermediate solution to socialize a proof-of-concept.
+    ----- 
+    Note, both the csv and json files are checked for existence. 
+    Reasoning for checking both csv and json is to ensure they are "synced" and
+    currently the convert_to_vlmd fxn outputs both csv and json by default
 
-    TODO
-    --------
-    make sub command for each file format rather than just one function? Added sas7bcat and can predict additional complexity
-    
     """
-
-    filepath = Path(filepath)
     
-    #infer input type
-    if not inputtype:
-        inputtype = ''.join(filepath.suffixes)[1:].lower()
-
-    ## add dd title
-    if not data_dictionary_props.get('title'):
-        data_dictionary_props['title'] = filepath.stem
-
-    
-    # get data dictionary package based on the input type
-    if sas7bcat_filepath:
-        data_dictionary_package = choice_fxn[inputtype](filepath,data_dictionary_props,sas7bcat_file_path=sas7bcat_filepath,) 
-    else:
-        data_dictionary_package = choice_fxn[inputtype](filepath,data_dictionary_props)
+    filepath = ctx.params.get("outputfile")
 
 
-    #TODO: currently only validates fields (ie table) but no reason it cant validate entire data package
-    package_csv = validate_vlmd_csv(data_dictionary_package['templatecsv']['data_dictionary'],to_sync_fields=True)
-    package_json = validate_vlmd_json(data_dictionary_package['templatejson'])
+    if not filepath or value:
+        return value
 
-    # TODO: in future just return the packages (eg reports nested within package and not out of)
-    # for now, keep same (report_xxx and templatexxx)
+    filepath_csv = Path(filepath).with_suffix(".csv")
+    filepath_json = Path(filepath).with_suffix(".json")
 
-    report_csv = package_csv["report"]
-    report_json = package_json["report"]
-    templatecsv = package_csv["data"]
-    templatejson = package_json["data"]
+    if filepath_json.exists() or filepath_csv.exists():
 
-    # write to file
-    if outputdir!=None:
-        outputdir = Path(outputdir)
-        if outputdir.is_dir():
-            jsontemplate_path = outputdir/"heal-jsontemplate-data-dictionary.json"
-            csvtemplate_path = outputdir/"heal-csvtemplate-data-dictionary.csv"
-        elif outputdir.parent.is_dir():
-            jsontemplate_path = outputdir.with_suffix(".json")
-            csvtemplate_path = outputdir.with_suffix(".csv")
-            outputdir = outputdir.parent
+        # Write to console the existence of csv and json files
+        # with specified stem
+        if filepath_csv.exists():
+            click.secho(f"Warning: {filepath_csv} exists",fg="red")
+
+        if filepath_json.exists():
+            click.secho(f"Warning: {filepath_json} exists",fg="red")  
+
+
+        
+        if click.confirm(prompt_overwrite):
+            return True
         else:
-            raise Exception("outputdir must be an existing directory where files can be saved")
-        
-        # print data dictionaries
-        jsontemplate_path.write_text(json.dumps(templatejson,indent=4))
-
-        quoting = csv.QUOTE_NONNUMERIC if csvtemplate_output_quoting else csv.QUOTE_MINIMAL
-        # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
-        # (
-        #     etl.fromdicts(templatecsv)
-        #     .tocsv(
-        #         csvtemplate_path,
-        #         quoting=csv.QUOTE_NONNUMERIC if csvtemplate_output_quoting else csv.QUOTE_MINIMAL)
-
-        # )
-        pd.DataFrame(templatecsv).to_csv(csvtemplate_path,quoting=quoting,index=False)
-
-        # print errors
-
-        if not report_json['valid']:
-            print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
-            print(f"(view the outputted data dictionary at {jsontemplate_path})")
- 
-        if not report_csv['valid']:
-            print("CSV data dictionary not valid, see heal-csv-errors.json")
-            print(f"(view the outputted data dictionary at {csvtemplate_path})")
-        
-        # write error reports to file
-        errordir = Path(outputdir).joinpath('errors')
-        errordir.mkdir(exist_ok=True)
-        errordir.joinpath('heal-json-errors.json').write_text(
-            json.dumps(report_json,indent=4)
-        )
-        errordir.joinpath('heal-csv-errors.json').write_text(
-            json.dumps(report_csv,indent=4)
-        )
+            click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
+            click.pause(click.style("Press any key to exit program and try again"))
+            ctx.exit()
     
-    return {
-        "csvtemplate":templatecsv,
-        "jsontemplate":templatejson,
-        "errors":{
-            "csvtemplate":report_csv,
-            "jsontemplate":report_json}
-        }
+    return value        
+                        
 
-@click.command()
-@click.option('--filepath',required=True,help='Path to the file you want to convert to a HEAL data dictionary')
-@click.option('--title',default=None,help='The title of your data dictionary. If not specified, then the file name will be used')
-@click.option('--description',default=None,help='Description of data dictionary')
-@click.option('--inputtype',default=None,type=click.Choice(list(choice_fxn.keys())),help='The type of your input file.')
-@click.option('--outputdir',default="",help='The folder where you want to output your HEAL data dictionary')
-@click.option('--sas7bcat-filepath',default=None,help="[FOR SAS7BDAT ONLY]: Path to a sas catalog file (sas7bcat). Needed for value formats if a sas (sas7bdat) input file")
-@click.option('--csvtemplate-output-quoting',default=None,help="If true, all nonnumeric values will be quoted."
-    " This helps reduce ambiguity for programs like excel that uses special characters for specific purposes (eg = for formulas)")
-def main(filepath,title,description,inputtype,outputdir,sas7bcat_filepath,csvtemplate_output_quoting):
-    data_dictionary_props = {'title':title,'description':description}
 
+@click.group(invoke_without_command=True)
+@click.pass_context
+def vlmd(ctx):
+
+    if ctx.invoked_subcommand is None:
+        subcmds = []
+        
+
+        info = ctx.command.to_info_dict(ctx)["commands"]
+        prompt_subcmds = f"{click.style('START BY TYPING ONE OF THE THREE COMMANDS:')}\n\n"
+        for subcmd_name,subcmd_info in info.items():
+
+            subcmds.append(subcmd_name)
+            subcmd_help = f"{click.style(subcmd_name,bold=True)}: "
+            subcmd_help += f'{subcmd_info["help"]+":" if subcmd_info["help"] else ""}\n'
+            prompt_subcmds += subcmd_help + "\n"
+
+        subcmd = click.prompt(
+            text=prompt_subcmds,
+            type=click.Choice(subcmds)
+        )
+        filepath = click.prompt(
+            text=prompt_file,
+            type=click.Path()
+        )
+        # invoke subcommand chosen with "all bells and whistles"
+        #NOTE: for Command.main method:
+        # https://github.com/pallets/click/blob/b63ace28d50b53e74b5260f6cb357ccfe5560133/src/click/core.py#L1255
+        ctx.command.commands[subcmd].main(args=[filepath])
+        
+
+# @vlmd.command(help="Lookup the definition and examples for a given field within a given data dictionary format or for both")
+# @vlmd.option("--format",
+#     default="both",
+#     type=click.Choice(["csv","json","both"]),
+#     help="Format to look up",
+#     prompt="Which format do you want to look up?")
+# @vlmd.option("--name",default="description",
+# def lookup():
+#     pass 
+
+@vlmd.command(help="Extract the variable level metadata from an existing file with a specific type/format")
+@click.argument("inputfile",type=click.Path(exists=True))
+#TODO: --output-file or --output-filepath?
+@click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),prompt=prompt_extract_inputtypes)
+@click.option('--outputfile',
+    default="heal-data-dictionary.json",
+    prompt=prompt_extract_outputfile)
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite,
+    help="If true, will replace (overwrite) the existing file if it exists. If false (the default) and there is a file of same name, will prompt user if they want to overwrite.")
+@click.option(
+    "--prop",
+    "data_dictionary_props",
+    multiple=True,nargs=2,
+    help="<name of root level data dictionary property> <value of the specified property>. For example, title 'This is my title' Remember quotes if spaces!"
+)
+def extract(inputfile,outputfile,inputtype,overwrite,data_dictionary_props):
+
+    data_dictionary_props = dict(data_dictionary_props)
+
+   # data_dictionary_props = {}
     #save dds and error reports to files
+    #NOTE: ported the sas catalog inference to core function
     data_dictionaries = convert_to_vlmd(
-        filepath=filepath,
-        data_dictionary_props=data_dictionary_props,
-        outputdir=outputdir,
+        input_filepath=inputfile,
+        #data_dictionary_props=data_dictionary_props,
+        output_filepath=outputfile,
         inputtype=inputtype,
-        sas7bcat_filepath=sas7bcat_filepath,
-        csvtemplate_output_quoting=csvtemplate_output_quoting
+        overwrite_output_file=overwrite,
+        data_dictionary_props=data_dictionary_props
     )
-     
+
+
+@vlmd.command(help="Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications.")
+@click.argument("inputfile",type=click.Path(exists=True))
+@click.option('--outputfile',help="Write the report to a file")
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
+def validate(inputfile,outputfile,overwrite):
+
+    ext = Path(inputfile).suffix.replace(".","")
+
+    if ext == "csv":
+        package = validate_vlmd_csv(inputfile, to_sync_fields=True)
+        report = package["report"]
+    elif ext == "json":
+        package = validate_vlmd_json(inputfile)
+        report = package["report"]
+    else:
+        raise Exception("Need to specify either a csv or json file")
+
+    if outputfile:
+        Path(outputfile).write_text(
+            json.dumps(report, indent=4)
+        )
+    else:
+        #TODO: color code; more informative errors
+        click.secho(json.dumps(report, indent=4))
+         
+@vlmd.command(help="Launch the vlmd data dictionary definitions in the documentation")
+def documentation():
+    click.launch(VLMD_DEFS_URL)
+
+@vlmd.command(help="Start a data dictionary from an empty template")
+@click.argument("outputfile",type=click.Path())
+@click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
+@click.option("--numfields",default=1,type=int,prompt=prompt_template_nfields,help="The number of fields (variables) in your data dictionary. This is used to make the template to write empty fields in the template.")
+def template(outputfile,overwrite,numfields):
+    write_vlmd_template(outputfile,output_overwrite=overwrite,numfields=numfields)
+
+        
 if __name__=='__main__':
-    main()
+    vlmd()

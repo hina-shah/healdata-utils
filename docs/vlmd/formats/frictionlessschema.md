@@ -16,5 +16,5 @@ Below are the official frictionless table schema specifications, which you will 
 
 ## Run the `vlmd` command
 ```bash
-vlmd --filepath data/frictionless_dataset1.frictionless.schema.json --inputtype frictionless.schema.json
+vlmd extract --inputtype frictionless data/frictionless_dataset1.frictionless.schema.json
 ```

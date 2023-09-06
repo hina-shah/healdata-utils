@@ -23,5 +23,5 @@ The HEAL Data Utilities `vlmd` tool can also input this `json` HEAL data diction
 After finishing your work on the `json` HEAL data dictionary, run the `vlmd` command to ensure it is HEAL-compliant with:
 
 ```bash
-vlmd --filepath data/heal-dd-output.json --inputtype jsontemplate
+vlmd validate data/heal-dd-output.json
 ```

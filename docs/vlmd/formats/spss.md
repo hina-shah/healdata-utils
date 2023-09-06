@@ -9,5 +9,5 @@ TO ADD -->
 
 ## Run the `vlmd` command
 ```bash
-vlmd --filepath data/example_pyreadstat_output.sav --inputtype sav
+vlmd extract --inputtype spss data/example_pyreadstat_output.sav 
 ```
