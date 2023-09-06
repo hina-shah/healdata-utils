@@ -3,6 +3,11 @@
 
 Some folks may prefer to create their HEAL data dictionary from scratch. To support this, we have created a utility that creates either a json or csv template. 
 
+
+!!! warning
+
+    Currently, the command is `template` but will change to `start` to be consistent with the verb subcommand vocabulary.
+    
 ## `csv` template
 
 The HEAL Data Utilities can also input a `csv` HEAL data dictionary either from a manually filled out template or 

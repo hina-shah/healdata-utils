@@ -3,6 +3,12 @@
 
 The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and extracts HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
 
+!!! warning 
+
+    Currently the python subcommand is `convert` but will be changed to `extract_to_vlmd` to be
+    consistent with CLI. `extract` was chosen to better reflect the functionality.
+
+
 === "Command Line Interface (CLI)"
 
     ```bash
@@ -15,6 +21,8 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
         To continue, it's recommended to go to the [input types and formats](#input-types-and-formats). Also, for more details on the different flags/options, run `vlmd --help`
 
 === "Python"
+
+
 
     ```python
 
