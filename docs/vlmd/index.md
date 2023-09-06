@@ -18,170 +18,25 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
 
 === "Command Line Interface (CLI)"
 
-**Double click** on the `vlmd` (or `vlmd.exe`) executable or **run** the `vlmd` executable without any arguments to quickly start using this tool. This "quick start" will take walk you through step by step.
+**Double click** on the `vlmd` (or `vlmd.exe`) executable or **run** the `vlmd` executable without any arguments to quickly start using this tool. This "quick start" will take walk you through step by step by prompting you of the various options.
 
-The executables can be found 
+!!! important
+
+    Stand alone applications for different operating systems are available here. These allow you to run the `vlmd` tool without
+    needing to install anything else. Just (1) download, (2) unzip, and (3) double click on the `vlmd` application icon.
 
 ## Basic usage
 
-
-### `Extract` VLMD from another data type and format
-
-The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and extracts HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
-
-=== "Command Line Interface (CLI)"
-
-    ```bash
-
-    vlmd extract --inputtype spss myproject/myfile.sav
-
-    ```
-    !!! note
-
-        To continue, it's recommended to go to the [input types and formats](#input-types-and-formats). Also, for more details on the different flags/options, run `vlmd --help`
-
-=== "Python"
-    ```python
-
-    from healdata_utils import convert_to_vlmd
-
-    convert_to_vlmd(filepath="myproject/myfile.sav",inputtype="spss")
-
-    ```
-
-    !!! note
-
-        To continue, it's recommended to go to the [input types and formats](#input-types-and-formats). For a complete set of options with `convert_to_vlmd` see the docstring (if in a notebook, one can enter `convert_to_vlmd?`)
-
-
-#### Input Types and Formats
-
-This section provides the specific syntax for running each of the supported types for generating HEAL-compliant data dictionaries are listed. Additional instructions on how to obtain the necessary input files/software are also provided. 
-
-
-!!! note
-    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](./schemas/csv-fields.md) or the __`json data dictionary`__ [click here](./schemas/json-data-dictionary.md).
-
-<!-- TODO: Automate creation of these lists below -->
-
-
-Extract variable level metadata from your data:
-
-- [CSV datasets](./formats/csvdata.md)
-- [SPSS datasets](./formats/spss.md)
-- [SAS datasets](./formats/sas.md)
-- [Stata datasets](./formats/stata.md)
-- [REDCap data dictionary](./formats/redcapcsv.md)
-- [Frictionless Table Schema](./formats/frictionlessschema.md)
-
-#### Output
-
-Both the python and command line routes will result in a JSON and CSV version of the HEAL data dictionary in the output folder along with the validation reports in the `errors` folder. See below:
-
-- `errors/heal-csv-errors.json`: outputted validation report for table in csv file against frictionless schema
-
-If valid, this file will contain:
-```json
-{
-    "valid": true,
-    "errors": []
-}
-```
-- `errors/heal-json-errors.json`:  outputted jsonschema validation report.
-
-- If valid, this file will contain:
-```json
-{
-    "valid": true,
-    "errors": []
-}
-```
-
-If no `outputdir` specified, the resulting HEAL-compliant data dictionaries will be named:
-
-- `heal-csvtemplate-data-dictionary.csv`: This is the CSV data dictionary
-- `heal-jsontemplate-data-dictionary.json`: This is the JSON version of the data dictionary
-### `Template`: Create and annotate a HEAL data dictionary
-
-Some folks may prefer to extract their vlmd themselves. To support this, we have created a utility that creates either a json or csv template. 
-
-For more details (and downloadable examples) see:
-
-- [HEAL CSV template data dictionary](./formats/csvtemplate.md)
-- [HEAL JSON template data dictionary](./formats/jsontemplate.md)
-
-=== Command line interface (CLI)
-
-
-To create a template `json` version with 10 fields (variables):
-
-```bash
-
-vlmd template myhealdd.json --numfields 10
-
-```
-
-To create a template `csv` version with 10 fields (variables):
-
-```bash
-
-vlmd template myhealdd.csv --numfields 10
-
-```
-
-
-=== Python
-
-```python
-
-from healdata_utils import write_vlmd_template
-
-write_vlmd_template(tmpdir.joinpath("heal.json"),numfields=10)
-    
-```
-
-To create a template csv version with 10 fields (variables):
-
-```python
-
-from healdata_utils import write_vlmd_template
-
-write_vlmd_template(tmpdir.joinpath("heal.csv"),numfields=10)
-
-```
-
-### `Validate` Check (validate) an existing HEAL data dictionary file 
-
-Will indicate if the data dictionary complies with the HEAL specifications.
-
-=== Command line interface (CLI)
-
-```bash
-
-vlmd validate data/myhealcsvdd.csv
-
-vlmd validate data/myhealjsondd.json
-
-
-
-```
-
-=== Python
-
-
-```python
-
-from healdata_utils import validate_vlmd_csv,validate_vlmd_json
-
-validate_vlmd_csv("data/myhealcsvdd.csv")
-
-validate_vlmd_json("data/myhealjsondd.json")
-
-```
+`extract`: Extract the variable level metadata from an existing file with a specific
+  type/format
+`start`: Start a data dictionary from an empty template
+`validate`: Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications after filling out a template or further annotation after extracting from a different format.
 
 
 ## CSV and JSON data dictionary definitions
+
 !!! important
+
     The main difference* between the CSV and JSON data dictionary validation lies in the way the data dictionaries are structured and the additional metadata included in the JSON data dictionary.
     
     The CSV data dictionary is a plain tabular representation with no additional metadata, while the JSON dataset includes fields along with additional metadata in the form of a root description and title.

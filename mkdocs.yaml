@@ -7,16 +7,19 @@ nav:
   # - contributing.md
   # - install.md
   - Variable Level Metadata:
-    - vlmd/index.md #TODO: write about the methodology/motivation, resources, and what each mean
-    - Input Formats:
-      - Tabular (CSV) data dictionary template: vlmd/formats/csvtemplate.md
-      - JSON data dictionary template: vlmd/formats/jsontemplate.md
-      - SAS dataset: vlmd/formats/sas.md
-      - SPSS dataset: vlmd/formats/spss.md
-      - Stata dataset: vlmd/formats/stata.md
-      - Tabular (CSV) dataset: vlmd/formats/csvdata.md
-      - REDCap data dictionary: vlmd/formats/redcapcsv.md
-      - Frictionless Table Schema: vlmd/formats/frictionlessschema.md
+    - vlmd/index.md 
+    - Extract:
+      - vlmd/extract/index.md
+      - SAS dataset: vlmd/extract/sas.md
+      - SPSS dataset: vlmd/extract/spss.md
+      - Stata dataset: vlmd/extract/stata.md
+      - Tabular (CSV) dataset: vlmd/extract/csvdata.md
+      - REDCap export: vlmd/extract/redcapcsv.md
+      - Frictionless Table Schema: vlmd/extract/frictionlessschema.md
+    - Start:
+      - vlmd/start/index.md
+    - Validate:
+      - vlmd/validate/index.md
     - Data Dictionary Definitions (schemas):
       - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
       - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
