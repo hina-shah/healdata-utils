@@ -14,17 +14,6 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
 - Supports HEAL projects and goals such as the [common data elements program](https://heal.nih.gov/data/common-data-elements)
 
 
-## Quick start
-
-=== "Command Line Interface (CLI)"
-
-**Double click** on the `vlmd` (or `vlmd.exe`) executable or **run** the `vlmd` executable without any arguments to quickly start using this tool. This "quick start" will take walk you through step by step by prompting you of the various options.
-
-!!! important
-
-    Stand alone applications for different operating systems are available here. These allow you to run the `vlmd` tool without
-    needing to install anything else. Just (1) download, (2) unzip, and (3) double click on the `vlmd` application icon.
-
 ## Functions
 
 `extract`: Extract the variable level metadata from an existing file with a specific
@@ -38,7 +27,8 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
 
     Typical workflows for creating a HEAL-compliant data dictionary include:
 
-    1. 
+    1. **Create your data dictionary**
+
         (a) Run the `vlmd extract` command (or `convert_to_vlmd` if in python) to generate a HEAL-compliant data dictionary via your desired input format 
 
         (b) Run the `vlmd template` command to start from an empty template.
