@@ -7,20 +7,21 @@ nav:
   # - contributing.md
   # - install.md
   - Variable Level Metadata:
-    - vlmd/index.md 
-    - Extract:
-      - vlmd/extract/index.md
-      - SAS dataset: vlmd/extract/sas.md
-      - SPSS dataset: vlmd/extract/spss.md
-      - Stata dataset: vlmd/extract/stata.md
-      - Tabular (CSV) dataset: vlmd/extract/csvdata.md
-      - REDCap export: vlmd/extract/redcapcsv.md
-      - Frictionless Table Schema: vlmd/extract/frictionlessschema.md
-    - Start:
-      - vlmd/start/index.md
-    - Validate:
-      - vlmd/validate/index.md
-    - Data Dictionary Definitions (schemas):
+    - vlmd/index.md
+    - Functions:
+      - Extract:
+        - vlmd/extract/index.md
+        - SAS dataset: vlmd/extract/sas.md
+        - SPSS dataset: vlmd/extract/spss.md
+        - Stata dataset: vlmd/extract/stata.md
+        - Tabular (CSV) dataset: vlmd/extract/csvdata.md
+        - REDCap export: vlmd/extract/redcapcsv.md
+        - Frictionless Table Schema: vlmd/extract/frictionlessschema.md
+      - Start:
+        - vlmd/start/index.md
+      - Validate:
+        - vlmd/validate/index.md
+    - Definitions:
       - Tabular (CSV) data dictionary: vlmd/schemas/csv-fields.md
       - JSON data dictionary: vlmd/schemas/json-data-dictionary.md
       

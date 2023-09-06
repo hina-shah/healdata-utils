@@ -25,19 +25,38 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
     Stand alone applications for different operating systems are available here. These allow you to run the `vlmd` tool without
     needing to install anything else. Just (1) download, (2) unzip, and (3) double click on the `vlmd` application icon.
 
-## Basic usage
+## Functions
 
 `extract`: Extract the variable level metadata from an existing file with a specific
   type/format
+
 `start`: Start a data dictionary from an empty template
+
 `validate`: Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications after filling out a template or further annotation after extracting from a different format.
 
+!!! note ""
 
-## CSV and JSON data dictionary definitions
+    Typical workflows for creating a HEAL-compliant data dictionary include:
+
+    1. 
+        (a) **Run the `vlmd extract` command** (or `convert_to_vlmd` if in python) to generate a HEAL-compliant data dictionary via your desired input format 
+        (b) Or start a template with the `vlmd template` command
+
+    2. **Add/annotate with** additional information in your preferred HEAL data dictionary format (either `json` or `csv`).
+        - To further annotate and use the data dictionary, see the variable-level metadata field property information below:
+            - [`csv` data dictionary](./schemas/csv-fields.md)
+            - [`json` data dictionary](./schemas/json-data-dictionary.md)
+
+    3. **Run the `vlmd validate` command**  with your HEAL data dictioanry as the input to validate.
+
+    4. Repeat (2) and (3) until you are ready to submit. Please note, currently only `name` and `description` are required.
+
+
+## Definitions
 
 !!! important
 
-    The main difference* between the CSV and JSON data dictionary validation lies in the way the data dictionaries are structured and the additional metadata included in the JSON data dictionary.
+    The main difference* between the CSV and JSON definitions lies in the way the data dictionaries are structured and the additional metadata included in the JSON data dictionary.
     
     The CSV data dictionary is a plain tabular representation with no additional metadata, while the JSON dataset includes fields along with additional metadata in the form of a root description and title.
 
@@ -45,19 +64,6 @@ Variable level metadata (VLMD), in the form of standardized data dictionaries, p
 
 For more information on variable-level metadata properties (fields), see the [`csv` field specification](./schemas/csv-fields.md) and [`json` data dictionary specification](./schemas/json-data-dictionary.md). 
 
-!!! note ""
-
-    Typical workflows for creating a HEAL-compliant data dictionary include:
-
-    1. **Run the `vlmd` command** (or `convert_to_vlmd` if in python) to generate a HEAL-compliant data dictionary via your desired input format (See the basic usage section on the homepage for general installation and usage information).
-    2. **Add/annotate with** additional information in your preferred HEAL data dictionary format (either `json` or `csv`).
-        - To further annotate and use the data dictionary, see the variable-level metadata field property information below:
-            - [`csv` data dictionary](./schemas/csv-fields.md)
-            - [`json` data dictionary](./schemas/json-data-dictionary.md)
-
-    3. **Run the `vlmd` command** again with your HEAL data dictioanry as the input to validate.
-
-    4. Repeat (2) and (3) until you are ready to submit. Please note, currently only `name` and `description` are required.
 
 <!-- ## Interactive notebooks
 

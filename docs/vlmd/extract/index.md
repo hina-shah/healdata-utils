@@ -1,4 +1,3 @@
-
 # `Extract` VLMD from another data type and format
 
 The healdata-utils variable-level metadata (vlmd) tool inputs a variety of different input file types and extracts HEAL-compliant data dictionaries (JSON and CSV formats). Additionally, exported validation (i.e., "error") reports provide the user information as to a) if the exported data dictionary is valid according to HEAL specifications and b) how to modify one's data dictionary to make it HEAL-compliant.
@@ -43,19 +42,19 @@ This section provides the specific syntax for running each of the supported type
 
 
 !!! note
-    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](./schemas/csv-fields.md) or the __`json data dictionary`__ [click here](./schemas/json-data-dictionary.md).
+    To further annotate your outputted data dictionaries, see the variable-level metadata field properties (with examples) for either the __`csv data dictionary`__ [click here](../schemas/csv-fields.md) or the __`json data dictionary`__ [click here](../schemas/json-data-dictionary.md).
 
 <!-- TODO: Automate creation of these lists below -->
 
 
 Extract variable level metadata from your data:
 
-- [CSV datasets](./formats/csvdata.md)
-- [SPSS datasets](./formats/spss.md)
-- [SAS datasets](./formats/sas.md)
-- [Stata datasets](./formats/stata.md)
-- [REDCap data dictionary](./formats/redcapcsv.md)
-- [Frictionless Table Schema](./formats/frictionlessschema.md)
+- [CSV datasets](./csvdata.md)
+- [SPSS datasets](./spss.md)
+- [SAS datasets](./sas.md)
+- [Stata datasets](./stata.md)
+- [REDCap data dictionary](./redcapcsv.md)
+- [Frictionless Table Schema](./frictionlessschema.md)
 
 #### Output
 

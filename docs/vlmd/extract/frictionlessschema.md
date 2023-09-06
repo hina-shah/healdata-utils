@@ -8,11 +8,7 @@ Note, this conversion supports either `yaml` or `json` format (currently only te
 
 Below are the official frictionless table schema specifications, which you will notice a high degree of overlap with the heal variable level metadata specifications.
 
-<iframe
-    src="https://specs.frictionlessdata.io/table-schema"
-    style="width:100%; height:500px;overflow:auto"
->
-</iframe>
+[See here for the frictionless table schema specs](https://specs.frictionlessdata.io/table-schema)
 
 ## Run the `vlmd` command
 ```bash
