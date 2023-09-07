@@ -5,9 +5,6 @@ command line interface for generating HEAL data dictionary/vlmd json files
 ''' 
 
 import click 
-
-
-from healdata_utils.validators.validate import validate_vlmd_json,validate_vlmd_csv
 import json
 from pathlib import Path
 import petl as etl
@@ -20,9 +17,6 @@ from healdata_utils.conversion import convert_to_vlmd,choice_fxn
 from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 from healdata_utils.io import write_vlmd_template
 from healdata_utils.config import VLMD_DEFS_URL
-# TODO: vlmd group that invokes input prompts and directs towards one of the three sub commands
-# TODO: validate takes in either a heal specified json or a csv and validates
-
 
 prompt_file = f"""
 {click.style("Enter the path to your file:",bold=True,fg="green")}
@@ -144,7 +138,7 @@ def vlmd(ctx):
         
 
         info = ctx.command.to_info_dict(ctx)["commands"]
-        prompt_subcmds = f"{click.style('START BY TYPING ONE OF THE THREE COMMANDS:')}\n\n"
+        prompt_subcmds = f"{click.style('START BY TYPING ONE OF THE THREE COMMANDS:',underline=True)}\n\n"
         for subcmd_name,subcmd_info in info.items():
 
             subcmds.append(subcmd_name)
@@ -156,15 +150,25 @@ def vlmd(ctx):
             text=prompt_subcmds,
             type=click.Choice(subcmds)
         )
-        filepath = click.prompt(
-            text=prompt_file,
-            type=click.Path()
-        )
-        # invoke subcommand chosen with "all bells and whistles"
-        #NOTE: for Command.main method:
-        # https://github.com/pallets/click/blob/b63ace28d50b53e74b5260f6cb357ccfe5560133/src/click/core.py#L1255
-        ctx.command.commands[subcmd].main(args=[filepath])
-        
+        # Determine if subcmd has an argument(s)
+        has_args = False
+        for p in ctx.command.commands[subcmd].params:
+            if type(p) is click.core.Argument:
+                has_args = True
+
+        # NOTE: prompt for argument here (as prompts only for options)
+        if has_args:
+            filepath = click.prompt(
+                text=prompt_file,
+                type=click.Path()
+            )
+            # invoke subcommand chosen with "all bells and whistles"
+            #NOTE: for Command.main method:
+            # https://github.com/pallets/click/blob/b63ace28d50b53e74b5260f6cb357ccfe5560133/src/click/core.py#L1255
+            ctx.command.commands[subcmd].main(args=[filepath])
+        else:
+            ctx.command.commands[subcmd].main()
+            
 
 # @vlmd.command(help="Lookup the definition and examples for a given field within a given data dictionary format or for both")
 # @vlmd.option("--format",

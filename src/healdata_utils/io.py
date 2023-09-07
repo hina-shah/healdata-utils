@@ -50,7 +50,7 @@ def detect_file_encoding(file_path):
     return encoding_for_input["encoding"]
 
 
-def read_table(file_path,castdtype = "string"):
+def read_delim(file_path,castdtype = "string"):
     """ 
     reads in a tabular file (ie spreadsheet) after detecting
     encoding and file extension without any type casting.
@@ -73,6 +73,38 @@ def read_table(file_path,castdtype = "string"):
 
     return file_encoding
 
+def read_excel(filepath,castdtype="string"):
+    """ 
+    reads in an excel file that outputs
+    a dict of dataframes with each sheet name being
+    the dict key and the dict value being the pandas 
+    dataframe of the corresponding sheet. 
+    
+    This is akin to pandas.read_excel when all sheet_names (or sheet_name=None)
+    is specified EXCEPT that the default is each value is the string representation.
+
+    See the dtype arg in pandas read_excel docs for more info.
+    """ 
+
+    book = pd.ExcelFile(filepath)
+    dfs = {}
+    for sheet in book.sheet_names:
+        dfs[sheet] = pd.read_excel(book,sheet_name=sheet,dtype=castdtype)
+
+
+    return dfs
+
+
+
+
+
+
+def read_zip():
+    pass 
+
+
+def read_archive():
+    pass 
 
 def _generate_jsontemplate(schema):
 

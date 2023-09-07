@@ -3,7 +3,7 @@
 command line interface for generating HEAL data dictionary/vlmd json files
 
 """
-
+from healdata_utils.transforms.exceldata.conversion import convert_dataexcel
 from healdata_utils.transforms.csvtemplate.conversion import convert_templatecsv
 from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
 from healdata_utils.transforms.readstat.conversion import convert_readstat
@@ -25,6 +25,7 @@ import click
 from healdata_utils.utils import find_docstring_desc
 
 choice_fxn = {
+    "excel-data":convert_dataexcel,
     "csv-data": convert_datacsv,
     #'csv-data-dictionary':convert_datadictcsv,
     #'template.csv':convert_templatecsv,

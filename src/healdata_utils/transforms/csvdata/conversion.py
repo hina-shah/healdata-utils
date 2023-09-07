@@ -4,7 +4,7 @@ CSV data to HEAL VLMD conversion
 
 
 """ 
-from healdata_utils.io import read_table 
+from healdata_utils.io import read_delim 
 from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
 from healdata_utils.types import typesets
 import pandas as pd
@@ -19,8 +19,7 @@ def convert_datacsv(file_path,data_dictionary_props={}):
     for each variable. However, this serves as a great way to start
     the basis of a VLMD submission.
     """  
-    #TODO: support possible values; use visions package 
-    df = read_table(file_path)
+    df = read_delim(file_path)
     data_dictionary = data_dictionary_props.copy()
     fields = typesets.infer_frictionless_fields(df)
     data_dictionary['data_dictionary'] = fields 
