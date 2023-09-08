@@ -30,10 +30,10 @@ choice_fxn = {
     #'csv-data-dictionary':convert_datadictcsv,
     #'template.csv':convert_templatecsv,
     #'csv': convert_templatecsv, #maintained for backwards compatibility
-    "spss": convert_readstat,
-    "stata": convert_readstat,
+    "spss": convert_spss,
+    "stata": convert_stata,
     #'por':convert_readstat,
-    "sas": convert_readstat,
+    "sas": convert_sas,
     #'template.json':convert_templatejson,
     #'json':convert_templatejson, #maintain for bwds compat
     "redcap": convert_redcapcsv,
