@@ -222,7 +222,9 @@ def convert_to_vlmd(
         onepackage = True
     else:
         packages = data_dictionary_package
+        onepackage = False
 
+    packages_with_reports = {}
     for name,package in packages.items():
         # TODO: json validate root AND fields while csv currently only validates fields (ie table) but no reason it cant validate entire data package
         package_csv = validate_vlmd_csv(
@@ -240,11 +242,13 @@ def convert_to_vlmd(
 
 
         if onepackage:
-            packages_with_reports = {
+
+            packages_with_reports.update({
             "csvtemplate": dd_csv,
             "jsontemplate": dd_json,
             "errors": {"csvtemplate": reportcsv, "jsontemplate": reportjson},
-            }
+            })
+
             output_filepath_with_name = output_filepath
 
         else:
