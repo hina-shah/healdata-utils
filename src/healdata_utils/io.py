@@ -73,7 +73,7 @@ def read_delim(file_path,castdtype = "string"):
 
     return file_encoding
 
-def read_excel(filepath,castdtype="string"):
+def read_excel(filepath,sheet_names=None,castdtype="string"):
     """ 
     reads in an excel file that outputs
     a dict of dataframes with each sheet name being
@@ -88,15 +88,17 @@ def read_excel(filepath,castdtype="string"):
 
     book = pd.ExcelFile(filepath)
     dfs = {}
-    for sheet in book.sheet_names:
+
+    if sheet_names:
+        selected_sheet_names = [sheet for sheet in book.sheet_names 
+            if sheet in sheet_names]
+    else:
+        selected_sheet_names = book.sheet_names
+    for sheet in selected_sheet_names:
         dfs[sheet] = pd.read_excel(book,sheet_name=sheet,dtype=castdtype)
 
 
     return dfs
-
-
-
-
 
 
 def read_zip():

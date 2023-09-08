@@ -3,17 +3,6 @@
 command line interface for generating HEAL data dictionary/vlmd json files
 
 """
-from healdata_utils.transforms.exceldata.conversion import convert_dataexcel
-from healdata_utils.transforms.csvtemplate.conversion import convert_templatecsv
-from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
-from healdata_utils.transforms.readstat.conversion import convert_readstat
-from healdata_utils.transforms.redcapcsv.conversion import convert_redcapcsv
-from healdata_utils.transforms.csvdata.conversion import convert_datacsv
-from healdata_utils.transforms.frictionless.conversion import (
-    convert_frictionless_tableschema,
-)
-
-from healdata_utils.validators.validate import validate_vlmd_json, validate_vlmd_csv
 import json
 from pathlib import Path
 import petl as etl
@@ -21,7 +10,22 @@ import pandas as pd
 import csv
 from collections import deque
 import click
+from slugify import slugify
 
+from healdata_utils.transforms.excel.conversion import convert_dataexcel
+from healdata_utils.transforms.csvtemplate.conversion import convert_templatecsv
+from healdata_utils.transforms.jsontemplate.conversion import convert_templatejson
+
+from healdata_utils.transforms.stata.conversion import convert_stata
+from healdata_utils.transforms.spss.conversion import convert_spss
+from healdata_utils.transforms.sas.conversion import convert_sas
+from healdata_utils.transforms.redcapcsv.conversion import convert_redcapcsv
+from healdata_utils.transforms.csvdata.conversion import convert_datacsv
+from healdata_utils.transforms.frictionless.conversion import (
+    convert_frictionless_tableschema,
+)
+
+from healdata_utils.validators.validate import validate_vlmd_json, validate_vlmd_csv
 from healdata_utils.utils import find_docstring_desc
 
 choice_fxn = {
@@ -52,8 +56,8 @@ def _write_vlmd(
     csvtemplate,
     csvreport,
     jsonreport,
+    output_filepath,
     output_overwrite=False,
-    output_filepath=None,
     output_csv_quoting=None,
 ):
     # NOTE: currently the default is to auto generate file name if output_filepath not specified
@@ -64,14 +68,11 @@ def _write_vlmd(
     reportjson = csvreport
     reportcsv = jsonreport
 
-    if output_filepath:
-        output_filepath = Path(output_filepath)
-        jsontemplate_path = output_filepath.with_suffix(".json")
-        csvtemplate_path = output_filepath.with_suffix(".csv")
-    else:
-        output_filepath = Path()
-        jsontemplate_path = output_filepath/"heal-data-dictionary.json"
-        csvtemplate_path = output_filepath/"heal-data-dictionary.csv"
+
+    output_filepath = Path(output_filepath)
+    jsontemplate_path = output_filepath.with_suffix(".json")
+    csvtemplate_path = output_filepath.with_suffix(".csv")
+
     # check existence of directory and output files
     dir_exists = output_filepath.parent.exists()
     json_exists = jsontemplate_path.exists()
@@ -133,7 +134,6 @@ def convert_to_vlmd(
     data_dictionary_props=None,
     inputtype=None,
     output_filepath=None,
-    sas_catalog_filepath=None,
     output_csv_quoting=None,
     output_overwrite=False,
     **kwargs,
@@ -145,18 +145,18 @@ def convert_to_vlmd(
     ----------
     input_filepath : str
         Path to input file. See documentation on individual input types for more details.
-    output_filepath : str
-        output file path or directory to where output will go. Note, the extension specified (csv or json will change as necessary)
-    data_dictionary_props : dict, optional
-        The other data-dictionary level properties. By default, will give the data_dictionary `title` property as the file name stem.
     inputtype : str, optional
         The input type. If none specified, will default to using the file extension.
         See the currently registered input types in the input_types list.
-    sas_catalog_filepath: str,optional
-        Path to a sas catalog file (sas7bcat). Needed for value formats if a sas (sas7bdat) input file
+    data_dictionary_props : dict, optional
+        The other data-dictionary level properties. By default, will give the data_dictionary `title` property as the file name stem.
+    output_filepath : str
+        output file path or directory to where output will go. Note, the extension specified (csv or json will change as necessary)
     output_csv_quoting: bool, optional
         If true, all nonnumeric values will be quoted. This helps reduce ambiguity for programs
         like excel that uses special characters for specific purposes (eg = for formulas)
+    
+    **kwargs: keyword arguments for specific registered input types
 
     Returns
     -------
@@ -179,8 +179,13 @@ def convert_to_vlmd(
     TODO
     --------
 
-    Convert this to object-oriented framework -- this may be best done for entire package (eg individual types as well)?
+    Convert this to object-oriented framework -- 
+    this may be best done for entire package (eg individual types as well)?
 
+    This will require substantial overhaul to framework so this is not included in v.1 milestone.
+    E.g., individual field types as objects, individual formats as objects
+    
+    Separate write and dd extraction -- this should be included in the OO revision above
     """
 
     input_filepath = Path(input_filepath)
@@ -202,58 +207,69 @@ def convert_to_vlmd(
     #     data_dictionary_props["title"] = input_filepath.stem
 
     # get data dictionary package based on the input type
-    if inputtype == "sas":
+    data_dictionary_package = choice_fxn[inputtype](
+        input_filepath, data_dictionary_props,**kwargs
+    )
 
-        if not sas_catalog_filepath:
-            sas_catalog_search = list(Path(input_filepath).parent.glob("*.sas7bcat"))
-            if len(sas_catalog_search) == 1:
-                sas_catalog_filepath = sas_catalog_search[0]
-                click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}",fg="green")
-            elif len(sas_catalog_search) > 1:
-                sas_catalog_filepath = sas_catalog_search[0]
-                click.secho(f"Warning: Found multiple SAS Catalog files",fg="red")
-                click.secho(f"Using the SAS Catalog File: {str(sas_catalog_filepath)}")
-            else:
-                sas_catalog_filepath = None
-                click.secho("No sas catalog file found so value labels will not be applied")
+    # with the need for multiple data dictionaries 
+    # (eg within a package-like file resource such as excel or another archive format)
+    # need to allow multiple data dictionaries. This was achieved by using the 
+    # format similar to platform aggregate metadataservice disicovery page for 
+    # data dictionaries: <key as name of dict>: ref to dictionary (or in this case - the actual data dictionary)
 
-        data_dictionary_package = choice_fxn[inputtype](
-            input_filepath,
-            data_dictionary_props,
-            sas_catalog_filepath=sas_catalog_filepath,
-        )
+    if "templatecsv" in data_dictionary_package and "templatejson" in data_dictionary_package:
+        packages = {"":data_dictionary_package}
+        onepackage = True
     else:
-        data_dictionary_package = choice_fxn[inputtype](
-            input_filepath, data_dictionary_props
+        packages = data_dictionary_package
+
+    for name,package in packages.items():
+        # TODO: json validate root AND fields while csv currently only validates fields (ie table) but no reason it cant validate entire data package
+        package_csv = validate_vlmd_csv(
+            package["templatecsv"]["data_dictionary"], to_sync_fields=True
+        )
+        package_json = validate_vlmd_json(package["templatejson"])
+
+        # TODO: in future just return the packages (eg reports nested within package and not out of)
+        # for now, keep same (report_xxx and templatexxx)
+
+        reportcsv = package_csv["report"]
+        reportjson = package_json["report"]
+        dd_csv = package_csv["data"]
+        dd_json = package_json["data"]
+
+
+        if onepackage:
+            packages_with_reports = {
+            "csvtemplate": dd_csv,
+            "jsontemplate": dd_json,
+            "errors": {"csvtemplate": reportcsv, "jsontemplate": reportjson},
+            }
+            output_filepath_with_name = output_filepath
+
+        else:
+
+            packages_with_reports[name] = {
+                "csvtemplate": dd_csv,
+                "jsontemplate": dd_json,
+                "errors": {"csvtemplate": reportcsv, "jsontemplate": reportjson},
+            }
+
+            # 
+            stem = Path(output_filepath).stem
+            ext = Path(output_filepath).suffix
+            output_filepath_with_name = Path(output_filepath).parent/(stem+"-"+slugify(name)+ext)
+
+        _write_vlmd(
+            jsontemplate=dd_json,
+            csvtemplate=dd_csv,
+            csvreport=reportcsv,
+            jsonreport=reportjson,
+            output_filepath=output_filepath_with_name,
+            output_overwrite=output_overwrite
         )
 
-    # TODO: json validate root AND fields while csv currently only validates fields (ie table) but no reason it cant validate entire data package
-    package_csv = validate_vlmd_csv(
-        data_dictionary_package["templatecsv"]["data_dictionary"], to_sync_fields=True
-    )
-    package_json = validate_vlmd_json(data_dictionary_package["templatejson"])
+                
+    return packages_with_reports
 
-    # TODO: in future just return the packages (eg reports nested within package and not out of)
-    # for now, keep same (report_xxx and templatexxx)
 
-    reportcsv = package_csv["report"]
-    reportjson = package_json["report"]
-    dd_csv = package_csv["data"]
-    dd_json = package_json["data"]
-
-    # write to file
-    _write_vlmd(
-        jsontemplate=dd_json,
-        csvtemplate=dd_csv,
-        csvreport=reportcsv,
-        jsonreport=reportjson,
-        output_filepath=output_filepath,
-        output_overwrite=output_overwrite
-    )
-    # format csv and json paths
-
-    return {
-        "csvtemplate": dd_csv,
-        "jsontemplate": dd_json,
-        "errors": {"csvtemplate": reportcsv, "jsontemplate": reportjson},
-    }
