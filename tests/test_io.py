@@ -2,7 +2,7 @@ from pathlib import Path
 import shutil
 import json
 
-from healdata_utils.io import write_vlmd_template
+from healdata_utils.io import write_vlmd_template,read_excel
 
 from conftest import compare_vlmd_tmp_to_output
 
@@ -27,3 +27,8 @@ def test_write_vlmd_template(fields_propname):
     compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname)
 
     shutil.rmtree(tmpdir)
+
+
+# def test_read_excel():
+    
+#     excelfile = read_excel("data/misc/multitab-data-dictionary.xlsx")
