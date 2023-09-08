@@ -51,9 +51,5 @@ def test_convert_to_vlmd_with_registered_formats(
             )
 
 
-            # tmp solution for multiple outputted dds (such as multiple outputted)
-
-
-
         # clean up
         shutil.rmtree(outputdir)
