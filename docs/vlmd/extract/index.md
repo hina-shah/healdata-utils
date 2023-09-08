@@ -27,7 +27,7 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
 
     from healdata_utils import convert_to_vlmd
 
-    convert_to_vlmd(filepath="myproject/myfile.sav",inputtype="spss")
+    convert_to_vlmd(input_filepath="myproject/myfile.sav",inputtype="spss")
 
     ```
 

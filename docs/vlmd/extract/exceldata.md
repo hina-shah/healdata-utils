@@ -22,7 +22,7 @@ This vlmd extraction tool provides the ability to extract vlmd from all of these
 
     from healdata_utils import convert_to_vlmd
 
-    convert_to_vlmd(filepath="myexcelfile.xlsx",inputtype="excel-data")
+    convert_to_vlmd(input_filepath="myexcelfile.xlsx",inputtype="excel-data")
     
     ```
 
