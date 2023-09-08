@@ -56,20 +56,33 @@ def test_vlmd_extract_all_params(
         assert result.exit_code == 0
 
         # test CLI output to existing output
-        _valid_output_json = valid_output_json[inputtype]
-        _valid_output_csv = valid_output_csv[inputtype]
-
-        # NOTE: removed options for title/description to simplify. 
-        # By default, the core convert_to_vlmd function adds a title by getting the stem of filename
-        # So, replaced title and deleted description so passes these comparison assertions
         
-        compare_vlmd_tmp_to_output(
-            tmpdir=_outdir,
-            csvoutput=_valid_output_csv,
-            jsonoutput=_valid_output_json,
-            fields_propname=fields_propname
-        )
-        # clean up
+        # currently json and csv are produced automatically
+        # so should be both a csv and json file (at least 2 files)
+        # more than 2 happens in cases of package-like dds formed such as with excel
+        if len(list(_outdir.glob("*.json"))) > 1 and len(list(_outdir.glob("*.csv"))) > 1: 
+            for name in valid_output_json[inputtype]:
+                _valid_output_json = json.loads(valid_output_json[inputtype][name].read_text())
+                _valid_output_csv = valid_output_csv[inputtype][name].read_text().split("\n")
+                compare_vlmd_tmp_to_output(
+                    tmpdir=_outdir,
+                    stemsuffix=name, #stem suffix to detect the csv and json files
+                    csvoutput=_valid_output_csv,
+                    jsonoutput=_valid_output_json,
+                    fields_propname=fields_propname
+                )
+        else:
+            _valid_output_json = json.loads(valid_output_json[inputtype].read_text())
+            _valid_output_csv = valid_output_csv[inputtype].read_text().split("\n")
+            #no stemsuffix 
+            compare_vlmd_tmp_to_output(
+                tmpdir=_outdir,
+                csvoutput=_valid_output_csv,
+                jsonoutput=_valid_output_json,
+                fields_propname=fields_propname
+            )
+
+            # clean up
         shutil.rmtree(_outdir)
 
 
@@ -107,12 +120,13 @@ def test_vlmd_extract_minimal(valid_input_params):
 
 def test_vlmd_validate():
 
-    paths = Path("data/valid/output").glob("*")
+    paths = Path("data/valid/output").rglob("*")
     for path in paths:
-        runner = CliRunner()
-        result = runner.invoke(vlmd, ['validate',str(path)])
+        if path.is_file():
+            runner = CliRunner()
+            result = runner.invoke(vlmd, ['validate',str(path)])
 
-        assert result.exit_code == 0,result.output
+            assert result.exit_code == 0,result.output
 
 
 def test_vlmd_template(fields_propname):

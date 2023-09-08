@@ -24,6 +24,10 @@ def valid_input_params():
         "data_dictionary_props":data_dictionary_props}
         
     input_params = {
+        "excel-data":{
+            **get_input_params("excel-multitab-dataset1.xlsx"),
+            "inputtype":"excel-data"
+        },
         "csv-data":{
             **get_input_params("data_csv_dataset1.data.csv"),
             "inputtype":"csv-data"
@@ -44,56 +48,55 @@ def valid_input_params():
     return input_params
 
 @pytest.fixture(scope="module")
-def valid_output_json():
+def valid_output_json(valid_input_params):
     path = Path("data/valid/output")
     filenames = {
-        "csv-data":"heal_dd_from_csv_data_dataset1.json",
-        "sas":"heal_dd_from_sas7bdat_with_sas7bcat.json", #TODO: reduce data so easier to manage and test
-        "stata":"heal_dd_from_stata_dta_dataset1.json",
-        "spss":"heal_dd_from_spss_sav_dataset1.json",
-        "redcap":"heal_dd_from_redcap_dd_export.json",
-        "frictionless":"heal_dd_from_frictionless_schema.json"
+        "excel-data":{
+            "experiment1":path/"excel-dataset1/multiple-dd/heal-dd-experiment1.json",
+            "experiment2":path/"excel-dataset1/multiple-dd/heal-dd-experiment2.json"
+        },
+        "csv-data":path/"heal_dd_from_csv_data_dataset1.json",
+        "sas":path/"heal_dd_from_sas7bdat_with_sas7bcat.json", #TODO: reduce data so easier to manage and test
+        "stata":path/"heal_dd_from_stata_dta_dataset1.json",
+        "spss":path/"heal_dd_from_spss_sav_dataset1.json",
+        "redcap":path/"heal_dd_from_redcap_dd_export.json",
+        "frictionless":path/"heal_dd_from_frictionless_schema.json"
     }
-    jsons = {}
-    for inputtype,name in filenames.items():
-        if inputtype in choice_fxn:
-            jsons[inputtype] = json.loads(path.joinpath(name).read_text())
-        else:
-            raise Exception("Inputtype not in registered fxns")
+    assert set(filenames) == set(valid_input_params)
             
-    return jsons
+    return filenames
 
 @pytest.fixture(scope="module")
-def valid_output_csv():
+def valid_output_csv(valid_input_params):
     path = Path("data/valid/output")
     filenames = {
-        "csv-data":"heal_dd_from_csv_data_dataset1.csv",
-        "sas":"heal_dd_from_sas7bdat_with_sas7bcat.csv",#TODO: reduce data so easier to manage and test
-        "stata":"heal_dd_from_stata_dta_dataset1.csv",
-        "spss":"heal_dd_from_spss_sav_dataset1.csv",
-        "redcap":"heal_dd_from_redcap_dd_export.csv",
-        "frictionless":"heal_dd_from_frictionless_schema.csv"
+        "excel-data":{
+            "experiment1":path/"excel-dataset1/multiple-dd/heal-dd-experiment1.csv",
+            "experiment2":path/"excel-dataset1/multiple-dd/heal-dd-experiment2.csv"
+        },
+        "csv-data":path/"heal_dd_from_csv_data_dataset1.csv",
+        "sas":path/"heal_dd_from_sas7bdat_with_sas7bcat.csv",#TODO: reduce data so easier to manage and test
+        "stata":path/"heal_dd_from_stata_dta_dataset1.csv",
+        "spss":path/"heal_dd_from_spss_sav_dataset1.csv",
+        "redcap":path/"heal_dd_from_redcap_dd_export.csv",
+        "frictionless":path/"heal_dd_from_frictionless_schema.csv"
     }
-    csvs = {}
-    for inputtype,name in filenames.items():
-        if inputtype in choice_fxn:
-            csvs[inputtype] = path.joinpath(name).read_text().split("\n")
-        else:
-            raise Exception("Inputtype not in registered fxns")
-            
-    return csvs
+
+    assert set(filenames) == set(valid_input_params)
+
+    return filenames
 
 
-def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname):
+def compare_vlmd_tmp_to_output(tmpdir,csvoutput,jsonoutput,fields_propname,stemsuffix=""):
     """ compares a given csv and json output to a tmp directory
     for both csv and json (vlmd - variable level metadata)
     """
     
-    ddjson = json.loads(list(tmpdir.glob("*.json"))[0].read_text())
+    ddjson = json.loads(list(tmpdir.glob(f"*{stemsuffix}.json"))[0].read_text())
     #NOTE: csv are just fields so no ddcsv
 
     # check for incorrect fields       
-    csv_fields = list(tmpdir.glob("*.csv"))[0].read_text().split("\n")
+    csv_fields = list(tmpdir.glob(f"*{stemsuffix}.csv"))[0].read_text().split("\n")
     json_fields = ddjson.pop(fields_propname) #NOTE: testing individual fields
 
     valid_output_json_fields = jsonoutput.pop(fields_propname)

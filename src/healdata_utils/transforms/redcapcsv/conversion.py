@@ -10,7 +10,7 @@ from .mappings import typemappings
 from healdata_utils import utils
 import numpy as np
 from ..jsontemplate.conversion import convert_templatejson
-from healdata_utils.io import read_table
+from healdata_utils.io import read_delim
 #STEPS
 #1 fill section headers
 #2 sort rows to allow proper row indexing
@@ -22,7 +22,7 @@ def read(file_path):
     and outputs and dictionary with cleaned up header (field) names
     """ 
     sourcedf = (
-        read_table(file_path)
+        read_delim(file_path)
         .fillna("")
         .rename(columns=headers.mapping)
         .applymap(utils.strip_html)

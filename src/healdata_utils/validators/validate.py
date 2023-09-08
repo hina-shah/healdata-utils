@@ -6,7 +6,7 @@ import pandas as pd
 import json
 
 from healdata_utils.schemas import healjsonschema,healcsvschema
-from healdata_utils.io import read_table
+from healdata_utils.io import read_delim
 from healdata_utils.transforms.frictionless.conversion import convert_frictionless_to_jsonschema
 from .jsonschema import validate_against_jsonschema
 from healdata_utils import utils
@@ -23,7 +23,7 @@ class Validator:
     """ 
     @classmethod
     def from_csv_file(cls,path,schema,schema_type):
-        data = read_table(path).to_dict(orient="records")
+        data = read_delim(path).to_dict(orient="records")
         return cls(data,schema,schema_type)
 
     @classmethod

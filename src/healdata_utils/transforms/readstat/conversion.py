@@ -4,10 +4,10 @@ from healdata_utils.io import read_pyreadstat
 from healdata_utils.types import typesets
 from ..jsontemplate.conversion import convert_templatejson
 from datetime import datetime
-
+from pathlib import Path
 
 def convert_readstat(file_path,
-    data_dictionary_props={},
+    data_dictionary_props=None,
     sas_catalog_filepath=None,):
     """
     Converts a "metadata-rich" (ie statistical software file) 
@@ -69,6 +69,9 @@ def convert_readstat(file_path,
     _,meta = read_pyreadstat(**metaparams) # get user missing values (for stata/sas will make string so need sep call to infer types)
     df,_ = read_pyreadstat(file_path) # dont fill user defined missing vals (to get correct types)
     
+    if not data_dictionary_props:
+        data_dictionary_props = {}
+
     # NOTE: not inferring categoricals as this is inferred from value labels
     fields = typesets.infer_frictionless_fields(df,typesets=[typesets.typeset_original])
 

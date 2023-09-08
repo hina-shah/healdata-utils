@@ -50,7 +50,7 @@ def detect_file_encoding(file_path):
     return encoding_for_input["encoding"]
 
 
-def read_table(file_path,castdtype = "string"):
+def read_delim(file_path,castdtype = "string"):
     """ 
     reads in a tabular file (ie spreadsheet) after detecting
     encoding and file extension without any type casting.
@@ -73,6 +73,52 @@ def read_table(file_path,castdtype = "string"):
 
     return file_encoding
 
+def read_excel(filepath,sheet_names=None,castdtype="string"):
+    """ 
+    reads in an excel file that outputs
+    a dict of dataframes with each sheet name being
+    the dict key and the dict value being the pandas 
+    dataframe of the corresponding sheet. 
+    
+    This is akin to pandas.read_excel when all sheet_names (or sheet_name=None)
+    is specified EXCEPT that the default is each value is the string representation.
+
+    See the dtype arg in pandas read_excel docs for more info.
+
+
+    file_path: str - path to xlsx file
+    sheet_names: Union[str,list,None]. By default (None), all sheets are read and a dict
+        of data frame is returned. If a list of sheets is provided, also returns a dict of packages. Else, returns 
+    """ 
+
+    book = pd.ExcelFile(filepath)
+    
+    if isinstance(sheet_names,list):
+        selected_sheet_names = [sheet for sheet in book.sheet_names 
+            if sheet in sheet_names]
+    elif isinstance(sheet_names,str):
+        selected_sheet_names = [sheet_names]
+    else:
+        selected_sheet_names = book.sheet_names
+
+
+    if len(selected_sheet_names) == 1:
+        df = pd.read_excel(book,sheet_name=sheet,dtype=castdtype).fillna("")
+        return df
+    else:
+        dfs = {}
+        for sheet in selected_sheet_names:
+            dfs[sheet] = pd.read_excel(book,sheet_name=sheet,dtype=castdtype).fillna("")
+        
+        return dfs
+
+
+def read_zip():
+    pass 
+
+
+def read_archive():
+    pass 
 
 def _generate_jsontemplate(schema):
 

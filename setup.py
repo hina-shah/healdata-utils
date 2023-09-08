@@ -16,7 +16,11 @@ pandas==1.4
 pyreadstat==1.2.0
 charset_normalizer==2.1
 visions== 0.7.5
-click==8.1.3'''
+click==8.1.3
+python-slugify
+openpyxl
+
+'''
 
 setup(
     name='healdata_utils',

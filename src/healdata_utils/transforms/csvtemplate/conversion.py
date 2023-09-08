@@ -11,7 +11,7 @@ import petl as etl
 from pathlib import Path
 # from frictionless import Resource,Package
 from healdata_utils.utils import convert_rec_to_json
-from healdata_utils.io import read_table
+from healdata_utils.io import read_delim
 from .mappings import fieldmap,zipmap,typemap,castnumbers
 from os import PathLike
 
@@ -51,7 +51,7 @@ def convert_templatecsv(
     """
 
     if isinstance(csvtemplate,(str,PathLike)):
-        template_tbl = read_table(str(Path(csvtemplate)))
+        template_tbl = read_delim(str(Path(csvtemplate)))
     else:
         template_tbl = pd.DataFrame(csvtemplate)
 
