@@ -84,21 +84,33 @@ def read_excel(filepath,sheet_names=None,castdtype="string"):
     is specified EXCEPT that the default is each value is the string representation.
 
     See the dtype arg in pandas read_excel docs for more info.
+
+
+    file_path: str - path to xlsx file
+    sheet_names: Union[str,list,None]. By default (None), all sheets are read and a dict
+        of data frame is returned. If a list of sheets is provided, also returns a dict of packages. Else, returns 
     """ 
 
     book = pd.ExcelFile(filepath)
-    dfs = {}
-
-    if sheet_names:
+    
+    if isinstance(sheet_names,list):
         selected_sheet_names = [sheet for sheet in book.sheet_names 
             if sheet in sheet_names]
+    elif isinstance(sheet_names,str):
+        selected_sheet_names = [sheet_names]
     else:
         selected_sheet_names = book.sheet_names
-    for sheet in selected_sheet_names:
-        dfs[sheet] = pd.read_excel(book,sheet_name=sheet,dtype=castdtype)
 
 
-    return dfs
+    if len(selected_sheet_names) == 1:
+        df = pd.read_excel(book,sheet_name=sheet,dtype=castdtype).fillna("")
+        return df
+    else:
+        dfs = {}
+        for sheet in selected_sheet_names:
+            dfs[sheet] = pd.read_excel(book,sheet_name=sheet,dtype=castdtype).fillna("")
+        
+        return dfs
 
 
 def read_zip():
