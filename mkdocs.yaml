@@ -17,6 +17,7 @@ nav:
         - Tabular (CSV) dataset: vlmd/extract/csvdata.md
         - REDCap export: vlmd/extract/redcapcsv.md
         - Frictionless Table Schema: vlmd/extract/frictionlessschema.md
+        - Excel (xlsx) dataset: vlmd/extract/exceldata.md
       - Start:
         - vlmd/start/index.md
       - Validate:

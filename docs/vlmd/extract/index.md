@@ -55,6 +55,7 @@ Extract variable level metadata from your data:
 - [Stata datasets](./stata.md)
 - [REDCap data dictionary](./redcapcsv.md)
 - [Frictionless Table Schema](./frictionlessschema.md)
+- [Excel dataset](./exceldata.md)
 
 #### Output
 
