@@ -207,7 +207,7 @@ def extract(inputfile,outputfile,inputtype,overwrite,data_dictionary_props):
         #data_dictionary_props=data_dictionary_props,
         output_filepath=outputfile,
         inputtype=inputtype,
-        overwrite_output_file=overwrite,
+        output_overwrite=overwrite,
         data_dictionary_props=data_dictionary_props
     )
 
