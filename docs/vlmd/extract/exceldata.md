@@ -43,7 +43,7 @@ This vlmd extraction tool provides the ability to extract vlmd from all of these
     from healdata_utils import convert_to_vlmd
 
     convert_to_vlmd(
-        filepath="myexcelfile.xlsx",
+        input_filepath="myexcelfile.xlsx",
         inputtype="excel-data",
         multiple_data_dicts=False
         )
@@ -59,9 +59,11 @@ This vlmd extraction tool provides the ability to extract vlmd from all of these
     from healdata_utils import convert_to_vlmd
 
     convert_to_vlmd(
-        filepath="myexcelfile.xlsx",
+        input_filepath="myexcelfile.xlsx",
         inputtype="excel-data",
         multiple_data_dicts=False,
         sheet_name=["mysheet1","mysheet2"]
         )
+    
+    ```
     
