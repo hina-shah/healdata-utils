@@ -128,6 +128,18 @@ def validate_vlmd_json(
     #     maxcolwidths=[5, 5, 90]
     # ))
 
+    # another possible way:
+    
+    # if not report["valid"]:
+    #     print("JSON data dictionary requires modifications:")
+    #     console_report = (
+    #         pd.DataFrame(data_dictionaries["errors"])
+    #         ["jsontemplate"]
+    #         ["errors"]
+    #         .drop(columns=["json_path"])
+    #         .value_counts()
+    #     )
+
     return package
     
 def validate_vlmd_csv(

@@ -56,24 +56,25 @@ def _write_vlmd(
     csvtemplate,
     csvreport,
     jsonreport,
-    output_filepath,
+    output_filepath="heal-vlmd",
     output_overwrite=False,
     output_csv_quoting=None,
 ):
     # NOTE: currently the default is to auto generate file name if output_filepath not specified
 
-    # flipped wording around for vars
+    # flipped wording around for vars to avoid issues with previous flipping
     templatejson = jsontemplate
     templatecsv = csvtemplate
-    reportjson = csvreport
-    reportcsv = jsonreport
+    reportjson = jsonreport
+    reportcsv = csvreport
 
 
     output_filepath = Path(output_filepath)
+
     jsontemplate_path = output_filepath.with_suffix(".json")
     csvtemplate_path = output_filepath.with_suffix(".csv")
 
-    # check existence of directory and output files
+    # CHECK existence of directory and output files
     dir_exists = output_filepath.parent.exists()
     json_exists = jsontemplate_path.exists()
     csv_exists = csvtemplate_path.exists()
@@ -94,9 +95,24 @@ def _write_vlmd(
             raise FileExistsError(f"{str(csvtemplate_path)} exists.")
 
 
-    # print data dictionaries
-    jsontemplate_path.write_text(json.dumps(templatejson, indent=4))
+    if not reportcsv["valid"] or not reportjson["valid"]:
+        reportdir = output_filepath.parent/"reports"
+        reportdir.mkdir(exist_ok=True)
 
+    # print JSON data dictionary and report
+    jsontemplate_path.write_text(json.dumps(templatejson, indent=4))
+    print(f"JSON data dictionary file written to {str(jsontemplate_path.resolve())}")
+
+    if not reportjson["valid"]:
+        reportjson_path = reportdir.joinpath("json-"+output_filepath.with_suffix(".json").name)
+        reportjson_path.write_text(
+            json.dumps(reportjson, indent=4)
+        )
+        print(f"but requires additional annotation and/or modifications. View the report at: {reportjson_path}")
+        
+    
+    
+    # print CSV data dictionary and report
     quoting = csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL
     # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
     # (
@@ -107,26 +123,14 @@ def _write_vlmd(
 
     # )
     pd.DataFrame(templatecsv).to_csv(csvtemplate_path, quoting=quoting, index=False)
-
-    # print errors
-
-    if not reportjson["valid"]:
-        print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
-        print(f"(view the outputted data dictionary at {jsontemplate_path})")
+    print(f"CSV data dictionary file written to {str(csvtemplate_path.resolve())}")
 
     if not reportcsv["valid"]:
-        print("CSV data dictionary not valid, see heal-csv-errors.json")
-        print(f"(view the outputted data dictionary at {csvtemplate_path})")
-
-    # write error reports to file
-    errordir = Path(output_filepath).parent.joinpath("errors")
-    errordir.mkdir(exist_ok=True)
-    errordir.joinpath("heal-json-errors.json").write_text(
-        json.dumps(reportjson, indent=4)
-    )
-    errordir.joinpath("heal-csv-errors.json").write_text(
-        json.dumps(reportcsv, indent=4)
-    )
+        reportcsv_path = reportdir.joinpath("csv-"+output_filepath.with_suffix(".json").name)
+        print(f"but requires additional annotation and/or modifications. View the report at: {reportcsv_path}")
+        reportcsv_path.write_text(
+            json.dumps(reportcsv, indent=4)
+        )
 
 
 def convert_to_vlmd(
@@ -157,6 +161,7 @@ def convert_to_vlmd(
         like excel that uses special characters for specific purposes (eg = for formulas)
     
     **kwargs: keyword arguments for specific registered input types
+        currently this includes sas catalog file for sas and sheet_names/other params for excel.
 
     Returns
     -------
