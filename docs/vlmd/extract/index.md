@@ -4,7 +4,7 @@ The healdata-utils variable-level metadata (vlmd) tool inputs a variety of diffe
 
 !!! warning 
 
-    Currently the python subcommand is `convert` but will be changed to `extract_to_vlmd` to be
+    Currently the python subcommand is `convert_to_vlmd` but will be changed to `extract_to_vlmd` to be
     consistent with CLI. `extract` was chosen to better reflect the functionality.
 
 
@@ -50,6 +50,7 @@ This section provides the specific syntax for running each of the supported type
 Extract variable level metadata from your data:
 
 - [CSV datasets](./csvdata.md)
+- [CSV (minimal) data dictionary](./csvdd.md)
 - [SPSS datasets](./spss.md)
 - [SAS datasets](./sas.md)
 - [Stata datasets](./stata.md)
