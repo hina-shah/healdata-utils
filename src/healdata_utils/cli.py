@@ -55,8 +55,7 @@ prompt_extract_outputfile = f"""
 
 {click.style("What do you want the output file called?",bold=True,fg="green")}
 
-Note, whether you specify a json or csv, both formats will be generated for convenience 
-(i.e., heal-dd.json generates heal-dd.json and heal-dd.csv)
+Note, both a json and csv versions will be created.
 
 """
 
@@ -180,7 +179,7 @@ def vlmd(ctx):
 #TODO: --output-file or --output-filepath?
 @click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),prompt=prompt_extract_inputtypes)
 @click.option('--outputfile',
-    default="heal-data-dictionary.json",
+    default="heal-dd",
     prompt=prompt_extract_outputfile)
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite,
     help="If true, will replace (overwrite) the existing file if it exists. If false (the default) and there is a file of same name, will prompt user if they want to overwrite.")
