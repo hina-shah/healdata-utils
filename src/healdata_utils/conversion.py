@@ -31,15 +31,13 @@ from healdata_utils.utils import find_docstring_desc
 choice_fxn = {
     "excel-data":convert_dataexcel,
     "csv-data": convert_datacsv,
-    #'csv-data-dictionary':convert_datadictcsv,
-    #'template.csv':convert_templatecsv,
-    #'csv': convert_templatecsv, #maintained for backwards compatibility
+    #'csv-data-dict':convert_datadictcsv,
+    #'csv-template':convert_templatecsv,
     "spss": convert_spss,
     "stata": convert_stata,
     #'por':convert_readstat,
     "sas": convert_sas,
-    #'template.json':convert_templatejson,
-    #'json':convert_templatejson, #maintain for bwds compat
+    #'json-template':convert_templatejson,
     "redcap": convert_redcapcsv,
     "frictionless": convert_frictionless_tableschema,
 }
@@ -101,6 +99,7 @@ def _write_vlmd(
 
     # print JSON data dictionary and report
     jsontemplate_path.write_text(json.dumps(templatejson, indent=4))
+    print()
     print(f"JSON data dictionary file written to {str(jsontemplate_path.resolve())}")
 
     if not reportjson["valid"]:
@@ -108,8 +107,11 @@ def _write_vlmd(
         reportjson_path.write_text(
             json.dumps(reportjson, indent=4)
         )
-        print(f"but requires additional annotation and/or modifications. View the report at: {reportjson_path}")
-        
+        print(f"but requires additional annotation and/or modifications.")
+        print(f"View the report at: {str(reportjson_path.resolve())}")
+        print()
+    else:
+        print()
     
     
     # print CSV data dictionary and report
@@ -123,14 +125,20 @@ def _write_vlmd(
 
     # )
     pd.DataFrame(templatecsv).to_csv(csvtemplate_path, quoting=quoting, index=False)
+    print()
     print(f"CSV data dictionary file written to {str(csvtemplate_path.resolve())}")
 
     if not reportcsv["valid"]:
         reportcsv_path = reportdir.joinpath("csv-"+output_filepath.with_suffix(".json").name)
-        print(f"but requires additional annotation and/or modifications. View the report at: {reportcsv_path}")
         reportcsv_path.write_text(
             json.dumps(reportcsv, indent=4)
         )
+        print(f"but requires additional annotation and/or modifications.")
+        print(f"View the report at: {str(reportcsv_path.resolve())}")
+        print()
+    else:
+        print()
+
 
 
 def convert_to_vlmd(
@@ -221,7 +229,7 @@ def convert_to_vlmd(
     # need to allow multiple data dictionaries. This was achieved by using the 
     # format similar to platform aggregate metadataservice disicovery page for 
     # data dictionaries: <key as name of dict>: ref to dictionary (or in this case - the actual data dictionary)
-
+    # TODO: better way to identify one package of dds vs. multiple dds (as technically, templatejson/templatecsv could be keys in multiple dds)
     if "templatecsv" in data_dictionary_package and "templatejson" in data_dictionary_package:
         packages = {"":data_dictionary_package}
         onepackage = True
