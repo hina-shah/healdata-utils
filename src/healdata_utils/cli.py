@@ -211,7 +211,7 @@ def extract(inputfile,outputfile,inputtype,overwrite,data_dictionary_props):
 
 @vlmd.command(help="Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications.")
 @click.argument("inputfile",type=click.Path(exists=True))
-@click.option('--outputfile',help="Write the report to a file")
+@click.option('--outputfile',help="Write the report to a file. By default, the report will be printed directly to the console.")
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
 def validate(inputfile,outputfile,overwrite):
 
