@@ -116,14 +116,9 @@ def _check_overwrite(ctx,param,value):
         if filepath_json.exists():
             click.secho(f"Warning: {filepath_json} exists",fg="red")  
 
-
-        
-        if click.confirm(prompt_overwrite):
-            return True
-        else:
-            click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
-            click.pause(click.style("Press any key to exit program and try again"))
-            ctx.exit()
+        click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
+        click.pause(click.style("Press any key to exit program and try again"))
+        ctx.exit()
     
     return value        
                         
