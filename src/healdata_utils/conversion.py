@@ -31,23 +31,31 @@ from healdata_utils.utils import find_docstring_desc
 choice_fxn = {
     "excel-data":convert_dataexcel,
     "csv-data": convert_datacsv,
-    #'csv-data-dictionary':convert_datadictcsv,
-    #'template.csv':convert_templatecsv,
-    #'csv': convert_templatecsv, #maintained for backwards compatibility
+    #'csv-data-dict':convert_datadictcsv,
+    #'csv-template':convert_templatecsv,
     "spss": convert_spss,
     "stata": convert_stata,
     #'por':convert_readstat,
     "sas": convert_sas,
-    #'template.json':convert_templatejson,
-    #'json':convert_templatejson, #maintain for bwds compat
+    #'json-template':convert_templatejson,
     "redcap": convert_redcapcsv,
     "frictionless": convert_frictionless_tableschema,
 }
 
-input_types = " - " + "\n - ".join(list(choice_fxn.keys()))
+# input_types = " - " + "\n - ".join(list(choice_fxn.keys()))
 
-input_descriptions = {
-    name: find_docstring_desc(fxn) for name, fxn in choice_fxn.items()
+# input_descriptions = {
+#     name: find_docstring_desc(fxn) for name, fxn in choice_fxn.items()
+# }
+
+input_short_descriptions = {
+    "excel-data":"Data (not metadata) in an excel (xlsx) workbook. Extracts one data dictionary per sheet by default. Runs same inference as csv-data",
+    "csv-data":"Data (not metadata) in a csv (or tsv) file.",
+    "spss":"A .sav file with data values,variable labels, and value labels.",
+    "stata":"A .dta file with data values,variable labels, and value labels.",
+    "sas":"A .sas7bdat file with data values and variable labels. Detects format (sas7bcat catalog files) in the same directory.",
+    "redcap":"A standardized REDCap csv data dictionary export file.",
+    "frictionless":"A frictionless table schema in json format."
 }
 
 
@@ -56,24 +64,25 @@ def _write_vlmd(
     csvtemplate,
     csvreport,
     jsonreport,
-    output_filepath,
+    output_filepath="heal-vlmd",
     output_overwrite=False,
     output_csv_quoting=None,
 ):
     # NOTE: currently the default is to auto generate file name if output_filepath not specified
 
-    # flipped wording around for vars
+    # flipped wording around for vars to avoid issues with previous flipping
     templatejson = jsontemplate
     templatecsv = csvtemplate
-    reportjson = csvreport
-    reportcsv = jsonreport
+    reportjson = jsonreport
+    reportcsv = csvreport
 
 
     output_filepath = Path(output_filepath)
+
     jsontemplate_path = output_filepath.with_suffix(".json")
     csvtemplate_path = output_filepath.with_suffix(".csv")
 
-    # check existence of directory and output files
+    # CHECK existence of directory and output files
     dir_exists = output_filepath.parent.exists()
     json_exists = jsontemplate_path.exists()
     csv_exists = csvtemplate_path.exists()
@@ -94,9 +103,28 @@ def _write_vlmd(
             raise FileExistsError(f"{str(csvtemplate_path)} exists.")
 
 
-    # print data dictionaries
-    jsontemplate_path.write_text(json.dumps(templatejson, indent=4))
+    if not reportcsv["valid"] or not reportjson["valid"]:
+        reportdir = output_filepath.parent/"reports"
+        reportdir.mkdir(exist_ok=True)
 
+    # print JSON data dictionary and report
+    jsontemplate_path.write_text(json.dumps(templatejson, indent=4))
+    print()
+    print(f"JSON data dictionary file written to {str(jsontemplate_path.resolve())}")
+
+    if not reportjson["valid"]:
+        reportjson_path = reportdir.joinpath("json-"+output_filepath.with_suffix(".json").name)
+        reportjson_path.write_text(
+            json.dumps(reportjson, indent=4)
+        )
+        print(f"but requires additional annotation and/or modifications.")
+        print(f"View the report at: {str(reportjson_path.resolve())}")
+        print()
+    else:
+        print()
+    
+    
+    # print CSV data dictionary and report
     quoting = csv.QUOTE_NONNUMERIC if output_csv_quoting else csv.QUOTE_MINIMAL
     # NOTE: quoting non-numeric to allow special characters for nested delimiters within string columns (ie "=")
     # (
@@ -107,26 +135,20 @@ def _write_vlmd(
 
     # )
     pd.DataFrame(templatecsv).to_csv(csvtemplate_path, quoting=quoting, index=False)
-
-    # print errors
-
-    if not reportjson["valid"]:
-        print("JSON data dictionary not valid, see heal-json-errors.json for errors.")
-        print(f"(view the outputted data dictionary at {jsontemplate_path})")
+    print()
+    print(f"CSV data dictionary file written to {str(csvtemplate_path.resolve())}")
 
     if not reportcsv["valid"]:
-        print("CSV data dictionary not valid, see heal-csv-errors.json")
-        print(f"(view the outputted data dictionary at {csvtemplate_path})")
+        reportcsv_path = reportdir.joinpath("csv-"+output_filepath.with_suffix(".json").name)
+        reportcsv_path.write_text(
+            json.dumps(reportcsv, indent=4)
+        )
+        print(f"but requires additional annotation and/or modifications.")
+        print(f"View the report at: {str(reportcsv_path.resolve())}")
+        print()
+    else:
+        print()
 
-    # write error reports to file
-    errordir = Path(output_filepath).parent.joinpath("errors")
-    errordir.mkdir(exist_ok=True)
-    errordir.joinpath("heal-json-errors.json").write_text(
-        json.dumps(reportjson, indent=4)
-    )
-    errordir.joinpath("heal-csv-errors.json").write_text(
-        json.dumps(reportcsv, indent=4)
-    )
 
 
 def convert_to_vlmd(
@@ -157,6 +179,7 @@ def convert_to_vlmd(
         like excel that uses special characters for specific purposes (eg = for formulas)
     
     **kwargs: keyword arguments for specific registered input types
+        currently this includes sas catalog file for sas and sheet_names/other params for excel.
 
     Returns
     -------
@@ -216,7 +239,7 @@ def convert_to_vlmd(
     # need to allow multiple data dictionaries. This was achieved by using the 
     # format similar to platform aggregate metadataservice disicovery page for 
     # data dictionaries: <key as name of dict>: ref to dictionary (or in this case - the actual data dictionary)
-
+    # TODO: better way to identify one package of dds vs. multiple dds (as technically, templatejson/templatecsv could be keys in multiple dds)
     if "templatecsv" in data_dictionary_package and "templatejson" in data_dictionary_package:
         packages = {"":data_dictionary_package}
         onepackage = True

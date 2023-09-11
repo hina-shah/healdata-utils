@@ -1,6 +1,6 @@
 import shutil
 from pathlib import Path
-from healdata_utils.conversion import convert_to_vlmd
+from healdata_utils.conversion import convert_to_vlmd,input_short_descriptions,choice_fxn
 import json
 
 from conftest import compare_vlmd_tmp_to_output
@@ -53,3 +53,7 @@ def test_convert_to_vlmd_with_registered_formats(
 
         # clean up
         shutil.rmtree(outputdir)
+
+def test_short_descriptions():
+    
+    assert input_short_descriptions.keys() == choice_fxn.keys()

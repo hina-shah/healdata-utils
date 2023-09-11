@@ -1,7 +1,7 @@
 
 Excel workbooks contain tabular data tables across named worksheets.
 
-This vlmd extraction tool provides the ability to extract vlmd from all of these worksheets either as a combined data dictionary or as multiple data dictionaries.
+Extract vlmd from all worksheets of an excel workbook or as a combined data dictionary (python only) or as multiple data dictionaries (ie one dd = one worksheet). Note, to specify specific worksheets, use the tool within python.
 
 
 ## Run the `vlmd` command

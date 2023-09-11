@@ -13,7 +13,7 @@ import csv
 from collections import deque
 
 from healdata_utils.utils import find_docstring_desc
-from healdata_utils.conversion import convert_to_vlmd,choice_fxn
+from healdata_utils.conversion import convert_to_vlmd,choice_fxn,input_short_descriptions
 from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 from healdata_utils.io import write_vlmd_template
 from healdata_utils.config import VLMD_DEFS_URL
@@ -28,8 +28,11 @@ This can be an:
 
 """
 
+inputtype_descs = "\n".join([click.style(name,bold=True)+": "+desc for name,desc in input_short_descriptions.items()])
 prompt_extract_inputtypes = f"""
 {click.style("What type of file do you want to extract variable level metadata from?",bold=True,fg="green")}
+
+{inputtype_descs}
 
 """
 
@@ -55,8 +58,7 @@ prompt_extract_outputfile = f"""
 
 {click.style("What do you want the output file called?",bold=True,fg="green")}
 
-Note, whether you specify a json or csv, both formats will be generated for convenience 
-(i.e., heal-dd.json generates heal-dd.json and heal-dd.csv)
+Note, both a json and csv versions will be created.
 
 """
 
@@ -116,14 +118,9 @@ def _check_overwrite(ctx,param,value):
         if filepath_json.exists():
             click.secho(f"Warning: {filepath_json} exists",fg="red")  
 
-
-        
-        if click.confirm(prompt_overwrite):
-            return True
-        else:
-            click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
-            click.pause(click.style("Press any key to exit program and try again"))
-            ctx.exit()
+        click.secho(f"Given you do not want to overwrite files and files exist, exiting tool.",fg="red")
+        click.pause(click.style("Press any key to exit program and try again"))
+        ctx.exit()
     
     return value        
                         
@@ -185,7 +182,7 @@ def vlmd(ctx):
 #TODO: --output-file or --output-filepath?
 @click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),prompt=prompt_extract_inputtypes)
 @click.option('--outputfile',
-    default="heal-data-dictionary.json",
+    default="heal-dd",
     prompt=prompt_extract_outputfile)
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite,
     help="If true, will replace (overwrite) the existing file if it exists. If false (the default) and there is a file of same name, will prompt user if they want to overwrite.")
@@ -214,7 +211,7 @@ def extract(inputfile,outputfile,inputtype,overwrite,data_dictionary_props):
 
 @vlmd.command(help="Check (validate) an existing HEAL data dictionary file to see if it follows the HEAL specifications.")
 @click.argument("inputfile",type=click.Path(exists=True))
-@click.option('--outputfile',help="Write the report to a file")
+@click.option('--outputfile',help="Write the report to a file. By default, the report will be printed directly to the console.")
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite)
 def validate(inputfile,outputfile,overwrite):
 

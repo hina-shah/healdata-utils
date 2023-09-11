@@ -21,6 +21,7 @@ def convert_templatecsv(
     mappings: dict = fieldmap,
 ) -> dict:
     """
+    [shortdesc]
     Converts a CSV conforming to HEAL specifications (but see 2 additional notes below) 
     into a HEAL-specified data dictionary in both csv format and json format.
 
@@ -29,6 +30,7 @@ def convert_templatecsv(
         2. Converting fields from a specified mapping.
             NOTE: currently this mapping is only float/num to number or text/char to string (case insensitive)
                 In future versions, there will be a specified module for csv input mappings.
+    [shortdesc]
     
     Parameters
     ----------
