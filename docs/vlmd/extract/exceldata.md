@@ -1,18 +1,10 @@
+# Excel (xlsx) dataset
 
 Excel workbooks contain tabular data tables across named worksheets.
 
-Extract vlmd from all worksheets of an excel workbook or as a combined data dictionary (python only) or as multiple data dictionaries (ie one dd = one worksheet). Note, to specify specific worksheets, use the tool within python.
-
+Extract and infer a partially completed data dictionary from excel worksheets. The command line tool will automatically generate one data dictionary per worksheet. Working in python provides a little more flexibility as you can specify specific worksheets and if you want to combine sheets into one data dictionary (rather than one dd per sheet). 
 
 ## Run the `vlmd` command
-
-
-=== "CLI"
-
-    ```bash
-    vlmd extract --inputtype excel-data myexcelfile.xlsx
-    ```
-
 
 === "Python"
 
@@ -30,7 +22,7 @@ Extract vlmd from all worksheets of an excel workbook or as a combined data dict
 
     !!! note
 
-        Be careful about using the `multiple_data_dicts=False`.
+        The parameter `multiple_data_dicts` is to specify whether multiple data dictionaries should be inferred (one per sheet). The default value is `True`. Be careful about using the `multiple_data_dicts=False`.
         In most instances, one sheet should correspond to one separate
         data table and thus have one corresponding data dictionary.  
 
@@ -67,3 +59,8 @@ Extract vlmd from all worksheets of an excel workbook or as a combined data dict
     
     ```
     
+=== "CLI"
+
+    ```bash
+    vlmd extract --inputtype excel-data myexcelfile.xlsx
+    ```
