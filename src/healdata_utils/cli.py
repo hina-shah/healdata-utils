@@ -18,6 +18,8 @@ from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 from healdata_utils.io import write_vlmd_template
 from healdata_utils.config import VLMD_DEFS_URL
 
+inputtype_descs = "\n".join([click.style(name,bold=True)+": "+desc for name,desc in input_short_descriptions.items()])
+
 prompt_file = f"""
 {click.style("Enter the path to your file:",bold=True,fg="green")}
 
@@ -28,7 +30,6 @@ This can be an:
 
 """
 
-inputtype_descs = "\n".join([click.style(name,bold=True)+": "+desc for name,desc in input_short_descriptions.items()])
 prompt_extract_inputtypes = f"""
 {click.style("What type of file do you want to extract variable level metadata from?",bold=True,fg="green")}
 
@@ -46,9 +47,9 @@ prompt_template_outputfile = f"""
 {click.style("What do you want the output file called?",bold=True,fg="green")}
 
 This can be an:
-1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/heal-data-dictionary.csv)
-2. relative path (e.g., heal-data-dictionary.csv)
-3. filename (e.g., heal-data-dictionary.csv)
+1. absolute path (e.g., C:/Users/lastname-firstname/projectfolder/heal-data-dd)
+2. relative path (e.g., heal-data-dd)
+3. filename (e.g., heal-data-dd)
 
 Note, if you specify a csv file, this will generate a HEAL csv templated file and if you specify a json file, this
 will generate a HEAL json templated file.
@@ -180,9 +181,11 @@ def vlmd(ctx):
 @vlmd.command(help="Extract the variable level metadata from an existing file with a specific type/format")
 @click.argument("inputfile",type=click.Path(exists=True))
 #TODO: --output-file or --output-filepath?
-@click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),prompt=prompt_extract_inputtypes)
+@click.option('--inputtype',type=click.Choice(list(choice_fxn.keys())),
+    prompt=prompt_extract_inputtypes)
 @click.option('--outputfile',
     default="heal-dd",
+    help=inputtype_descs,
     prompt=prompt_extract_outputfile)
 @click.option('--overwrite',default=False,is_flag=True,callback=_check_overwrite,
     help="If true, will replace (overwrite) the existing file if it exists. If false (the default) and there is a file of same name, will prompt user if they want to overwrite.")

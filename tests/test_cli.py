@@ -88,11 +88,10 @@ def test_vlmd_extract_all_params(
 
 def test_vlmd_extract_minimal(valid_input_params):
 
-    inputtypes = list(valid_input_params.keys())
+    for testname,testparams in valid_input_params.items():
 
-    for inputtype in inputtypes:
-
-        filepath = str(valid_input_params[inputtype]["input_filepath"].resolve())
+        filepath = str(testparams["input_filepath"].resolve())
+        inputtype = testparams["inputtype"]
 
         try:
             Path("tmp").mkdir()

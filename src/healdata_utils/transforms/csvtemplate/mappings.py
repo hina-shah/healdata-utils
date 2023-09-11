@@ -44,7 +44,7 @@ def loads_dict(string,item_sep='|',key_val_sep='='):
     else:
         return string
 def mapval(v,mapping):
-    v = str(v)
+    v = str(v).lower()
     if v in mapping:
         return mapping[v]
     else:
@@ -59,12 +59,12 @@ def to_bool(v):
         return ""
         
 typemap = {
-    #from bacpac
-    'text':'string',
     'float':'number',
-    #from hemo
-    'NUM':'number',
-    'CHAR':'string'
+    'num':'number',
+    'character':'string',
+    'char':'string',
+    'text':'string',
+    'int':'integer'
 }
 
 formatmap = {

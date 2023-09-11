@@ -41,9 +41,9 @@ def valid_input_params():
         "stata":{**get_input_params("stata_dta_dataset1.dta"),"inputtype":"stata"},
         # "sav":get_input_params("../../JCOIN_NORC_Omnibus_SURVEY3_June2020.sav"),
         "spss":{**get_input_params("spss_sav_dataset1.sav"),"inputtype":"spss"},
-        "redcap":{**get_input_params("redcap_dd_export.redcap.csv"),"inputtype":"redcap"},
+        "redcap":{**get_input_params("redcap_dd_export.redcap.csv"),"inputtype":"redcap-csv"},
         "frictionless":{**get_input_params("frictionless_dataset1.frictionless.schema.json"),
-            "inputtype":"frictionless"}
+            "inputtype":"frictionless-tbl-schema"}
     }
     return input_params
 

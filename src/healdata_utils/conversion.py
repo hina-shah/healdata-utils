@@ -28,18 +28,22 @@ from healdata_utils.transforms.frictionless.conversion import (
 from healdata_utils.validators.validate import validate_vlmd_json, validate_vlmd_csv
 from healdata_utils.utils import find_docstring_desc
 
+# TODO: convert_templatecsv is misleading as it maps variable types. Need, to build this out further to support more translations.
+# for now, just changing function name here.
+convert_datadictcsv = convert_templatecsv
+
 choice_fxn = {
     "excel-data":convert_dataexcel,
     "csv-data": convert_datacsv,
-    #'csv-data-dict':convert_datadictcsv,
+    'csv-data-dict':convert_datadictcsv,
     #'csv-template':convert_templatecsv,
     "spss": convert_spss,
     "stata": convert_stata,
     #'por':convert_readstat,
     "sas": convert_sas,
     #'json-template':convert_templatejson,
-    "redcap": convert_redcapcsv,
-    "frictionless": convert_frictionless_tableschema,
+    "redcap-csv": convert_redcapcsv,
+    "frictionless-tbl-schema": convert_frictionless_tableschema,
 }
 
 # input_types = " - " + "\n - ".join(list(choice_fxn.keys()))
@@ -49,13 +53,14 @@ choice_fxn = {
 # }
 
 input_short_descriptions = {
-    "excel-data":"Data (not metadata) in an excel (xlsx) workbook. Extracts one data dictionary per sheet by default. Runs same inference as csv-data",
-    "csv-data":"Data (not metadata) in a csv (or tsv) file.",
-    "spss":"A .sav file with data values,variable labels, and value labels.",
-    "stata":"A .dta file with data values,variable labels, and value labels.",
-    "sas":"A .sas7bdat file with data values and variable labels. Detects format (sas7bcat catalog files) in the same directory.",
-    "redcap":"A standardized REDCap csv data dictionary export file.",
-    "frictionless":"A frictionless table schema in json format."
+    "excel-data":"Data (not metadata) in an excel (xlsx) workbook. Infers one data dictionary per sheet by default. Runs same inference as csv-data",
+    "csv-data":"Data (not metadata) in a csv (or tsv) file. Infers variable/field name, type, and enum (possible values).",
+    "csv-data-dict":"A minimal data dictionary in a csv (or tsv file). For example, may have name, type, and description and then adds the rest of the fields. Also maps a few common data types (such as char, character,text to 'string' and 'float' to 'number'.)",
+    "spss":"A .sav file with data values,variable labels, and value labels. Extract labels and infers types from data.",
+    "stata":"A .dta file with data values,variable labels, and value labels. Extract labels and infers types from data.",
+    "sas":"A .sas7bdat file with data values and variable labels. Detects format (sas7bcat catalog files) in the same directory. Extract labels and infers types from data.",
+    "redcap-csv":"A standardized REDCap csv data dictionary export file. Note, this must not include additional non-REDCap fields.",
+    "frictionless-tbl-schema":"A frictionless table schema in json format."
 }
 
 
