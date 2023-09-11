@@ -13,7 +13,7 @@ import csv
 from collections import deque
 
 from healdata_utils.utils import find_docstring_desc
-from healdata_utils.conversion import convert_to_vlmd,choice_fxn
+from healdata_utils.conversion import convert_to_vlmd,choice_fxn,input_short_descriptions
 from healdata_utils.validators import validate_vlmd_json,validate_vlmd_csv
 from healdata_utils.io import write_vlmd_template
 from healdata_utils.config import VLMD_DEFS_URL
@@ -28,8 +28,11 @@ This can be an:
 
 """
 
+inputtype_descs = "\n".join([click.style(name,bold=True)+": "+desc for name,desc in input_short_descriptions.items()])
 prompt_extract_inputtypes = f"""
 {click.style("What type of file do you want to extract variable level metadata from?",bold=True,fg="green")}
+
+{inputtype_descs}
 
 """
 

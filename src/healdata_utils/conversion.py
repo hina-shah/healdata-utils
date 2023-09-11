@@ -42,10 +42,20 @@ choice_fxn = {
     "frictionless": convert_frictionless_tableschema,
 }
 
-input_types = " - " + "\n - ".join(list(choice_fxn.keys()))
+# input_types = " - " + "\n - ".join(list(choice_fxn.keys()))
 
-input_descriptions = {
-    name: find_docstring_desc(fxn) for name, fxn in choice_fxn.items()
+# input_descriptions = {
+#     name: find_docstring_desc(fxn) for name, fxn in choice_fxn.items()
+# }
+
+input_short_descriptions = {
+    "excel-data":"Data (not metadata) in an excel (xlsx) workbook. Extracts one data dictionary per sheet by default. Runs same inference as csv-data",
+    "csv-data":"Data (not metadata) in a csv (or tsv) file.",
+    "spss":"A .sav file with data values,variable labels, and value labels.",
+    "stata":"A .dta file with data values,variable labels, and value labels.",
+    "sas":"A .sas7bdat file with data values and variable labels. Detects format (sas7bcat catalog files) in the same directory.",
+    "redcap":"A standardized REDCap csv data dictionary export file.",
+    "frictionless":"A frictionless table schema in json format."
 }
 
 
