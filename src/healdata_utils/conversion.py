@@ -46,6 +46,16 @@ choice_fxn = {
     "frictionless-tbl-schema": convert_frictionless_tableschema,
 }
 
+ext_map = {
+    ".data.xlsx":"excel-data",
+    ".data-dict.csv":"csv-data-dict",
+    ".data.csv":"csv-data",
+    ".sav":"spss",
+    ".sas7bdat":"sas",
+    ".redcap.csv":'redcap-csv',
+    ".dta":"stata"
+}
+
 # input_types = " - " + "\n - ".join(list(choice_fxn.keys()))
 
 # input_descriptions = {
@@ -155,6 +165,20 @@ def _write_vlmd(
         print()
 
 
+def _detect_inputtype(filepath,ext_to_inputtype=ext_map):        
+    ext = "".join(input_filepath.suffixes)[1:].lower()
+    inputtype = ext_to_inputtype.get(ext)
+
+    if not inputtype:
+        ext_to_inputtype_desc = "\n".join([ext+' for '+inputtype for ext,inputtype in ext_map.items()])
+        raise Exception(
+            f"No inputtype specified as file of type {ext} does not have a registered inputtype.", 
+            "Either use the inputtype parameter or change your extensions to one of:",
+            ext_to_inputtype_desc
+        )
+    return inputtype
+
+
 
 def convert_to_vlmd(
     input_filepath,
@@ -219,16 +243,8 @@ def convert_to_vlmd(
     input_filepath = Path(input_filepath)
 
     # infer input type
-    if not inputtype:
-        ext = "".join(input_filepath.suffixes)[1:].lower()
-        inputtype = ext_to_inputtype.get(ext)
-        if not inputtype:
-            raise Exception(
-                f"No inputtype specified as file of type {ext} does not have a registered inputtype"
-            )
-
-    if not data_dictionary_props:
-        data_dictionary_props = {}
+    inputtype = inputtype or _detect_inputtype(input_filepath)
+    data_dictionary_props = data_dictionary_props or {}
         
     # ## add dd title
     # if not data_dictionary_props.get("title"):
@@ -292,6 +308,7 @@ def convert_to_vlmd(
             ext = Path(output_filepath).suffix
             output_filepath_with_name = Path(output_filepath).parent/(stem+"-"+slugify(name)+ext)
 
+    if output_filepath_with_name:
         _write_vlmd(
             jsontemplate=dd_json,
             csvtemplate=dd_csv,
