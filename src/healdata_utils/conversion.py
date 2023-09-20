@@ -293,8 +293,14 @@ def convert_to_vlmd(
             "errors": {"csvtemplate": reportcsv, "jsontemplate": reportjson},
             })
 
-            output_filepath_with_name = output_filepath
-
+            if output_filepath:
+                _write_vlmd(
+                    jsontemplate=dd_json,
+                    csvtemplate=dd_csv,
+                    csvreport=reportcsv,
+                    jsonreport=reportjson,
+                    output_filepath=output_filepath,
+                    output_overwrite=output_overwrite)
         else:
 
             packages_with_reports[name] = {
@@ -304,19 +310,21 @@ def convert_to_vlmd(
             }
 
             # 
-            stem = Path(output_filepath).stem
-            ext = Path(output_filepath).suffix
-            output_filepath_with_name = Path(output_filepath).parent/(stem+"-"+slugify(name)+ext)
 
-    if output_filepath_with_name:
-        _write_vlmd(
-            jsontemplate=dd_json,
-            csvtemplate=dd_csv,
-            csvreport=reportcsv,
-            jsonreport=reportjson,
-            output_filepath=output_filepath_with_name,
-            output_overwrite=output_overwrite
-        )
+            if output_filepath:
+
+                stem = Path(output_filepath).stem
+                ext = Path(output_filepath).suffix
+                output_filepath_with_name = Path(output_filepath).parent/(stem+"-"+slugify(name)+ext)
+
+                _write_vlmd(
+                    jsontemplate=dd_json,
+                    csvtemplate=dd_csv,
+                    csvreport=reportcsv,
+                    jsonreport=reportjson,
+                    output_filepath=output_filepath_with_name,
+                    output_overwrite=output_overwrite
+                )
 
                 
     return packages_with_reports

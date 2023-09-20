@@ -60,7 +60,7 @@ def test_vlmd_extract_all_params(
         # currently json and csv are produced automatically
         # so should be both a csv and json file (at least 2 files)
         # more than 2 happens in cases of package-like dds formed such as with excel
-        if len(list(_outdir.glob("*.json"))) > 1 and len(list(_outdir.glob("*.csv"))) > 1: 
+        if isinstance(valid_output_json[inputtype],dict) and isinstance(valid_output_csv[inputtype],dict): 
             for name in valid_output_json[inputtype]:
                 _valid_output_json = json.loads(valid_output_json[inputtype][name].read_text())
                 _valid_output_csv = valid_output_csv[inputtype][name].read_text().split("\n")
