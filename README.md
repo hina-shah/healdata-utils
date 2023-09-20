@@ -2,8 +2,7 @@
 
 The HEAL Data Utilities python package provides data packaging tools for the HEAL Data Ecosystem to facilitate data discovery, sharing, and harmonization on the [HEAL Platform](https://healdata.org).
  
-Currently, the focus of this repository is generating standardized variable level metadata (VLMD) in the form of data dictionaries. ([Click here](vlmd/index.md) for the Variable-level Metadata documentation section).
-
+Currently, the focus of this repository is generating standardized variable level metadata (VLMD) in the form of data dictionaries. See the documentation [here](https://heal.github.io/healdata-utils/)
 However, in the future, this will be expanded for all HEAL-specific data packaging functions (e.g., study- and file-level metadata and data).
 
 ## Prerequisites
@@ -20,7 +19,7 @@ To install the latest official release of healdata-utils, from your computer's c
 
 OR for the most up-to-date unreleased version run: 
 
-`pip install git+https://github.com/norc-heal/healdata-utils.git`
+`pip install git+https://github.com/heal/healdata-utils.git`
 
 !!! note
 
