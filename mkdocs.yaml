@@ -1,7 +1,7 @@
 #https://www.mkdocs.org/user-guide/configuration/#
 site_name: HEAL Data Utilities
-site_url: https://norc-heal.github.io/healdata-utils
-repo_url: https://github.com/norc-heal/healdata-utils
+site_url: https://heal.github.io/healdata-utils
+repo_url: https://github.com/heal/healdata-utils
 nav:
   - index.md
   # - contributing.md
@@ -49,7 +49,7 @@ extra_css:
   - stylesheets/extra.css
   - stylesheets/schema_doc.css
 extra:
-  homepage: https://github.com/norc-heal
+  homepage: https://heal.github.io/healdata-utils
 use_directory_urls: true
 markdown_extensions:
   - admonition
