@@ -1,3 +1,3 @@
 
 
-VLMD_DEFS_URL = "https://norc-heal.github.io/healdata-utils/vlmd/#csv-and-json-data-dictionary-definitions"
+VLMD_DEFS_URL = "https://heal.github.io/healdata-utils/vlmd"
