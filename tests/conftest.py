@@ -24,6 +24,11 @@ def valid_input_params():
         "data_dictionary_props":data_dictionary_props}
         
     input_params = {
+        "csv-data-dict":{
+           **get_input_params("template_submission.csv"),
+            "inputtype":"csv-data-dict"
+
+        },
         "excel-data":{
             **get_input_params("excel-multitab-dataset1.xlsx"),
             "inputtype":"excel-data"
@@ -55,6 +60,7 @@ def valid_output_json(valid_input_params):
             "experiment1":path/"excel-dataset1/multiple-dd/heal-dd-experiment1.json",
             "experiment2":path/"excel-dataset1/multiple-dd/heal-dd-experiment2.json"
         },
+        "csv-data-dict":path/"heal_dd_from_csv_data_dict.json",
         "csv-data":path/"heal_dd_from_csv_data_dataset1.json",
         "sas":path/"heal_dd_from_sas7bdat_with_sas7bcat.json", #TODO: reduce data so easier to manage and test
         "stata":path/"heal_dd_from_stata_dta_dataset1.json",
@@ -74,6 +80,7 @@ def valid_output_csv(valid_input_params):
             "experiment1":path/"excel-dataset1/multiple-dd/heal-dd-experiment1.csv",
             "experiment2":path/"excel-dataset1/multiple-dd/heal-dd-experiment2.csv"
         },
+        "csv-data-dict":path/"heal_dd_from_csv_data_dict.csv",
         "csv-data":path/"heal_dd_from_csv_data_dataset1.csv",
         "sas":path/"heal_dd_from_sas7bdat_with_sas7bcat.csv",#TODO: reduce data so easier to manage and test
         "stata":path/"heal_dd_from_stata_dta_dataset1.csv",
