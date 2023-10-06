@@ -16,8 +16,8 @@ However, in the future, this will be expanded for all HEAL-specific data packagi
 
 !!! important
 
-    Stand alone applications for different operating systems are available here. These allow you to run the `vlmd` tool without
-    needing to install anything else. Just (1) download, (2) unzip, and (3) double click on the `vlmd` application icon.
+    Stand alone applications for different operating systems are available [here](https://github.com/HEAL/healdata-utils/releases/latest). These allow you to run the `vlmd` tool without
+    needing to install anything else. Just (1) download (by clicking on your computer's operating system), (2) unzip, and (3) double click on the `vlmd` application icon.
 
 
 ## Prerequisites
