@@ -74,7 +74,8 @@ def convert_templatecsv(
         .convert(castfields)
         .convertall({None:""})
     )
-    fields_csv = tbl_csv.dicts()
+    fields_csv = list(tbl_csv.dicts())
+    
     tbl_json = (
         tbl_csv
         .convert(convertfields)
