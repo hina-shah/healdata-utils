@@ -82,6 +82,8 @@ def read_excel(filepath,sheet_names=None,castdtype="string"):
     
     This is akin to pandas.read_excel when all sheet_names (or sheet_name=None)
     is specified EXCEPT that the default is each value is the string representation.
+    Additionally, if only one sheet exists (even if passing a list), it will output
+    a datframe rather than a dict of dataframes.
 
     See the dtype arg in pandas read_excel docs for more info.
 
@@ -96,13 +98,14 @@ def read_excel(filepath,sheet_names=None,castdtype="string"):
     if isinstance(sheet_names,list):
         selected_sheet_names = [sheet for sheet in book.sheet_names 
             if sheet in sheet_names]
-    elif isinstance(sheet_names,str):
+    elif isinstance(sheet_names,(str,int)):
         selected_sheet_names = [sheet_names]
     else:
         selected_sheet_names = book.sheet_names
 
 
     if len(selected_sheet_names) == 1:
+        sheet = selected_sheet_names[0]
         df = pd.read_excel(book,sheet_name=sheet,dtype=castdtype).fillna("")
         return df
     else:
