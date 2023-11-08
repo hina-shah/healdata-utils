@@ -94,6 +94,10 @@ def convert_readstat(file_path,
                     missing_values.append(str(values[0]))
                 else:
                     missing_values.append(values[0])
+            # missing_ranges is in readstat for spss
+            elif list(items.keys()) == ["lo","hi"]:
+                values = list(range(int(items["lo"]),int(items["hi"])+1))
+                missing_values.extend(values)
             else:
                 raise Exception("Currently, only discrete values are supported")
 
