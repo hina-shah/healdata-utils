@@ -37,9 +37,11 @@ def parse_dictionary_str(string, item_sep, keyval_sep):
     """
     stritems = string.strip().split(item_sep)
     items = {}
-    for stritem in stritems:
+    for idx, stritem in enumerate(stritems):
         item = stritem.split(keyval_sep, 1)
-        items[item[0]] = item[1].strip()
+        key = f"UNENCODED_{idx}" if len(item) == 1 else item[0]
+        val = item[0] if len(item) == 1 else item[1]
+        items[key] = val.strip()
 
     return items
 
